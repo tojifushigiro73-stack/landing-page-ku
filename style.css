@@ -1,15 +1,15 @@
 :root {
-    --primary-color: #4A3B32;
-    /* Dark Chocolate */
-    --secondary-color: #D4AF37;
-    /* Gold */
-    --accent-color: #C0A080;
-    /* Latte */
-    --bg-color: #FDFCF8;
-    /* Warm White */
-    --text-color: #2C2C2C;
-    /* Dark Grey */
-    --text-muted: #666;
+    --primary-color: #b02762;
+    /* Vibrant Berry/Magenta */
+    --secondary-color: #d4a017;
+    /* Rich Gold */
+    --accent-color: #ff85a1;
+    /* Rose Pink */
+    --bg-color: #fff2f6;
+    /* Soft Pinkish White */
+    --text-color: #3d0a1f;
+    /* Very Deep Berry */
+    --text-muted: #8c4b66;
     --white: #ffffff;
     --black: #000000;
     --spacing-sm: 8px;
@@ -73,9 +73,9 @@ img {
     position: sticky;
     top: 0;
     z-index: 1000;
-    background-color: rgba(253, 252, 248, 0.95);
+    background-color: rgba(255, 242, 246, 0.95);
     backdrop-filter: blur(10px);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 10px rgba(176, 39, 98, 0.1);
     transition: all 0.3s ease;
 }
 
@@ -261,7 +261,7 @@ img {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, rgba(253, 252, 248, 0.3) 0%, rgba(253, 252, 248, 1) 55%);
+    background: linear-gradient(90deg, rgba(255, 242, 246, 0.2) 0%, rgba(255, 242, 246, 1) 55%);
     z-index: 0;
 }
 
@@ -377,8 +377,8 @@ img {
 /* USP Section */
 .usp-section {
     padding: var(--spacing-xl) 0;
-    background-color: #fff;
-    border-bottom: 1px solid #eee;
+    background-color: #fff9fb;
+    border-bottom: 1px solid #fce4ec;
 }
 
 .usp-grid {
@@ -396,7 +396,7 @@ img {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background-color: #F7F3EB;
+    background-color: #fce4ec;
     color: var(--primary-color);
     display: flex;
     align-items: center;
@@ -579,7 +579,7 @@ img {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid #eee;
+    border-top: 1px solid #fce4ec;
     padding-top: 15px;
 }
 
@@ -619,7 +619,7 @@ img {
 
 /* Social Proof (Testimonials + How It Works) */
 .social-proof-section {
-    background-color: #F7F3EB;
+    background-color: #fdf2f5;
     padding: 80px 0;
 }
 
@@ -712,8 +712,8 @@ img {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(74, 59, 50, 0.85);
-    /* Dark overlay */
+    background: rgba(176, 39, 98, 0.85);
+    /* Berry overlay */
 }
 
 .lead-content {
@@ -753,9 +753,9 @@ img {
 
 /* Footer */
 footer {
-    background-color: #211A16;
-    /* Very dark brown */
-    color: #FDFCF8;
+    background-color: #3d0a1f;
+    /* Deep berry */
+    color: #fff2f6;
     padding: 80px 0 20px;
 }
 
@@ -1132,8 +1132,8 @@ footer {
 
 .cart-footer {
     padding: var(--spacing-lg);
-    background-color: #fdfcf8;
-    border-top: 1px solid #eee;
+    background-color: #fff9fb;
+    border-top: 1px solid #fce4ec;
 }
 
 .cart-total {
