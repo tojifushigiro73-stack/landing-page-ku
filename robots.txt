@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /wp-admin/
+Disallow: /wp-login.php
+Disallow: /xmlrpc.php
+Disallow: /cgi-bin/
+Disallow: /.env
+
+Sitemap: https://lamishabake.shop/sitemap.xml
