@@ -111,7 +111,7 @@ function checkoutToWhatsApp() {
         return;
     }
 
-    const adminNumber = "6282377119500"; // Sesuaikan dengan nomor admin
+    const adminNumber = "6285836695103"; // Sesuaikan dengan nomor admin
     let message = "*Halo Lamisha Bakehouse, saya ingin memesan:*\n\n";
 
     cart.forEach((item, index) => {
