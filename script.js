@@ -49,7 +49,9 @@ function addToCart(name, price) {
     if (existingItem) {
         existingItem.quantity += 1;
     } else {
-        cart.push({ name, price, quantity: 1 });
+        // Handle items without a price (Pre-order)
+        const itemPrice = price !== undefined ? price : 0;
+        cart.push({ name, price: itemPrice, quantity: 1, isPreOrder: price === undefined });
     }
 
     updateCartUI();
@@ -93,7 +95,7 @@ function updateCartUI() {
             <div class="cart-item">
                 <div class="cart-item-info">
                     <h4>${item.name}</h4>
-                    <p>${item.quantity} x Rp ${item.price.toLocaleString('id-ID')}</p>
+                    <p>${item.quantity} x ${item.isPreOrder ? '<span class="pre-order-text">Pre-Order (Tanya Harga)</span>' : 'Rp ' + item.price.toLocaleString('id-ID')}</p>
                 </div>
                 <button class="cart-item-remove" onclick="removeFromCart(${index})">Hapus</button>
             </div>
@@ -115,10 +117,13 @@ function checkoutToWhatsApp() {
     let message = "*Halo Lamisha Bakehouse, saya ingin memesan:*\n\n";
 
     cart.forEach((item, index) => {
+        const itemPriceDisplay = item.isPreOrder ? "Pre-Order (Tanya Harga)" : `Rp ${item.price.toLocaleString('id-ID')}`;
+        const subtotalDisplay = item.isPreOrder ? "N/A" : `Rp ${(item.price * item.quantity).toLocaleString('id-ID')}`;
+
         message += `${index + 1}. *${item.name}*\n`;
         message += `   Jumlah: ${item.quantity}\n`;
-        message += `   Harga: Rp ${item.price.toLocaleString('id-ID')}\n`;
-        message += `   Subtotal: Rp ${(item.price * item.quantity).toLocaleString('id-ID')}\n\n`;
+        message += `   Harga: ${itemPriceDisplay}\n`;
+        message += `   Subtotal: ${subtotalDisplay}\n\n`;
     });
 
     const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -133,18 +138,46 @@ function checkoutToWhatsApp() {
 
 // Exit Intent Popup
 const exitPopup = document.getElementById('exitPopup');
+const ramadanPopup = document.getElementById('ramadanPopup');
 let hasShownPopup = false;
+let isRamadanOpen = false;
+
+// Ramadan Popup Logic
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        showRamadanPopup();
+    }, 2000); // Show after 2 seconds
+});
+
+function showRamadanPopup() {
+    isRamadanOpen = true;
+    ramadanPopup.style.display = 'flex';
+    setTimeout(() => { ramadanPopup.classList.add('active'); }, 10);
+}
+
+function closeRamadanPopup() {
+    ramadanPopup.classList.remove('active');
+    setTimeout(() => {
+        ramadanPopup.style.display = 'none';
+        isRamadanOpen = false;
+    }, 500);
+}
+
+// Ramadan close on outside click
+ramadanPopup.addEventListener('click', (e) => {
+    if (e.target === ramadanPopup) closeRamadanPopup();
+});
 
 // Show on mouse leave (Desktop)
 document.addEventListener('mouseleave', (e) => {
-    if (e.clientY < 0 && !hasShownPopup) {
+    if (e.clientY < 0 && !hasShownPopup && !isRamadanOpen) {
         showPopup();
     }
 });
 
 // Show on timer (Mobile fallback)
 setTimeout(() => {
-    if (!hasShownPopup) {
+    if (!hasShownPopup && !isRamadanOpen) {
         // Only show if user hasn't scrolled much (inactive)
         if (window.scrollY < 300) {
             showPopup();

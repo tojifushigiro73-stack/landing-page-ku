@@ -53,7 +53,7 @@
         <div class="hero-overlay"></div>
         <div class="container hero-content">
             <span class="hero-subtitle">Est. 2021 • Disajikan dengan Cinta</span>
-            <h1>Kukis yang<br>Dipanggang Segar<br>Setiap Hari.</h1>
+            <h1>Kukis yang<br>Dipanggang Hangat<br>Setiap Hari.</h1>
             <p class="hero-description">Kepuasan anda adalah prioritas bagi kami, serta setiap Pesanan adalah suatu
                 kehormatan dan
                 kebahagiaan bagi kami. Rasakan
@@ -103,18 +103,16 @@
                 <div class="product-card">
                     <div class="product-image">
                         <span class="badge new">Pre Order</span>
-                        <img src="cookie_jar.png" alt="Toples Kukis Premium">
+                        <img src="kukis_coklat.png" alt="Kukis Coklat">
                         <div class="product-overlay">
-                            <button class="btn-quick-add" onclick="addToCart('The Golden Jar Collection', 185000)">+
-                                Keranjang</button>
+                            <button class="btn-quick-add" onclick="addToCart('Kukis Coklat')">Pre-order</button>
                         </div>
                     </div>
                     <div class="product-info">
-                        <h3>The Golden Jar Collection</h3>
-                        <p class="product-desc">Kukis butter lembut dengan sentuhan garam laut dan potongan cokelat
-                            hitam 70%.</p>
+                        <h3>Kukis Coklat</h3>
+                        <p class="product-desc">Kukis coklat dengan rasa yang lembut dan nikmat.</p>
                         <div class="product-meta">
-                            <span class="price">Rp 185.000</span>
+                            <!-- <span class="price">Rp 185.000</span> -->
                             <div class="rating">
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
@@ -130,17 +128,16 @@
                 <div class="product-card">
                     <div class="product-image">
                         <span class="badge limited">Limited</span>
-                        <img src="cake_slice.png" alt="Irisan Kue Mewah">
+                        <img src="chesee_cake.jpg" alt="Chesee Cake">
                         <div class="product-overlay">
-                            <button class="btn-quick-add" onclick="addToCart('Chesee cake', 65000)">+
-                                Keranjang</button>
+                            <button class="btn-quick-add" onclick="addToCart('Chesee Cake')">Pre-order</button>
                         </div>
                     </div>
                     <div class="product-info">
                         <h3>Chesee cake</h3>
-                        <p class="product-desc">Chesee cake lembut dengan topping buah segar.</p>
+                        <p class="product-desc">Chesee cake lembut dengan topping yang lezat.</p>
                         <div class="product-meta">
-                            <span class="price">Rp 45.000 / slice</span>
+                            <!-- <span class="price">Rp 45.000 / slice</span> -->
                             <div class="rating">
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
@@ -157,15 +154,14 @@
                     <div class="product-image">
                         <img src="hampers.png" alt="Hampers Mewes">
                         <div class="product-overlay">
-                            <button class="btn-quick-add" onclick="addToCart('Royal Gift Hamper', 850000)">+
-                                Keranjang</button>
+                            <button class="btn-quick-add" onclick="addToCart('Paket Hampers')">Pre-order</button>
                         </div>
                     </div>
                     <div class="product-info">
                         <h3>Hampers</h3>
                         <p class="product-desc">Hampers lengkap berisi aneka varian kukis dan bisa request juga loh.</p>
                         <div class="product-meta">
-                            <span class="price">Mulai dari Rp 250.000</span>
+                            <!-- <span class="price">Mulai dari Rp 250.000</span> -->
                             <div class="rating">
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
@@ -276,12 +272,11 @@
                     <div class="testimonials">
                         <div class="testimonial-card">
                             <p>"Kami membuka toko ini dengan harapan dapat memberikan kualitas produk yang terbaik
-                                kepada pelanggan. Kami berkomitmen untuk memberikan produk yang terbaik kepada
-                                pelanggan. "</p>
+                                kepada pelanggan. dengan harga terjangkau serta pelayanan terbaik. "</p>
                             <div class="author">- Rendy sena., Co-Owner</div>
                         </div>
                         <div class="testimonial-card">
-                            <p>"Bahan-bahan yang digunakan untuk membuat kue kami adalah bahan terbaik yang ada di
+                            <p>"Bahan-bahan yang digunakan untuk membuat kue adalah bahan terbaik yang ada di
                                 pasar. Kami berkomitmen untuk memberikan produk yang terbaik kepada pelanggan. "</p>
                             <div class="author">- Ferina Pratiwi, Owner</div>
                         </div>
@@ -301,7 +296,7 @@
                     <div class="step-card">
                         <div class="step-number">03</div>
                         <h4>Pengiriman Aman</h4>
-                        <p>Dikirim dengan penanganan khusus.</p>
+                        <p>Packing tetap aman sampai tujuan.</p>
                     </div>
                 </div>
             </div>
@@ -381,26 +376,49 @@
         <span class="cart-count">0</span>
     </div>
 
-    <!-- Exit Intent Popup
-    <div id="exitPopup" class="popup-overlay">
+    <!-- Ramadan Welcome Popup -->
+    <div id="ramadanPopup" class="popup-overlay">
         <div class="popup-content">
-            <button class="close-popup">&times;</button>
+            <button class="close-popup" onclick="closeRamadanPopup()">&times;</button>
             <div class="popup-layout">
-                <div class="popup-image">
-                    Placeholder, using CSS background related to cookie -->
-    <!-- </div>
+                <div class="popup-image ramadan-bg"></div>
                 <div class="popup-text">
-                    <h3>Tunggu Sebentar!</h3>
-                    <p>Dapatkan diskon <strong>10%</strong> untuk pesanan pertama Anda.</p>
-                    <form onsubmit="event.preventDefault(); closeModal();">
-                        <input type="email" placeholder="Masukkan email Anda" required>
-                        <button type="submit" class="btn btn-primary btn-full">Klaim Diskon</button>
-                    </form>
-                    <span class="no-thanks" onclick="closeModal()">Tidak, terima kasih</span>
+                    <span class="badge new" style="position: static; display: inline-block; margin-bottom: 15px;">Edisi
+                        Spesial</span>
+                    <h3>Sambut Ramadhan Penuh Berkah ✨</h3>
+                    <p>Lengkapi momen buka puasa dan sahurmu dengan kelezatan kukis premium dari La Misha Bakehouse.</p>
+                    <div style="margin: 20px 0;">
+                        <button class="btn btn-primary btn-full"
+                            onclick="closeRamadanPopup(); document.querySelector('#catalog').scrollIntoView({behavior: 'smooth'})">
+                            Lihat Menu Ramadhan
+                        </button>
+                    </div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Tersedia paket hampers spesial Ramadhan!
+                    </p>
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
+
+    <!-- Exit Intent Popup -->
+    <div id="exitPopup" class="popup-overlay">
+        <div class="popup-content">
+            <button class="close-popup" onclick="closeModal()">&times;</button>
+            <div class="popup-layout">
+                <div class="popup-image"></div>
+                <div class="popup-text">
+                    <h3>Kabar Gembira! 🚚</h3>
+                    <p>Untuk wilayah Kota Metro, kue bisa dikirim sampai ke depan rumahmu loh. Pesan yuk! 😊</p>
+                    <div style="margin: 20px 0;">
+                        <button class="btn btn-primary btn-full"
+                            onclick="closeModal(); document.querySelector('#catalog').scrollIntoView({behavior: 'smooth'})">Cek
+                            Menu & Pesan</button>
+                    </div>
+                    <span class="no-thanks" onclick="closeModal()">Nanti saja</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Cart Side Drawer -->
     <div id="cartDrawer" class="cart-drawer">

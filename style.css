@@ -613,6 +613,12 @@ img {
     font-size: 0.8rem;
 }
 
+.pre-order-text {
+    font-style: italic;
+    color: var(--secondary-color);
+    font-weight: 600;
+}
+
 .catalog-footer {
     text-align: center;
 }
@@ -940,10 +946,14 @@ footer {
 
 .popup-image {
     width: 40%;
-    background-image: url('cookie_jar.png');
+    background-image: url('delivery_popup.png');
     background-size: cover;
     background-position: center;
     min-height: 400px;
+}
+
+.popup-image.ramadan-bg {
+    background-image: url('ramadhan_popup.png');
 }
 
 .popup-text {
