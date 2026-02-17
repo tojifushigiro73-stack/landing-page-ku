@@ -49,7 +49,11 @@ const locationStatus = document.getElementById('locationStatus');
 function initMap() {
     if (map) return;
 
-    map = L.map('map').setView(shopLocation, 13);
+    map = L.map('map', {
+        scrollWheelZoom: false, // Disable scroll zoom to allow page scrolling
+        tap: false              // Fix for some mobile touch issues
+    }).setView(shopLocation, 13);
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap'
     }).addTo(map);
@@ -170,10 +174,13 @@ function toggleCart(e) {
     cartOverlay.classList.toggle('active');
 
     if (cartDrawer.classList.contains('active')) {
+        document.body.style.overflow = 'hidden'; // Lock background scroll
         setTimeout(() => {
             initMap();
             if (map) map.invalidateSize();
-        }, 300); // Wait for drawer transition
+        }, 300);
+    } else {
+        document.body.style.overflow = ''; // Unlock background scroll
     }
 }
 

@@ -1099,9 +1099,15 @@ footer {
     color: var(--text-muted);
 }
 
-.cart-items {
+.cart-content {
     flex-grow: 1;
     overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.cart-items {
     padding: var(--spacing-lg);
 }
 
@@ -1282,4 +1288,6 @@ footer {
 
 #map {
     z-index: 1;
+    /* Avoid swallowing drag events on scroll-heavy containers */
+    touch-action: pan-x pan-y;
 }

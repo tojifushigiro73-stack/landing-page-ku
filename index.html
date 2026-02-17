@@ -429,36 +429,39 @@
             <h3>Keranjang Belanja</h3>
             <button class="close-cart" onclick="toggleCart()">&times;</button>
         </div>
-        <div id="cartItems" class="cart-items">
-            <!-- Items will be injected here -->
-            <div class="empty-cart-msg">Keranjang Anda kosong</div>
-        </div>
-
-        <!-- Location Selection Section -->
-        <div class="cart-location-section" id="locationSection" style="display: none;">
-            <div class="section-divider"></div>
-            <h4>Lokasi Pengiriman</h4>
-
-            <!-- Address Search bar for reliability -->
-            <div class="search-box">
-                <input type="text" id="searchAddr" placeholder="Ketik nama jalan / perumahan di Metro..."
-                    onkeydown="if(event.key==='Enter') searchAddress()">
-                <button onclick="searchAddress()"><i class="fas fa-search"></i></button>
+        <div class="cart-content">
+            <div id="cartItems" class="cart-items">
+                <!-- Items will be injected here -->
+                <div class="empty-cart-msg">Keranjang Anda kosong</div>
             </div>
 
-            <p class="location-help" style="margin-top: 5px;">Atau pilih langsung titik di peta</p>
+            <!-- Location Selection Section -->
+            <div class="cart-location-section" id="locationSection" style="display: none;">
+                <div class="section-divider"></div>
+                <h4>Lokasi Pengiriman</h4>
 
-            <div id="map"
-                style="height: 200px; width: 100%; border-radius: 8px; margin: 10px 0; border: 1px solid #ddd;"></div>
+                <!-- Address Search bar for reliability -->
+                <div class="search-box">
+                    <input type="text" id="searchAddr" placeholder="Ketik nama jalan / perumahan di Metro..."
+                        onkeydown="if(event.key==='Enter') searchAddress()">
+                    <button onclick="searchAddress()"><i class="fas fa-search"></i></button>
+                </div>
 
-            <button class="btn-location-me" onclick="useCurrentLocation()">
-                <i class="fas fa-location-crosshairs"></i> Gunakan Lokasi Saya
-            </button>
+                <p class="location-help" style="margin-top: 5px;">Atau pilih langsung titik di peta</p>
 
-            <div id="locationStatus" class="location-status">Belum ada lokasi terpilih</div>
+                <div id="map"
+                    style="height: 200px; width: 100%; border-radius: 8px; margin: 10px 0; border: 1px solid #ddd;">
+                </div>
 
-            <input type="hidden" id="coords" name="coords">
-            <input type="hidden" id="distance" name="distance">
+                <button class="btn-location-me" onclick="useCurrentLocation()">
+                    <i class="fas fa-location-crosshairs"></i> Gunakan Lokasi Saya
+                </button>
+
+                <div id="locationStatus" class="location-status">Belum ada lokasi terpilih</div>
+
+                <input type="hidden" id="coords" name="coords">
+                <input type="hidden" id="distance" name="distance">
+            </div>
         </div>
 
         <div class="cart-footer">
