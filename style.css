@@ -1181,9 +1181,105 @@ footer {
     opacity: 1;
 }
 
+/* Cart Summary Styles */
+.cart-summary-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+}
+
 @media (max-width: 480px) {
+
     .cart-drawer {
         width: 100%;
         right: -100%;
     }
+}
+
+/* Location Section in Cart */
+.cart-location-section {
+    padding: 15px;
+    background: #fff;
+}
+
+.section-divider {
+    height: 1px;
+    background: #fce4ec;
+    margin: 10px 0 20px 0;
+}
+
+.cart-location-section h4 {
+    font-size: 1rem;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.location-help {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.btn-location-me {
+    width: 100%;
+    padding: 10px;
+    background: var(--white);
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-location-me:hover {
+    background: var(--primary-color);
+    color: var(--white);
+}
+
+/* Address Search Box */
+.search-box {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.search-box input:focus {
+    border-color: var(--primary-color);
+}
+
+.search-box button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    width: 40px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.search-box button:hover {
+    background: var(--secondary-color);
+}
+
+#map {
+    z-index: 1;
 }

@@ -15,6 +15,9 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <!-- Leaflet.js for Location Selection -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 </head>
 
 <body>
@@ -430,9 +433,45 @@
             <!-- Items will be injected here -->
             <div class="empty-cart-msg">Keranjang Anda kosong</div>
         </div>
+
+        <!-- Location Selection Section -->
+        <div class="cart-location-section" id="locationSection" style="display: none;">
+            <div class="section-divider"></div>
+            <h4>Lokasi Pengiriman</h4>
+
+            <!-- Address Search bar for reliability -->
+            <div class="search-box">
+                <input type="text" id="searchAddr" placeholder="Ketik nama jalan / perumahan di Metro..."
+                    onkeydown="if(event.key==='Enter') searchAddress()">
+                <button onclick="searchAddress()"><i class="fas fa-search"></i></button>
+            </div>
+
+            <p class="location-help" style="margin-top: 5px;">Atau pilih langsung titik di peta</p>
+
+            <div id="map"
+                style="height: 200px; width: 100%; border-radius: 8px; margin: 10px 0; border: 1px solid #ddd;"></div>
+
+            <button class="btn-location-me" onclick="useCurrentLocation()">
+                <i class="fas fa-location-crosshairs"></i> Gunakan Lokasi Saya
+            </button>
+
+            <div id="locationStatus" class="location-status">Belum ada lokasi terpilih</div>
+
+            <input type="hidden" id="coords" name="coords">
+            <input type="hidden" id="distance" name="distance">
+        </div>
+
         <div class="cart-footer">
-            <div class="cart-total">
-                <span>Total:</span>
+            <div class="cart-summary-item">
+                <span>Subtotal:</span>
+                <span id="cartSubtotal">Rp 0</span>
+            </div>
+            <div class="cart-summary-item">
+                <span>Ongkos Kirim (<span id="displayDistance">0</span> km):</span>
+                <span id="deliveryFeeDisplay">Rp 0</span>
+            </div>
+            <div class="cart-total" style="margin-top: 10px; border-top: 1px dashed #eee; padding-top: 10px;">
+                <span>Total Bayar:</span>
                 <span id="cartTotalAmount">Rp 0</span>
             </div>
             <button class="btn btn-primary btn-full" onclick="checkoutToWhatsApp()">
@@ -445,6 +484,8 @@
     </div>
     <div id="cartOverlay" class="cart-overlay" onclick="toggleCart()"></div>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="script.js"></script>
 </body>
 

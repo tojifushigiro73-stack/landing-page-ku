@@ -37,10 +37,144 @@ const cartOverlay = document.getElementById('cartOverlay');
 const cartItemsContainer = document.getElementById('cartItems');
 const cartTotalAmountElement = document.getElementById('cartTotalAmount');
 
+// Map & Delivery Logic
+let map;
+let marker;
+const shopLocation = [-5.154633, 105.300084]; // Metro, Lampung updated lokasi
+const locationSection = document.getElementById('locationSection');
+const coordsInput = document.getElementById('coords');
+const distanceInput = document.getElementById('distance');
+const locationStatus = document.getElementById('locationStatus');
+
+function initMap() {
+    if (map) return;
+
+    map = L.map('map').setView(shopLocation, 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    map.on('click', function (e) {
+        setMarker(e.latlng);
+    });
+}
+
+function setMarker(latlng) {
+    if (marker) {
+        marker.setLatLng(latlng);
+    } else {
+        marker = L.marker(latlng).addTo(map);
+    }
+
+    const lat = latlng.lat;
+    const lng = latlng.lng;
+    coordsInput.value = `${lat},${lng}`;
+
+    // Calculate distance
+    const shopLatLng = L.latLng(shopLocation);
+    const distMeter = shopLatLng.distanceTo(latlng);
+    const distKm = (distMeter / 1000).toFixed(2);
+    distanceInput.value = distKm;
+
+    locationStatus.innerText = `Terpilih: ${lat.toFixed(5)}, ${lng.toFixed(5)} (${distKm} km dari toko)`;
+
+    // Trigger UI update to show distance and delivery fee
+    updateCartUI();
+}
+
+async function searchAddress() {
+    const query = document.getElementById('searchAddr').value;
+    if (!query) return;
+
+    locationStatus.innerText = "Mencari alamat...";
+
+    try {
+        // Tambahkan "Metro Lampung" ke pencarian agar hasil lebih relevan dengan lokasi toko
+        const fullQuery = query + " Metro Lampung";
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullQuery)}&limit=1`);
+        const data = await response.json();
+
+        if (data && data.length > 0) {
+            const result = data[0];
+            const latlng = {
+                lat: parseFloat(result.lat),
+                lng: parseFloat(result.lon)
+            };
+            map.setView(latlng, 16);
+            setMarker(latlng);
+            locationStatus.innerText = "Alamat ditemukan! Silakan sesuaikan titik jika perlu.";
+        } else {
+            locationStatus.innerText = "Alamat tidak ditemukan. Coba ketik lebih spesifik.";
+        }
+    } catch (error) {
+        console.error("Search Error:", error);
+        locationStatus.innerText = "Gagal mencari alamat. Silakan klik manual di peta.";
+    }
+}
+
+function useCurrentLocation() {
+
+    if (!navigator.geolocation) {
+        alert("Geolocation tidak didukung oleh browser Anda.");
+        return;
+    }
+
+    locationStatus.innerText = "Mencari lokasi Anda...";
+
+    // Strategi: Coba metode cepat (High Accuracy = false) dulu agar user tidak menunggu
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const latlng = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+            map.setView(latlng, 15);
+            setMarker(latlng);
+            locationStatus.innerText = "Lokasi ditemukan! (Mengkalibrasi akurasi...)";
+
+            // Sambil sudah ketemu, coba cari yang lebih presisi (High Accuracy)
+            navigator.geolocation.getCurrentPosition(
+                (highResPos) => {
+                    const highResLatlng = {
+                        lat: highResPos.coords.latitude,
+                        lng: highResPos.coords.longitude
+                    };
+                    setMarker(highResLatlng);
+                    locationStatus.innerText = "Lokasi ditemukan! (Akurasi tinggi)";
+                },
+                null,
+                { enableHighAccuracy: true, timeout: 5000 }
+            );
+        },
+        (error) => {
+            console.error("Geo Error:", error);
+            const status = document.getElementById('locationStatus');
+            if (error.code === error.TIMEOUT) {
+                status.innerText = "Waktu habis. Silakan klik manual pada peta.";
+            } else if (error.code === error.PERMISSION_DENIED) {
+                alert("Izin lokasi ditolak. Silakan aktifkan izin lokasi di browser atau klik manual di peta.");
+                status.innerText = "Izin lokasi ditolak.";
+            } else {
+                status.innerText = "Gagal: " + error.message + ". Klik manual di peta.";
+            }
+        },
+        { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
+    );
+}
+
+
+
 function toggleCart(e) {
     if (e) e.preventDefault();
     cartDrawer.classList.toggle('active');
     cartOverlay.classList.toggle('active');
+
+    if (cartDrawer.classList.contains('active')) {
+        setTimeout(() => {
+            initMap();
+            if (map) map.invalidateSize();
+        }, 300); // Wait for drawer transition
+    }
 }
 
 function addToCart(name, price) {
@@ -49,7 +183,6 @@ function addToCart(name, price) {
     if (existingItem) {
         existingItem.quantity += 1;
     } else {
-        // Handle items without a price (Pre-order)
         const itemPrice = price !== undefined ? price : 0;
         cart.push({ name, price: itemPrice, quantity: 1, isPreOrder: price === undefined });
     }
@@ -64,7 +197,6 @@ function addToCart(name, price) {
         }, 200);
     });
 
-    // Open cart automatically when item added for better UX
     if (!cartDrawer.classList.contains('active')) {
         toggleCart();
     }
@@ -76,18 +208,17 @@ function removeFromCart(index) {
 }
 
 function updateCartUI() {
-    // Update counts
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     cartCountElements.forEach(el => el.textContent = totalItems);
 
-    // Pulse effect if items in cart
     if (totalItems > 0) {
         cartIcons.forEach(icon => icon.classList.add('pulse'));
+        locationSection.style.display = 'block';
     } else {
         cartIcons.forEach(icon => icon.classList.remove('pulse'));
+        locationSection.style.display = 'none';
     }
 
-    // Update items list
     if (cart.length === 0) {
         cartItemsContainer.innerHTML = '<div class="empty-cart-msg">Keranjang Anda kosong</div>';
     } else {
@@ -102,9 +233,28 @@ function updateCartUI() {
         `).join('');
     }
 
-    // Update total
-    const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    cartTotalAmountElement.textContent = `Rp ${totalAmount.toLocaleString('id-ID')}`;
+    // Subtotal
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    document.getElementById('cartSubtotal').textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
+
+    // Delivery Fee Logic (Flat Rate & Radius)
+    const distKm = parseFloat(distanceInput.value) || 0;
+    let ongkir = 0;
+
+    if (distKm <= 5) {
+        ongkir = 0; // GRATIS <= 5KM
+    } else if (distKm <= 7) {
+        ongkir = 5000; // 5-7 KM Rp 5.000
+    } else {
+        ongkir = 2000 * Math.ceil(distKm); // > 7 KM Rp 2.000 / km
+    }
+
+    document.getElementById('displayDistance').textContent = distKm;
+    document.getElementById('deliveryFeeDisplay').textContent = ongkir === 0 ? "GRATIS" : `Rp ${ongkir.toLocaleString('id-ID')}`;
+
+    // Total Bayar
+    const totalBayar = subtotal + ongkir;
+    cartTotalAmountElement.textContent = `Rp ${totalBayar.toLocaleString('id-ID')}`;
 }
 
 function checkoutToWhatsApp() {
@@ -113,7 +263,15 @@ function checkoutToWhatsApp() {
         return;
     }
 
-    const adminNumber = "6285836695103"; // Sesuaikan dengan nomor admin
+    const koordinat = coordsInput.value;
+    const jarak = distanceInput.value;
+
+    if (!koordinat) {
+        alert("Silakan pilih lokasi pengiriman pada peta terlebih dahulu!");
+        return;
+    }
+
+    const adminNumber = "6285836695103";
     let message = "*Halo Lamisha Bakehouse, saya ingin memesan:*\n\n";
 
     cart.forEach((item, index) => {
@@ -126,8 +284,25 @@ function checkoutToWhatsApp() {
         message += `   Subtotal: ${subtotalDisplay}\n\n`;
     });
 
-    const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    message += `*Total Keseluruhan: Rp ${totalAmount.toLocaleString('id-ID')}*\n\n`;
+    const totalSubtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const distKm = parseFloat(jarak) || 0;
+    let ongkir = 0;
+
+    if (distKm <= 5) {
+        ongkir = 0;
+    } else if (distKm <= 7) {
+        ongkir = 5000;
+    } else {
+        ongkir = 2000 * Math.ceil(distKm);
+    }
+
+    const totalBayar = totalSubtotal + ongkir;
+
+    message += `*Subtotal: Rp ${totalSubtotal.toLocaleString('id-ID')}*\n`;
+    message += `*Ongkos Kirim (${distKm} km): ${ongkir === 0 ? "GRATIS" : 'Rp ' + ongkir.toLocaleString('id-ID')}*\n`;
+    message += `*---------------------------*\n`;
+    message += `*TOTAL BAYAR: Rp ${totalBayar.toLocaleString('id-ID')}*\n\n`;
+    message += `*Link Lokasi:* https://www.google.com/maps?q=${koordinat}\n\n`;
     message += "Terima kasih!";
 
     const encodedMessage = encodeURIComponent(message);
@@ -135,6 +310,7 @@ function checkoutToWhatsApp() {
 
     window.open(whatsappUrl, '_blank');
 }
+
 
 // Exit Intent Popup
 const exitPopup = document.getElementById('exitPopup');
