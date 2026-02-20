@@ -14,7 +14,7 @@
         href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=1.7">
     <!-- Leaflet.js for Location Selection -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
@@ -56,7 +56,7 @@
         <div class="hero-overlay"></div>
         <div class="container hero-content">
             <span class="hero-subtitle">Est. 2021 • Disajikan dengan Cinta</span>
-            <h1>Kukis yang<br>Dipanggang Hangat<br>Setiap Hari.</h1>
+            <h1>Kukis yang<br>Dibuat dengan cinta<br>Setiap Hari.</h1>
             <p class="hero-description">Kepuasan anda adalah prioritas bagi kami, serta setiap Pesanan adalah suatu
                 kehormatan dan
                 kebahagiaan bagi kami. Rasakan
@@ -81,8 +81,8 @@
             </div>
             <div class="usp-item">
                 <div class="icon-circle"><i class="fas fa-fire"></i></div>
-                <h3>Dipanggang Segar</h3>
-                <p>Tidak ada stok lama. Semua pesanan dipanggang pada hari pengiriman untuk kualitas terbaik.</p>
+                <h3>Dipanggang Hangat</h3>
+                <p>Semua pesanan dipanggang pada hari pengiriman demi kualitas terbaik.</p>
             </div>
             <div class="usp-item">
                 <div class="icon-circle"><i class="fas fa-gift"></i></div>
@@ -106,14 +106,14 @@
                 <div class="product-card">
                     <div class="product-image">
                         <span class="badge new">Pre Order</span>
-                        <img src="kukis_coklat.png" alt="Kukis Coklat">
+                        <img src="brownies.jpg" alt="fugdy brownies">
                         <div class="product-overlay">
-                            <button class="btn-quick-add" onclick="addToCart('Kukis Coklat')">Pre-order</button>
+                            <button class="btn-quick-add" onclick="addToCart('Brownies')">Pre-order</button>
                         </div>
                     </div>
                     <div class="product-info">
-                        <h3>Kukis Coklat</h3>
-                        <p class="product-desc">Kukis coklat dengan rasa yang lembut dan nikmat.</p>
+                        <h3>Brownies</h3>
+                        <p class="product-desc">Brownies lembut dengan rasa coklat yang endulita.</p>
                         <div class="product-meta">
                             <!-- <span class="price">Rp 185.000</span> -->
                             <div class="rating">
@@ -155,7 +155,7 @@
                 <!-- Product 3 -->
                 <div class="product-card">
                     <div class="product-image">
-                        <img src="hampers.png" alt="Hampers Mewes">
+                        <img src="hampres.jpg" alt="Hamperss">
                         <div class="product-overlay">
                             <button class="btn-quick-add" onclick="addToCart('Paket Hampers')">Pre-order</button>
                         </div>
@@ -269,7 +269,7 @@
         <div class="container">
             <div class="proof-content">
                 <div class="proof-text">
-                    <h2>Disukai oleh Pelanggan</h2>
+                    <h2>💗 Untuk kamu yang ingin bertanya tentang produk kita bisa klik tombol whatsapp 💗</h2>
                     <p class="highlight-text">"Tidak perlu repot biar kami yang sajikan kukis yang lezat dan ekonomis
                         untuk kamu"</p>
                     <div class="testimonials">
@@ -288,18 +288,18 @@
                 <div class="steps-grid">
                     <div class="step-card">
                         <div class="step-number">01</div>
-                        <h4>Pilih Favorit Anda</h4>
-                        <p>Jelajahi menu musiman kami.</p>
+                        <h4>Pilih kue favoritmu</h4>
+                        <p>Pilih kue yang kamu suka.🤌</p>
                     </div>
                     <div class="step-card">
                         <div class="step-number">02</div>
-                        <h4>Kami Panggang</h4>
-                        <p>Dibuat segar sesuai pesanan.</p>
+                        <h4>Konfirmasi Pesanan</h4>
+                        <p>Setelah memesan kue favoritmu, lakukan konfirmasi pesanan.🤗</p>
                     </div>
                     <div class="step-card">
                         <div class="step-number">03</div>
-                        <h4>Pengiriman Aman</h4>
-                        <p>Packing tetap aman sampai tujuan.</p>
+                        <h4>Pesanan di buat dan dikirim</h4>
+                        <p>Admin akan memberitahu jika pesanan mu siap meluncur.🥰</p>
                     </div>
                 </div>
             </div>
@@ -308,7 +308,7 @@
 
     <!-- Lead Magnet: Birthday Club
     <section class="lead-magnet-section">
-        <div class="container">
+        <div class="container">tauri://localhost/images/login-illustration-3.svg
             <div class="lead-content">
                 <h2>Jangan Lewatkan Momen Manis</h2>
                 <p>Daftarkan ulang tahun Anda atau orang terkasih, dan kami akan mengirimkan kejutan spesial di hari
@@ -487,9 +487,125 @@
     </div>
     <div id="cartOverlay" class="cart-overlay" onclick="toggleCart()"></div>
 
+    <!-- Order Summary Modal -->
+    <div id="orderSummaryModal" class="popup-overlay">
+        <div class="popup-content order-summary-content">
+            <button class="close-popup" onclick="closeOrderSummary()">&times;</button>
+            <div class="order-summary-header">
+                <h3>Ringkasan Pesanan</h3>
+                <p id="orderInvoiceId" class="invoice-id">#INV-20260219</p>
+            </div>
+
+            <div class="order-summary-body">
+                <!-- Order Details -->
+                <div class="summary-section">
+                    <h4><i class="fas fa-shopping-basket"></i> Detail Pesanan</h4>
+                    <div id="summaryItems" class="summary-items">
+                        <!-- Items injected here -->
+                    </div>
+                    <div class="summary-totals">
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span id="summarySubtotal">Rp 0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Ongkos Kirim</span>
+                            <span id="summaryShipping">Rp 0</span>
+                        </div>
+                        <div class="summary-row total-row">
+                            <span>Total Bayar</span>
+                            <span id="summaryTotal">Rp 0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Instructions -->
+                <div class="summary-section payment-section">
+                    <h4><i class="fas fa-credit-card"></i> Instruksi Pembayaran</h4>
+                    <p class="payment-note">Silakan transfer sesuai total di atas ke rekening berikut:</p>
+
+                    <div class="bank-details">
+                        <!-- BRI -->
+                        <div class="bank-info" style="margin-bottom: 15px;">
+                            <span class="bank-name">Bank BRI</span>
+                            <div class="account-row">
+                                <span id="briNumber" class="account-number">009801076603506</span>
+                                <button class="btn-copy"
+                                    onclick="copyToClipboard('009801076603506', 'No. Rekening BRI')"
+                                    title="Salin No. Rekening">
+                                    <i class="fas fa-copy"></i> Salin
+                                </button>
+                            </div>
+                            <span class="account-holder">a/n Rendy Sena</span>
+                        </div>
+
+                        <!-- OVO & ShopeePay -->
+                        <div class="e-wallet-info"
+                            style="border-top: 1px solid rgba(176, 39, 98, 0.1); padding-top: 15px; display: grid; gap: 15px;">
+                            <div class="wallet-item">
+                                <span class="bank-name">OVO</span>
+                                <div class="account-row">
+                                    <span class="account-number">082348315200</span>
+                                    <button class="btn-copy" onclick="copyToClipboard('082348315200', 'No. OVO')"
+                                        title="Salin No. OVO">
+                                        <i class="fas fa-copy"></i> Salin
+                                    </button>
+                                </div>
+                                <span class="account-holder">a/n Ferina Pratiwi</span>
+                            </div>
+
+                            <div class="wallet-item">
+                                <span class="bank-name">ShopeePay</span>
+                                <div class="account-row">
+                                    <span class="account-number">082348315200</span>
+                                    <button class="btn-copy" onclick="copyToClipboard('082348315200', 'No. ShopeePay')"
+                                        title="Salin No. ShopeePay">
+                                        <i class="fas fa-copy"></i> Salin
+                                    </button>
+                                </div>
+                                <span class="account-holder">a/n Ferina Pratiwi</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Confirmation Form -->
+            <div class="summary-section confirmation-form">
+                <h4><i class="fas fa-user-check"></i> Konfirmasi Penerima</h4>
+                <div class="form-group">
+                    <label for="customerName">Nama Lengkap</label>
+                    <input type="text" id="customerName" placeholder="Masukkan nama Anda">
+                </div>
+                <!-- Alamat Section -->
+                <div class="form-group">
+                    <label>Alamat Pengiriman</label>
+                    <p id="summaryAddress" class="summary-address-text">Mencari alamat...</p>
+                </div>
+            </div>
+
+            <div class="order-summary-footer">
+                <button class="btn btn-primary btn-full" id="confirmWaBtn" onclick="confirmOrderToWhatsApp()">
+                    <span class="btn-text">Konfirmasi pembayaran dan upload bukti transfer 😊</span>
+                    <div class="btn-loader" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                </button>
+                <p class="footer-note">*Klik tombol di atas untuk mengirim bukti transfer dan pesananmu siap meluncur 😊
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast">Tersalin!</div>
+
+    <!-- Static QRIS Data Source placeholder link might be needed if dynamic generation fails -->
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="script.js"></script>
+    <script src="script.js?v=1.8"></script>
 </body>
 
 </html>

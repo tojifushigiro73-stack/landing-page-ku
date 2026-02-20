@@ -228,6 +228,9 @@ function updateCartUI() {
 
     if (cart.length === 0) {
         cartItemsContainer.innerHTML = '<div class="empty-cart-msg">Keranjang Anda kosong</div>';
+        // Reset stored Invoice ID for new orders
+        const invoiceIdElement = document.getElementById('orderInvoiceId');
+        if (invoiceIdElement) delete invoiceIdElement.dataset.currentId;
     } else {
         cartItemsContainer.innerHTML = cart.map((item, index) => `
             <div class="cart-item">
@@ -246,14 +249,17 @@ function updateCartUI() {
 
     // Delivery Fee Logic (Flat Rate & Radius)
     const distKm = parseFloat(distanceInput.value) || 0;
+    const totalItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
     let ongkir = 0;
 
-    if (distKm <= 5) {
-        ongkir = 0; // GRATIS <= 5KM
+    if (totalItemsCount >= 3 && distKm <= 7) {
+        ongkir = 0; // Promo: >= 3 items FREE up to 7km
+    } else if (distKm <= 5) {
+        ongkir = 0; // Standard: <= 5km FREE
     } else if (distKm <= 7) {
-        ongkir = 5000; // 5-7 KM Rp 5.000
+        ongkir = 5000; // 5-7km Rp 5.000
     } else {
-        ongkir = 2000 * Math.ceil(distKm); // > 7 KM Rp 2.000 / km
+        ongkir = 2000 * Math.ceil(distKm); // > 7km Rp 2.000/km
     }
 
     document.getElementById('displayDistance').textContent = distKm;
@@ -265,57 +271,154 @@ function updateCartUI() {
 }
 
 function checkoutToWhatsApp() {
+    console.log("Checkout button clicked!");
     if (cart.length === 0) {
         alert("Keranjang Anda masih kosong!");
         return;
     }
 
-    const koordinat = coordsInput.value;
-    const jarak = distanceInput.value;
+    const koordinat = document.getElementById('coords').value;
+    console.log("Koordinat:", koordinat);
 
     if (!koordinat) {
         alert("Silakan pilih lokasi pengiriman pada peta terlebih dahulu!");
         return;
     }
 
-    const adminNumber = "6285836695103";
-    let message = "*Halo Lamisha Bakehouse, saya ingin memesan:*\n\n";
+    showOrderSummary();
+}
 
-    cart.forEach((item, index) => {
-        const itemPriceDisplay = item.isPreOrder ? "Pre-Order (Tanya Harga)" : `Rp ${item.price.toLocaleString('id-ID')}`;
-        const subtotalDisplay = item.isPreOrder ? "N/A" : `Rp ${(item.price * item.quantity).toLocaleString('id-ID')}`;
+function showOrderSummary() {
+    const orderSummaryModal = document.getElementById('orderSummaryModal');
+    const summaryItems = document.getElementById('summaryItems');
+    const invoiceIdElement = document.getElementById('orderInvoiceId');
+    const subtotalElement = document.getElementById('summarySubtotal');
+    const shippingElement = document.getElementById('summaryShipping');
+    const totalElement = document.getElementById('summaryTotal');
+    const addressElement = document.getElementById('summaryAddress');
 
-        message += `${index + 1}. *${item.name}*\n`;
-        message += `   Jumlah: ${item.quantity}\n`;
-        message += `   Harga: ${itemPriceDisplay}\n`;
-        message += `   Subtotal: ${subtotalDisplay}\n\n`;
-    });
-
-    const totalSubtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const distKm = parseFloat(jarak) || 0;
-    let ongkir = 0;
-
-    if (distKm <= 5) {
-        ongkir = 0;
-    } else if (distKm <= 7) {
-        ongkir = 5000;
+    // Generate Invoice ID if not exists
+    let invoiceId;
+    if (!invoiceIdElement.dataset.currentId) {
+        const now = new Date();
+        const dateStr = now.getFullYear().toString() +
+            (now.getMonth() + 1).toString().padStart(2, '0') +
+            now.getDate().toString().padStart(2, '0');
+        const randomId = Math.floor(1000 + Math.random() * 9000);
+        invoiceId = `#INV-${dateStr}-${randomId}`;
+        invoiceIdElement.textContent = invoiceId;
+        invoiceIdElement.dataset.currentId = invoiceId;
     } else {
-        ongkir = 2000 * Math.ceil(distKm);
+        invoiceId = invoiceIdElement.dataset.currentId;
+        invoiceIdElement.textContent = invoiceId;
     }
 
-    const totalBayar = totalSubtotal + ongkir;
+    // Populate Items
+    summaryItems.innerHTML = cart.map((item) => `
+        <div class="summary-item">
+            <span>${item.quantity}x ${item.name}</span>
+            <span>${item.isPreOrder ? 'N/A' : 'Rp ' + (item.price * item.quantity).toLocaleString('id-ID')}</span>
+        </div>
+    `).join('');
 
-    message += `*Subtotal: Rp ${totalSubtotal.toLocaleString('id-ID')}*\n`;
-    message += `*Ongkos Kirim (${distKm} km): ${ongkir === 0 ? "GRATIS" : 'Rp ' + ongkir.toLocaleString('id-ID')}*\n`;
-    message += `*---------------------------*\n`;
-    message += `*TOTAL BAYAR: Rp ${totalBayar.toLocaleString('id-ID')}*\n\n`;
-    message += `*Link Lokasi:* https://www.google.com/maps?q=${koordinat}\n\n`;
-    message += "Terima kasih!";
+    // Totals
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const distKm = parseFloat(distanceInput.value) || 0;
 
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/${adminNumber}?text=${encodedMessage}`;
+    const totalItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+    let ongkir = 0;
+    if (totalItemsCount >= 3 && distKm <= 7) ongkir = 0; // Promo: >= 3 items FREE up to 7km
+    else if (distKm <= 5) ongkir = 0; // Standard: <= 5km FREE
+    else if (distKm <= 7) ongkir = 5000; // 5-7km Rp 5.000
+    else ongkir = 2000 * Math.ceil(distKm); // > 7km Rp 2.000/km
 
-    window.open(whatsappUrl, '_blank');
+    const total = subtotal + ongkir;
+
+    subtotalElement.textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
+    shippingElement.textContent = ongkir === 0 ? "GRATIS" : `Rp ${ongkir.toLocaleString('id-ID')}`;
+    totalElement.textContent = `Rp ${total.toLocaleString('id-ID')}`;
+
+    // Address
+    const locationStatusText = document.getElementById('locationStatus').innerText;
+    addressElement.textContent = locationStatusText.replace('Terpilih: ', '');
+
+    // Show Modal
+    orderSummaryModal.style.display = 'flex';
+    setTimeout(() => orderSummaryModal.classList.add('active'), 10);
+
+    // Close cart drawer if open
+    if (cartDrawer.classList.contains('active')) {
+        toggleCart();
+    }
+}
+
+function closeOrderSummary() {
+    const modal = document.getElementById('orderSummaryModal');
+    modal.classList.remove('active');
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 500);
+}
+
+function copyToClipboard(text, label) {
+    navigator.clipboard.writeText(text).then(() => {
+        showToast(`${label} tersalin!`);
+    });
+}
+
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+function confirmOrderToWhatsApp() {
+    const btn = document.getElementById('confirmWaBtn');
+    const btnText = btn.querySelector('.btn-text');
+    const loader = btn.querySelector('.btn-loader');
+    const customerName = document.getElementById('customerName').value || "Pelanggan";
+
+    // Show Loading
+    btnText.style.opacity = '0.5';
+    loader.style.display = 'inline-block';
+    btn.disabled = true;
+
+    // Delay for "System Processing" effect
+    setTimeout(() => {
+        const adminNumber = "6285836695103";
+        const invoiceId = document.getElementById('orderInvoiceId').textContent;
+        const total = document.getElementById('summaryTotal').textContent;
+        const address = document.getElementById('summaryAddress').textContent;
+
+        let message = `Halo Admin, saya *${customerName}* sudah transfer sebesar *${total}*.\n\n`;
+        message += `*Detail Pesanan:*\n`;
+
+        cart.forEach((item) => {
+            message += `- ${item.quantity}x ${item.name}\n`;
+        });
+
+        message += `\n*Lokasi:* https://www.google.com/maps?q=${coordsInput.value}\n`;
+        message += `*Alamat:* ${address}\n`;
+        message += `*ID Pesanan:* ${invoiceId}\n\n`;
+        message += `silahkan upload bukti transfernya di chat ini yaa.🙏`;
+
+        const whatsappUrl = `https://wa.me/${adminNumber}?text=${encodeURIComponent(message)}`;
+
+        // Reset button state
+        btnText.style.opacity = '1';
+        loader.style.display = 'none';
+        btn.disabled = false;
+
+        window.open(whatsappUrl, '_blank');
+        closeOrderSummary();
+
+        // Empty cart after successful checkout
+        cart = [];
+        updateCartUI();
+    }, 1500);
 }
 
 
