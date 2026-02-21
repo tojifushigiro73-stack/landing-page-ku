@@ -1589,23 +1589,107 @@ footer {
         padding: 15px;
     }
 
+    .order-summary-header {
+        margin-bottom: 5px;
+        padding: 8px 0;
+    }
+
     .order-summary-header h3 {
-        font-size: 1.4rem;
+        font-size: 1.25rem;
+        margin-bottom: 0;
     }
 
-    .account-number {
-        font-size: 1rem;
-    }
-
-    .btn-copy {
-        padding: 4px 8px;
-        font-size: 0.7rem;
+    .invoice-id {
+        font-size: 0.75rem;
+        margin-top: -2px;
     }
 
     .summary-section {
-        padding: 15px 10px;
+        margin-bottom: 10px;
+        padding: 12px 10px;
+        border-radius: 12px;
     }
 
+    .summary-section h4 {
+        margin-bottom: 8px;
+        padding-bottom: 5px;
+        font-size: 0.9rem;
+    }
+
+    .summary-item {
+        margin-bottom: 3px;
+        font-size: 0.85rem;
+    }
+
+    .summary-row {
+        margin-bottom: 1px;
+        font-size: 0.8rem;
+    }
+
+    .total-row {
+        font-size: 1rem;
+        margin-top: 5px;
+    }
+
+    .payment-note {
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+    }
+
+    .bank-details {
+        padding: 8px;
+        margin-bottom: 5px;
+    }
+
+    .bank-info {
+        margin-bottom: 8px !important;
+    }
+
+    .account-number {
+        font-size: 1.05rem;
+    }
+
+    .e-wallet-info {
+        gap: 8px !important;
+        padding-top: 8px !important;
+    }
+
+    .wallet-item span.bank-name {
+        font-size: 0.7rem;
+    }
+
+    .account-holder {
+        font-size: 0.75rem;
+    }
+
+    .form-group {
+        margin-bottom: 8px;
+    }
+
+    .form-group label {
+        font-size: 0.75rem;
+        margin-bottom: 3px;
+    }
+
+    .form-group input {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+
+    .order-summary-footer {
+        padding: 12px;
+    }
+
+    .footer-note {
+        font-size: 0.65rem;
+        margin-top: 3px;
+    }
+
+    #confirmWaBtn {
+        min-height: 40px;
+        padding: 8px 12px !important;
+        font-size: 0.8rem;
+    }
 }
 
 .summary-address-text {
