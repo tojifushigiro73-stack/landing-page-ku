@@ -1605,6 +1605,7 @@ footer {
     .summary-section {
         padding: 15px 10px;
     }
+
 }
 
 .summary-address-text {
@@ -1615,4 +1616,34 @@ footer {
     padding: 10px;
     border-radius: 8px;
     margin: 0;
+}
+
+/* Animation Jangkauan */
+@keyframes pulse-orange {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7);
+    }
+
+    70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(255, 152, 0, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 152, 0, 0);
+    }
+}
+
+.tombol-luar-jangkauan {
+    animation: pulse-orange 1.5s infinite;
+    background-color: #ff9800 !important;
+    font-weight: bold;
+    color: white !important;
+}
+
+.tombol-normal {
+    background-color: var(--primary-color) !important;
+    transition: all 0.3s ease;
 }

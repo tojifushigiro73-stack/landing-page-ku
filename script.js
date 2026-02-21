@@ -46,6 +46,59 @@ const coordsInput = document.getElementById('coords');
 const distanceInput = document.getElementById('distance');
 const locationStatus = document.getElementById('locationStatus');
 
+// Helper Functions for Delivery
+function hitungJarak() {
+    return parseFloat(distanceInput.value) || 0;
+}
+
+function hitungOngkir(jarak) {
+    const totalItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+    let ongkir = 0;
+    if (totalItemsCount >= 3 && jarak <= 7) {
+        ongkir = 0;
+    } else if (jarak <= 5) {
+        ongkir = 0;
+    } else if (jarak <= 7) {
+        ongkir = 5000;
+    } else {
+        ongkir = 2000 * Math.ceil(jarak);
+    }
+    return ongkir;
+}
+
+function cekJangkauan() {
+    const jarak = hitungJarak();
+    const batasMaksimal = 10;
+    const tombolPesan = document.getElementById('btn-wa');
+    const displayOngkir = document.getElementById('locationStatus');
+
+    if (!tombolPesan || !displayOngkir) return;
+
+    if (jarak > batasMaksimal) {
+        // Mode Luar Jangkauan
+        displayOngkir.innerHTML = `<b style="color: #d35400;">📍 Wah, lokasi Anda cukup jauh (${jarak} km)</b>`;
+        tombolPesan.innerHTML = '<i class="fab fa-whatsapp"></i> Tanya Ongkir Khusus via WA';
+
+        // Tambahkan animasi pulse
+        tombolPesan.classList.remove('tombol-normal');
+        tombolPesan.classList.add('tombol-luar-jangkauan');
+        return "luar_jangkauan";
+    } else {
+        // Mode Normal
+        const ongkir = hitungOngkir(jarak);
+        if (jarak > 0) {
+            displayOngkir.innerHTML = `🛵 Ongkir Kurir Instan: <b>${ongkir === 0 ? 'GRATIS' : 'Rp ' + ongkir.toLocaleString('id-ID')}</b> (${jarak} km)`;
+        }
+        tombolPesan.innerHTML = '<i class="fab fa-whatsapp"></i> Lanjut ke pemesanan 🛒📱';
+
+        // Hapus animasi
+        tombolPesan.classList.remove('tombol-luar-jangkauan');
+        tombolPesan.classList.add('tombol-normal');
+        return "dalam_jangkauan";
+    }
+}
+
+
 function initMap() {
     if (map) return;
 
@@ -79,8 +132,6 @@ function setMarker(latlng) {
     const distMeter = shopLatLng.distanceTo(latlng);
     const distKm = (distMeter / 1000).toFixed(2);
     distanceInput.value = distKm;
-
-    locationStatus.innerText = `Terpilih: ${lat.toFixed(5)}, ${lng.toFixed(5)} (${distKm} km dari toko)`;
 
     // Trigger UI update to show distance and delivery fee
     updateCartUI();
@@ -247,23 +298,15 @@ function updateCartUI() {
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     document.getElementById('cartSubtotal').textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
 
-    // Delivery Fee Logic (Flat Rate & Radius)
-    const distKm = parseFloat(distanceInput.value) || 0;
-    const totalItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-    let ongkir = 0;
-
-    if (totalItemsCount >= 3 && distKm <= 7) {
-        ongkir = 0; // Promo: >= 3 items FREE up to 7km
-    } else if (distKm <= 5) {
-        ongkir = 0; // Standard: <= 5km FREE
-    } else if (distKm <= 7) {
-        ongkir = 5000; // 5-7km Rp 5.000
-    } else {
-        ongkir = 2000 * Math.ceil(distKm); // > 7km Rp 2.000/km
-    }
+    // Delivery Fee Logic (Refactored)
+    const distKm = hitungJarak();
+    const ongkir = hitungOngkir(distKm);
 
     document.getElementById('displayDistance').textContent = distKm;
-    document.getElementById('deliveryFeeDisplay').textContent = ongkir === 0 ? "GRATIS" : `Rp ${ongkir.toLocaleString('id-ID')}`;
+    document.getElementById('deliveryFeeDisplay').textContent = (ongkir === 0 && distKm > 0) ? "GRATIS" : `Rp ${ongkir.toLocaleString('id-ID')}`;
+
+    // Update UI status and button based on distance
+    cekJangkauan();
 
     // Total Bayar
     const totalBayar = subtotal + ongkir;
@@ -323,14 +366,8 @@ function showOrderSummary() {
 
     // Totals
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const distKm = parseFloat(distanceInput.value) || 0;
-
-    const totalItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-    let ongkir = 0;
-    if (totalItemsCount >= 3 && distKm <= 7) ongkir = 0; // Promo: >= 3 items FREE up to 7km
-    else if (distKm <= 5) ongkir = 0; // Standard: <= 5km FREE
-    else if (distKm <= 7) ongkir = 5000; // 5-7km Rp 5.000
-    else ongkir = 2000 * Math.ceil(distKm); // > 7km Rp 2.000/km
+    const distKm = hitungJarak();
+    const ongkir = hitungOngkir(distKm);
 
     const total = subtotal + ongkir;
 

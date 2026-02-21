@@ -283,6 +283,36 @@
             display: block;
         }
 
+        /* Animasi Berdenyut */
+        @keyframes pulse-orange {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7);
+            }
+
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(255, 152, 0, 0);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 152, 0, 0);
+            }
+        }
+
+        .tombol-luar-jangkauan {
+            animation: pulse-orange 1.5s infinite;
+            background-color: #ff9800 !important;
+            font-weight: bold;
+            color: white !important;
+        }
+
+        .tombol-normal {
+            background-color: var(--primary-color) !important;
+            transition: all 0.3s ease;
+        }
+
         @media (max-width: 480px) {
             .cart-drawer {
                 width: 100%;
@@ -345,7 +375,7 @@
                 <span>Total:</span>
                 <span id="cartTotal">Rp 110.000</span>
             </div>
-            <button class="btn btn-primary" onclick="checkoutToWhatsApp()">
+            <button id="btn-wa" class="btn btn-primary tombol-normal" onclick="checkoutToWhatsApp()">
                 <i class="fab fa-whatsapp"></i> Pesan via WhatsApp
             </button>
         </div>
@@ -362,6 +392,37 @@
         let marker;
         const shopLocation = [-5.154633, 105.300084]; // Metro, Lampung updated lokasi
         const cart = [{ name: "Signature Nastar Gold (1/2Kg)", price: 110000, quantity: 1 }];
+
+        function hitungJarak() {
+            return parseFloat(document.getElementById('distance').value) || 0;
+        }
+
+        function hitungOngkir(jarak) {
+            // Simplified for this demo
+            return jarak > 5 ? 5000 + (jarak - 5) * 2000 : 0;
+        }
+
+        function cekJangkauan() {
+            const jarak = hitungJarak();
+            const batasMaksimal = 10;
+            const tombolPesan = document.getElementById('btn-wa');
+            const displayOngkir = document.getElementById('locationStatus');
+
+            if (jarak > batasMaksimal) {
+                displayOngkir.innerHTML = `<b style="color: #d35400;">📍 Wah, lokasi Anda cukup jauh (${jarak} km)</b>`;
+                tombolPesan.innerHTML = "Tanya Ongkir Khusus via WA";
+                tombolPesan.classList.remove('tombol-normal');
+                tombolPesan.classList.add('tombol-luar-jangkauan');
+            } else {
+                const ongkir = hitungOngkir(jarak);
+                if (jarak > 0) {
+                    displayOngkir.innerHTML = `🛵 Ongkir Kurir Instan: <b>${ongkir === 0 ? 'GRATIS' : 'Rp ' + ongkir.toLocaleString('id-ID')}</b> (${jarak} km)`;
+                }
+                tombolPesan.innerHTML = "Pesan Instan Sekarang";
+                tombolPesan.classList.remove('tombol-luar-jangkauan');
+                tombolPesan.classList.add('tombol-normal');
+            }
+        }
 
         function toggleCart() {
             const drawer = document.getElementById('cartDrawer');
@@ -407,7 +468,7 @@
             const distKm = (distMeter / 1000).toFixed(2);
             document.getElementById('distance').value = distKm;
 
-            document.getElementById('locationStatus').innerText = `Terpilih: ${lat.toFixed(4)}, ${lng.toFixed(4)} (${distKm} km)`;
+            cekJangkauan();
         }
 
         function useCurrentLocation() {
