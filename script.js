@@ -430,7 +430,7 @@ function confirmOrderToWhatsApp() {
         const total = document.getElementById('summaryTotal').textContent;
         const address = document.getElementById('summaryAddress').textContent;
 
-        let message = `Halo Admin, saya *${customerName}* sudah transfer sebesar *${total}*.\n\n`;
+        let message = `Halo Admin, *${customerName}* Transfer dan upload bukti transfernya.🙏 *${total}*.\n\n`;
         message += `*Detail Pesanan:*\n`;
 
         cart.forEach((item) => {
@@ -440,7 +440,7 @@ function confirmOrderToWhatsApp() {
         message += `\n*Lokasi:* https://www.google.com/maps?q=${coordsInput.value}\n`;
         message += `*Alamat:* ${address}\n`;
         message += `*ID Pesanan:* ${invoiceId}\n\n`;
-        message += `silahkan upload bukti transfernya di chat ini yaa.🙏`;
+        message += `Silahkan upload bukti transfernya di chat ini yaa. Terima kasih.🙏`;
 
         const whatsappUrl = `https://wa.me/${adminNumber}?text=${encodeURIComponent(message)}`;
 
