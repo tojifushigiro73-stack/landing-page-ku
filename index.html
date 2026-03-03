@@ -102,90 +102,31 @@
                 <div class="section-line"></div>
             </div>
 
-            <div class="product-grid">
-                <!-- Product 1 -->
-                <div class="product-card">
-                    <div class="product-image">
-                        <span class="badge new">Pre Order</span>
-                        <img src="broww.jpg" alt="fugdy brownies">
-                        <div class="product-overlay">
-                            <button class="btn-quick-add" onclick="addToCart('Brownies')">Pre-order</button>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3>Brownies</h3>
-                        <p class="product-desc">Brownies lembut dengan rasa coklat yang endulita.</p>
-                        <div class="product-meta">
-                            <!-- <span class="price">Rp 185.000</span> -->
-                            <div class="rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                    </div>
+            <!-- Category Tabs -->
+            <div class="catalog-tabs-container">
+                <div class="catalog-tabs" id="catalogTabs">
+                    <button class="tab-btn active" onclick="filterCategory('all')">Semua Menu</button>
+                    <button class="tab-btn" onclick="filterCategory('cookies')">Kukis Premium</button>
+                    <button class="tab-btn" onclick="filterCategory('cakes')">Cake & Brownies</button>
+                    <!-- <button class="tab-btn" onclick="filterCategory('hampers')">Hampers</button> -->
                 </div>
+            </div>
 
-                <!-- Product 2 -->
-                <div class="product-card">
-                    <div class="product-image">
-                        <span class="badge limited">Limited</span>
-                        <img src="chesee_cake.jpg" alt="Chesee Cake">
-                        <div class="product-overlay">
-                            <button class="btn-quick-add" onclick="addToCart('Chesee Cake')">Pre-order</button>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3>Chesee cake</h3>
-                        <p class="product-desc">Chesee cake lembut dengan topping yang lezat.</p>
-                        <div class="product-meta">
-                            <!-- <span class="price">Rp 45.000 / slice</span> -->
-                            <div class="rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="product-grid" id="productGrid">
 
-                <!-- Product 3 -->
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="hampres.jpg" alt="Hamperss">
-                        <div class="product-overlay">
-                            <button class="btn-quick-add" onclick="addToCart('Paket Hampers')">Pre-order</button>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3>Hampers</h3>
-                        <p class="product-desc">Hampers lengkap berisi aneka varian kukis dan bisa request juga loh.</p>
-                        <div class="product-meta">
-                            <!-- <span class="price">Mulai dari Rp 250.000</span> -->
-                            <div class="rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- ===== SECTION: Kukis Premium ===== -->
+                <div class="category-anchor" id="section-cookies" data-category-label="cookies"></div>
 
-                <!-- Product 4: Nastar -->
-                <div class="product-card">
+                <!-- Product: Nastar -->
+                <div class="product-card" data-category="cookies" data-detail-key="nastar">
                     <div class="product-image">
-                        <span class="badge new">Menu Rekomendasi ;)</span>
-                        <img src="nastar.jpg" alt="Nastar Premium Gold">
-                        <!-- <div class="product-overlay">
-                            <button class="btn-quick-add" onclick="addToCart('Signature Nastar Gold', 210000)">+
-                                Keranjang</button>
-                        </div> -->
+                        <span class="badge bestseller">⭐ Best Seller</span>
+                        <img src="nastar.jpg" alt="Nastar Premium Gold" loading="lazy">
+                        <button class="btn-float-cart" onclick="addToCart('Signature Nastar Gold (¼Kg)', 60000)"
+                            title="Tambah ke Keranjang">
+                            <i class="fas fa-shopping-bag"></i>
+                        </button>
+                        <div class="skeleton-shimmer"></div>
                     </div>
                     <div class="product-info">
                         <h3>Nastar Gold</h3>
@@ -198,65 +139,122 @@
                                     onclick="addToCart('Signature Nastar Gold (1Kg)', 210000)">+ Checkout</button>
                             </div>
                             <div class="price-row">
-                                <span class="price">Rp 110.000/½Kg</span>
+                                <span class="price">Rp 130.000/500g</span>
                                 <button class="btn-quick-add small"
-                                    onclick="addToCart('Signature Nastar Gold (½Kg)', 110000)">+ Checkout</button>
+                                    onclick="addToCart('Signature Nastar Gold (500g)', 130000)">+ Checkout</button>
                             </div>
                             <div class="price-row">
-                                <span class="price">Rp 60.000/¼Kg</span>
+                                <span class="price">Rp 65.000/325g</span>
                                 <button class="btn-quick-add small"
-                                    onclick="addToCart('Signature Nastar Gold (¼Kg)', 60000)">+ Checkout</button>
+                                    onclick="addToCart('Signature Nastar Gold (325g)', 65000)">+ Checkout</button>
                             </div>
                             <div class="rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                    class="fas fa-star"></i><i class="fas fa-star"></i>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Product 5: Nestum -->
-                <div class="product-card">
+                <!-- Product: Nestum -->
+                <div class="product-card" data-category="cookies" data-detail-key="nestum">
                     <div class="product-image">
-                        <img src="nestum.jpg" alt="Crunchy Nestum Cookies">
-                        <!-- <div class="product-overlay">
-                            <button class="btn-quick-add" onclick="addToCart('Crunchy Nestum Delight', 155000)">+
-                                Keranjang</button>
-                        </div> -->
+                        <span class="badge new">🔥 Favorit Pelanggan</span>
+                        <img src="nestum.jpg" alt="Crunchy Nestum Cookies" loading="lazy">
+                        <button class="btn-float-cart" onclick="addToCart('Havana Nestum (¼Kg)', 85000)"
+                            title="Tambah ke Keranjang">
+                            <i class="fas fa-shopping-bag"></i>
+                        </button>
+                        <div class="skeleton-shimmer"></div>
                     </div>
                     <div class="product-info">
-                        <h3>Crunchy Nestum</h3>
+                        <h3>Havana Nestum</h3>
                         <p class="product-desc">Kukis sereal Nestum yang super renyah dengan aroma susu yang menggugah
                             selera.</p>
                         <div class="product-meta multi-price">
                             <div class="price-row">
-                                <span class="price">Rp 210.000/Kg</span>
-                                <button class="btn-quick-add small"
-                                    onclick="addToCart('Signature Nestum (1Kg)', 210000)">+ Checkout</button>
+                                <span class="price">Rp 250.000/Kg</span>
+                                <button class="btn-quick-add small" onclick="addToCart('Havana Nestum (1Kg)', 250000)">+
+                                    Checkout</button>
                             </div>
                             <div class="price-row">
-                                <span class="price">Rp 110.000/½Kg</span>
+                                <span class="price">Rp 135.000/500g</span>
                                 <button class="btn-quick-add small"
-                                    onclick="addToCart('Signature Nestum (½Kg)', 110000)">+ Checkout</button>
+                                    onclick="addToCart('Havana Nestum (500g)', 135000)">+
+                                    Checkout</button>
                             </div>
                             <div class="price-row">
-                                <span class="price">Rp 60.000/¼Kg</span>
-                                <button class="btn-quick-add small"
-                                    onclick="addToCart('Signature Nestum (¼Kg)', 60000)">+ Checkout</button>
+                                <span class="price">Rp 85.000/325g</span>
+                                <button class="btn-quick-add small" onclick="addToCart('Havana Nestum (250g)', 85000)">+
+                                    Checkout</button>
                             </div>
                             <div class="rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                    class="fas fa-star"></i><i class="fas fa-star"></i>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- ===== SECTION: Cake & Brownies ===== -->
+                <div class="category-anchor" id="section-cakes" data-category-label="cakes"></div>
+
+                <!-- Product: Brownies -->
+                <div class="product-card" data-category="cakes" data-detail-key="brownies">
+                    <div class="product-image">
+                        <span class="badge preorder">📦 Pre Order</span>
+                        <img src="broww.jpg" alt="Fudgy Brownies" loading="lazy">
+                        <button class="btn-float-cart" onclick="addToCart('Brownies')" title="Tambah ke Keranjang">
+                            <i class="fas fa-shopping-bag"></i>
+                        </button>
+                        <div class="skeleton-shimmer"></div>
+                    </div>
+                    <div class="product-info">
+                        <h3>Brownies</h3>
+                        <p class="product-desc">Brownies lembut dengan rasa coklat yang endulita.</p>
+                        <div class="product-meta">
+                            <div class="rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                    class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product: Chesee Cake -->
+                <div class="product-card" data-category="cakes" data-detail-key="chesee">
+                    <div class="product-image">
+                        <span class="badge limited">⚡ Limited</span>
+                        <img src="chesee_cake.jpg" alt="Chesee Cake" loading="lazy">
+                        <button class="btn-float-cart" onclick="addToCart('Chesee Cake')" title="Tambah ke Keranjang">
+                            <i class="fas fa-shopping-bag"></i>
+                        </button>
+                        <div class="skeleton-shimmer"></div>
+                    </div>
+                    <div class="product-info">
+                        <h3>Chesee cake</h3>
+                        <p class="product-desc">Chesee cake lembut dengan topping yang lezat.</p>
+                        <div class="product-meta">
+                            <div class="rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                    class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hampers (coming soon) -->
+                <!-- <div class="category-anchor" id="section-hampers" data-category-label="hampers"></div>
+                <div class="product-card" data-category="hampers">...</div> -->
+
+            </div>
+
+            <!-- Empty State (shown when filter returns 0 results) -->
+            <div class="empty-state" id="emptyState" style="display:none;">
+                <div class="empty-state-icon">🍪</div>
+                <h3>Belum ada menu di kategori ini</h3>
+                <p>Kami sedang mempersiapkan produk terbaru. Pantau terus ya!</p>
+                <button class="btn btn-primary" onclick="filterCategory('all')">Lihat Semua Menu</button>
             </div>
 
             <!-- <div class="catalog-footer">
@@ -270,18 +268,18 @@
         <div class="container">
             <div class="proof-content">
                 <div class="proof-text">
-                    <h2>💗 Untuk kamu yang ingin bertanya tentang produk kita bisa klik tombol whatsapp 💗</h2>
-                    <p class="highlight-text">"Tidak perlu repot biar kami yang sajikan kukis yang lezat dan ekonomis
-                        untuk kamu"</p>
+                    <h2>Kualitas Premium & Layanan Terpercaya dari La Misha Bakehouse</h2>
+                    <p class="highlight-text">"Hadirkan kebahagiaan melalui kelezatan kue rumahan premium untuk setiap
+                        momen berharga Anda di Kota Metro."</p>
                     <div class="testimonials">
                         <div class="testimonial-card">
-                            <p>"Kami membuka toko ini dengan harapan dapat memberikan kualitas produk yang terbaik
-                                kepada pelanggan. dengan harga terjangkau serta pelayanan terbaik. "</p>
-                            <div class="author">- Rendy sena., Co-Owner</div>
+                            <p>"Visi kami adalah menyediakan produk kue berkualitas tinggi dengan pelayanan terbaik
+                                serta harga yang tetap terjangkau bagi seluruh pelanggan setia kami."</p>
+                            <div class="author">- Rendy Sena, Co-Owner</div>
                         </div>
                         <div class="testimonial-card">
-                            <p>"Bahan-bahan yang digunakan untuk membuat kue adalah bahan terbaik yang ada di
-                                pasar. Kami berkomitmen untuk memberikan produk yang terbaik kepada pelanggan. "</p>
+                            <p>"Kami hanya menggunakan bahan baku premium pilihan yang diproses secara higienis untuk
+                                menjamin kesegaran dan cita rasa autentik di setiap gigitan."</p>
                             <div class="author">- Ferina Pratiwi, Owner</div>
                         </div>
                     </div>
@@ -289,18 +287,18 @@
                 <div class="steps-grid">
                     <div class="step-card">
                         <div class="step-number">01</div>
-                        <h4>Pilih kue favoritmu</h4>
-                        <p>Pilih kue yang kamu suka.🤌</p>
+                        <h4>Pilih Menu Favorit</h4>
+                        <p>Telusuri koleksi kukis premium dan cake lezat kami yang dipanggang segar setiap hari.</p>
                     </div>
                     <div class="step-card">
                         <div class="step-number">02</div>
-                        <h4>Konfirmasi Pesanan</h4>
-                        <p>Setelah memesan kue favoritmu, lakukan konfirmasi pesanan.🤗</p>
+                        <h4>Pemesanan Mudah</h4>
+                        <p>Lakukan konfirmasi pesanan dengan cepat dan praktis melalui layanan admin WhatsApp kami.</p>
                     </div>
                     <div class="step-card">
                         <div class="step-number">03</div>
-                        <h4>Pesanan di buat dan dikirim</h4>
-                        <p>Admin akan memberitahu jika pesanan mu siap meluncur.🥰</p>
+                        <h4>Pengiriman Langsung</h4>
+                        <p>Nikmati layanan pengiriman langsung ke alamat Anda untuk wilayah Metro dan sekitarnya.</p>
                     </div>
                 </div>
             </div>
@@ -604,9 +602,25 @@
 
     <!-- Static QRIS Data Source placeholder link might be needed if dynamic generation fails -->
 
+    <!-- Product Detail Bottom Sheet -->
+    <div id="productDetailOverlay" onclick="closeProductDetail()"></div>
+    <div id="productDetailSheet" role="dialog" aria-modal="true" aria-label="Detail Produk">
+        <div class="detail-handle"></div>
+        <button class="detail-close-btn" onclick="closeProductDetail()" aria-label="Tutup">✕</button>
+        <div class="detail-body">
+            <div class="detail-img-wrap">
+                <img class="detail-img" src="" alt="" loading="lazy">
+            </div>
+            <h3 class="detail-name"></h3>
+            <p class="detail-desc"></p>
+            <div class="detail-info-list"></div>
+            <div class="detail-prices"></div>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="script.js?v=1.8"></script>
+    <script src="script.js?v=1.9"></script>
 </body>
 
 </html>

@@ -14,6 +14,303 @@ window.addEventListener('scroll', () => {
     }
 });
 
+// Product Category Filtering (with Skeleton Shimmer + Empty State)
+function filterCategory(category, fromScrollspy = false) {
+    const products = document.querySelectorAll('.product-card');
+    const buttons = document.querySelectorAll('.tab-btn');
+    const grid = document.getElementById('productGrid');
+    const emptyState = document.getElementById('emptyState');
+
+    // Update Active Button
+    buttons.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('onclick').includes(`'${category}'`)) {
+            btn.classList.add('active');
+            if (!fromScrollspy) {
+                btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+        }
+    });
+
+    // Trigger skeleton shimmer on the grid during transition
+    grid.classList.add('filtering');
+
+    setTimeout(() => {
+        let visibleCount = 0;
+
+        products.forEach(product => {
+            const productCat = product.dataset.category;
+
+            if (category === 'all' || productCat === category) {
+                visibleCount++;
+                product.style.display = 'flex';
+                product.classList.remove('hidden');
+                setTimeout(() => {
+                    product.style.opacity = '1';
+                    product.style.transform = 'scale(1)';
+                }, 50);
+            } else {
+                product.classList.add('hidden');
+                product.style.opacity = '0';
+                product.style.transform = 'scale(0.92)';
+                setTimeout(() => {
+                    if (product.classList.contains('hidden')) {
+                        product.style.display = 'none';
+                    }
+                }, 350);
+            }
+        });
+
+        // Hide category-anchor divs when filtering to specific category
+        document.querySelectorAll('.category-anchor').forEach(anchor => {
+            anchor.style.display = (category === 'all') ? 'block' : 'none';
+        });
+
+        // Show / hide empty state
+        if (emptyState) {
+            emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        // Remove shimmer after transition settles
+        setTimeout(() => grid.classList.remove('filtering'), 500);
+
+    }, 200);
+}
+
+// ===== Scrollspy: sync tabs with visible category as user scrolls =====
+let scrollspyEnabled = true;  // disabled temporarily while user clicks tabs
+
+function initScrollspy() {
+    const anchors = document.querySelectorAll('.category-anchor');
+    if (!anchors.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        if (!scrollspyEnabled) return;
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const cat = entry.target.dataset.categoryLabel;
+                if (cat) updateActiveTab(cat);
+            }
+        });
+    }, {
+        rootMargin: '-30% 0px -60% 0px', // Trigger when anchor hits top third of screen
+        threshold: 0
+    });
+
+    anchors.forEach(anchor => observer.observe(anchor));
+}
+
+function updateActiveTab(category) {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('onclick').includes(`'${category}'`)) {
+            btn.classList.add('active');
+            btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+    });
+}
+
+// ===== Image Lazy Load: add .loaded class after image loads to hide shimmer =====
+function initImageLoadObserver() {
+    document.querySelectorAll('.product-image img').forEach(img => {
+        if (img.complete) {
+            img.classList.add('loaded');
+        } else {
+            img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initScrollspy();
+    initImageLoadObserver();
+    initProductCards();
+});
+
+// ===== 1. FLY-TO-CART ANIMATION =====
+function flyToCart(triggerEl) {
+    const cartIcon = document.querySelector('.cart-icon') || document.querySelector('.floating-cart');
+    if (!cartIcon) return;
+
+    // Create flying particle (small cookie emoji orb)
+    const fly = document.createElement('div');
+    fly.className = 'fly-particle';
+    fly.textContent = '🍪';
+    document.body.appendChild(fly);
+
+    // Position: start from the button
+    const btnRect = triggerEl.getBoundingClientRect();
+    const cartRect = cartIcon.getBoundingClientRect();
+
+    fly.style.left = (btnRect.left + btnRect.width / 2) + 'px';
+    fly.style.top = (btnRect.top + btnRect.height / 2) + 'px';
+
+    // Destination
+    const dx = (cartRect.left + cartRect.width / 2) - (btnRect.left + btnRect.width / 2);
+    const dy = (cartRect.top + cartRect.height / 2) - (btnRect.top + btnRect.height / 2);
+
+    fly.style.setProperty('--fly-dx', dx + 'px');
+    fly.style.setProperty('--fly-dy', dy + 'px');
+
+    fly.classList.add('flying');
+
+    fly.addEventListener('animationend', () => {
+        fly.remove();
+        // Cart icon bounce on landing
+        cartIcon.classList.add('cart-bounce');
+        setTimeout(() => cartIcon.classList.remove('cart-bounce'), 500);
+    }, { once: true });
+}
+
+// Wrap addToCart to include fly animation
+const _originalAddToCart = window.addToCart;
+function addToCartWithFly(name, price, triggerEl) {
+    if (triggerEl) flyToCart(triggerEl);
+    addToCart(name, price);
+}
+
+// ===== 2. PRODUCT DETAIL BOTTOM SHEET / MODAL =====
+const productDetails = {
+    'nastar': {
+        name: 'Nastar Gold',
+        img: 'nastar.jpg',
+        desc: 'Kukis nastar klasik dengan selai nanas homemade yang melimpah dan tekstur lumer di mulut.',
+        details: [
+            { icon: '⚖️', label: 'Pilihan Berat', value: '500g · 325g · 1 Kg' },
+            { icon: '📅', label: 'Ketahanan', value: '14–21 hari (suhu ruang)' },
+            { icon: '🥚', label: 'Bahan Utama', value: 'Mentega premium, tepung terigu, nanas segar' },
+            { icon: '📦', label: 'Kemasan', value: 'Toples cantik / plastik standing pouch' },
+            { icon: '🔥', label: 'Status', value: 'Best Seller — tersedia setiap hari' },
+        ],
+        prices: [
+            { label: '1 Kg', price: 210000, key: 'Signature Nastar Gold (1Kg)' },
+            { label: '500g', price: 135000, key: 'Signature Nastar Gold (500g)' },
+            { label: '325g', price: 65000, key: 'Signature Nastar Gold (325g)' },
+        ]
+    },
+    'nestum': {
+        name: 'Havana Nestum',
+        img: 'nestum.jpg',
+        desc: 'Kukis sereal Nestum yang super renyah dengan aroma susu yang menggugah selera.',
+        details: [
+            { icon: '⚖️', label: 'Pilihan Berat', value: '325g · 500g · 1 Kg' },
+            { icon: '📅', label: 'Ketahanan', value: '14–21 hari (suhu ruang)' },
+            { icon: '🥚', label: 'Bahan Utama', value: 'Nestum sereal, mentega premium, susu' },
+            { icon: '📦', label: 'Kemasan', value: 'Toples cantik / plastik standing pouch' },
+            { icon: '🔥', label: 'Status', value: 'Favorit Pelanggan — stok terbatas' },
+        ],
+        prices: [
+            { label: '1 Kg', price: 250000, key: 'Havana Nestum (1Kg)' },
+            { label: '500g', price: 135000, key: 'Havana Nestum (500g)' },
+            { label: '325g', price: 85000, key: 'Havana Nestum (325g)' },
+        ]
+    },
+    'brownies': {
+        name: 'Brownies',
+        img: 'broww.jpg',
+        desc: 'Brownies lembut dengan rasa coklat yang endulita — perpaduan sempurna antara dense dan fudgy.',
+        details: [
+            { icon: '⚖️', label: 'Ukuran', value: 'Loyang 20x20 cm (±16 potong)' },
+            { icon: '📅', label: 'Ketahanan', value: '3–5 hari (suhu ruang), 7 hari (kulkas)' },
+            { icon: '🥚', label: 'Bahan Utama', value: 'Dark chocolate, mentega, telur segar' },
+            { icon: '📦', label: 'Kemasan', value: 'Box karton premium' },
+            { icon: '🕐', label: 'Status', value: 'Pre Order — pesan H-2' },
+        ],
+        prices: [
+            { label: 'Pre-order (tanya harga)', price: undefined, key: 'Brownies' },
+        ]
+    },
+    'chesee': {
+        name: 'Chesee Cake',
+        img: 'chesee_cake.jpg',
+        desc: 'Chesee cake lembut dengan topping yang lezat — creamy, legit, dan bikin nagih!',
+        details: [
+            { icon: '⚖️', label: 'Ukuran', value: 'Diameter 18 cm (±8 slice)' },
+            { icon: '📅', label: 'Ketahanan', value: '3 hari (kulkas)' },
+            { icon: '🥚', label: 'Bahan Utama', value: 'Cream cheese import, telur, biskuit' },
+            { icon: '📦', label: 'Kemasan', value: 'Box karton + ribbon' },
+            { icon: '⚡', label: 'Status', value: 'Limited — stok sangat terbatas' },
+        ],
+        prices: [
+            { label: 'Pre-order (tanya harga)', price: undefined, key: 'Chesee Cake' },
+        ]
+    }
+};
+
+function openProductDetail(productKey) {
+    const data = productDetails[productKey];
+    if (!data) return;
+
+    const sheet = document.getElementById('productDetailSheet');
+    const overlay = document.getElementById('productDetailOverlay');
+
+    sheet.querySelector('.detail-img').src = data.img;
+    sheet.querySelector('.detail-img').alt = data.name;
+    sheet.querySelector('.detail-name').textContent = data.name;
+    sheet.querySelector('.detail-desc').textContent = data.desc;
+
+    // Detail rows
+    sheet.querySelector('.detail-info-list').innerHTML = data.details.map(d => `
+        <div class="detail-info-row">
+            <span class="detail-info-icon">${d.icon}</span>
+            <div>
+                <span class="detail-info-label">${d.label}</span>
+                <span class="detail-info-value">${d.value}</span>
+            </div>
+        </div>
+    `).join('');
+
+    // Price / CTA buttons
+    sheet.querySelector('.detail-prices').innerHTML = data.prices.map(p => `
+        <button class="btn-detail-add" onclick="addToCart('${p.key}', ${p.price}); closeProductDetail();">
+            ${p.price ? `<strong>${p.label}</strong> — Rp ${p.price.toLocaleString('id-ID')}` : `${p.label}`}
+            <i class="fas fa-shopping-bag"></i>
+        </button>
+    `).join('');
+
+    overlay.style.display = 'block';
+    sheet.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    requestAnimationFrame(() => {
+        overlay.classList.add('active');
+        sheet.classList.add('active');
+    });
+}
+
+function closeProductDetail() {
+    const sheet = document.getElementById('productDetailSheet');
+    const overlay = document.getElementById('productDetailOverlay');
+    sheet.classList.remove('active');
+    overlay.classList.remove('active');
+    setTimeout(() => {
+        sheet.style.display = 'none';
+        overlay.style.display = 'none';
+        document.body.style.overflow = '';
+    }, 380);
+}
+
+// ===== 3. INIT PRODUCT CARD CLICK (open detail, but NOT on button clicks) =====
+function initProductCards() {
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+            // Don't open detail if user clicked a button
+            if (e.target.closest('button')) return;
+            const key = card.dataset.detailKey;
+            if (key) openProductDetail(key);
+        });
+    });
+
+    // Attach fly animation to all float-cart buttons
+    document.querySelectorAll('.btn-float-cart, .btn-quick-add').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation(); // prevent card click
+            flyToCart(btn);
+        });
+    });
+}
+
+
 // Smooth Scroll for Anchor Links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -247,6 +544,9 @@ function addToCart(name, price) {
 
     updateCartUI();
 
+    // Feedback: Show Toast
+    showToast(`${name} telah ditambahkan ke keranjang! 🍰`);
+
     // Animation for feedback
     cartCountElements.forEach(el => {
         el.style.transform = "scale(1.5)";
@@ -254,10 +554,6 @@ function addToCart(name, price) {
             el.style.transform = "scale(1)";
         }, 200);
     });
-
-    if (!cartDrawer.classList.contains('active')) {
-        toggleCart();
-    }
 }
 
 function removeFromCart(index) {
