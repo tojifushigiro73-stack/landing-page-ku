@@ -1,7 +1,7 @@
 importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
 
-// PWA Caching Logic (Merged to ensure PWA + Notifications work together)
-const CACHE_NAME = 'lamisha-cache-v2'; // Incremented version to force update
+// PWA Caching Logic
+const CACHE_NAME = 'lamisha-cache-v3';
 const ASSETS = [
     '/',
     '/index.html',
@@ -18,16 +18,12 @@ const ASSETS = [
     '/chesee_cake.jpg'
 ];
 
-// Install Event
 self.addEventListener('install', (event) => {
     event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(ASSETS);
-        })
+        caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
     );
 });
 
-// Activate Event
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((keys) => {
@@ -38,8 +34,10 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// Fetch Event
 self.addEventListener('fetch', (event) => {
+    // Basic fetch handler that doesn't interfere with OneSignal's routes
+    if (event.request.url.includes('onesignal')) return;
+
     event.respondWith(
         caches.match(event.request).then((response) => {
             return response || fetch(event.request);
