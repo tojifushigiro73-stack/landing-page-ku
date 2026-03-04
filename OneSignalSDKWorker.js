@@ -1,7 +1,7 @@
 importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
 
-// PWA Caching Logic (Merged from sw.js)
-const CACHE_NAME = 'lamisha-cache-v1';
+// PWA Caching Logic (Merged to ensure PWA + Notifications work together)
+const CACHE_NAME = 'lamisha-cache-v2'; // Incremented version to force update
 const ASSETS = [
     '/',
     '/index.html',
