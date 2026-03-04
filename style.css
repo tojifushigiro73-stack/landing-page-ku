@@ -2399,3 +2399,21 @@ footer {
     outline: 3px solid var(--primary-color);
     outline-offset: 3px;
 }
+/* OneSignal Bell Adjustments */
+#onesignal-bell-container.onesignal-bell-container-bottom-left {
+    bottom: 100px !important;
+    left: 20px !important;
+    z-index: 1000 !important;
+}
+
+#onesignal-bell-container .onesignal-bell-launcher {
+    background-color: var(--primary-color) !important;
+    box-shadow: 0 4px 15px rgba(176, 39, 98, 0.3) !important;
+}
+
+@media (max-width: 480px) {
+    #onesignal-bell-container.onesignal-bell-container-bottom-left {
+        bottom: 90px !important; /* Di atas tombol Lihat Menu (mobile) */
+        left: 20px !important;
+    }
+}

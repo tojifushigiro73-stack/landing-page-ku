@@ -14,9 +14,42 @@
         OneSignalDeferred.push(async function (OneSignal) {
             await OneSignal.init({
                 appId: "5915e37b-4344-4f12-b442-067ced458d88",
-                // Prompt sudah dikonfigurasi via OneSignal Dashboard
-                // (Subscription Bell + Push Slide Prompt)
-                // Tidak perlu set promptOptions di sini
+                notifyButton: {
+                    enable: true,
+                    position: 'bottom-left', /* Pindah ke kiri agar tidak menumpuk dengan WA di kanan */
+                    size: 'medium',
+                    theme: 'default',
+                    colors: {
+                        'circle.background': '#b02762', /* Warna Brand Lamisha */
+                        'circle.foreground': 'white',
+                        'badge.background': '#d4a017',
+                        'badge.foreground': 'white',
+                        'badge.bordercolor': 'white',
+                        'pulse.color': 'white',
+                        'dialog.button.background.hovering': '#d4a017',
+                        'dialog.button.background.active': '#d4a017',
+                        'dialog.button.background': '#b02762',
+                        'dialog.button.foreground': 'white',
+                        'dialog.container.background': 'white',
+                        'dialog.container.foreground': '#3d0a1f'
+                    },
+                    offset: {
+                        bottom: '100px', /* Lebih tinggi dari tombol "Lihat Menu" */
+                        left: '20px',
+                    },
+                    text: {
+                        'tip.state.unsubscribed': 'Berlangganan Notifikasi',
+                        'tip.state.subscribed': 'Anda sudah berlangganan',
+                        'tip.state.blocked': 'Anda memblokir notifikasi',
+                        'message.prenotify': 'Klik untuk berlangganan notifikasi kami',
+                        'message.action.subscribed': 'Terima kasih telah berlangganan!',
+                        'message.action.resubscribed': 'Anda berlangganan kembali',
+                        'message.action.unsubscribed': 'Anda berhenti berlangganan',
+                        'dialog.main.title': 'Kelola Notifikasi',
+                        'dialog.main.button.subscribe': 'BERLANGGANAN',
+                        'dialog.main.button.unsubscribe': 'BERHENTI'
+                    }
+                }
             });
         });
     </script>
