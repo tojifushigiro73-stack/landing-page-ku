@@ -15,43 +15,32 @@
             await OneSignal.init({
                 appId: "5915e37b-4344-4f12-b442-067ced458d88",
                 notifyButton: {
-                    enable: true,
-                    position: 'bottom-left', /* Pindah ke kiri agar tidak menumpuk dengan WA di kanan */
-                    size: 'medium',
-                    theme: 'default',
-                    colors: {
-                        'circle.background': '#b02762', /* Warna Brand Lamisha */
-                        'circle.foreground': 'white',
-                        'badge.background': '#d4a017',
-                        'badge.foreground': 'white',
-                        'badge.bordercolor': 'white',
-                        'pulse.color': 'white',
-                        'dialog.button.background.hovering': '#d4a017',
-                        'dialog.button.background.active': '#d4a017',
-                        'dialog.button.background': '#b02762',
-                        'dialog.button.foreground': 'white',
-                        'dialog.container.background': 'white',
-                        'dialog.container.foreground': '#3d0a1f'
-                    },
-                    offset: {
-                        bottom: '100px', /* Lebih tinggi dari tombol "Lihat Menu" */
-                        left: '20px',
-                    },
-                    text: {
-                        'tip.state.unsubscribed': 'Berlangganan Notifikasi',
-                        'tip.state.subscribed': 'Anda sudah berlangganan',
-                        'tip.state.blocked': 'Anda memblokir notifikasi',
-                        'message.prenotify': 'Klik untuk berlangganan notifikasi kami',
-                        'message.action.subscribed': 'Terima kasih telah berlangganan!',
-                        'message.action.resubscribed': 'Anda berlangganan kembali',
-                        'message.action.unsubscribed': 'Anda berhenti berlangganan',
-                        'dialog.main.title': 'Kelola Notifikasi',
-                        'dialog.main.button.subscribe': 'BERLANGGANAN',
-                        'dialog.main.button.unsubscribe': 'BERHENTI'
-                    }
+                    enable: false, /* Matikan lonceng melayang agar lebih estetik */
                 }
             });
+
+            // Update status dot notifikasi jika belum berlangganan
+            const updateBellStatus = () => {
+                const dot = document.querySelector('.notification-dot');
+                if (dot) {
+                    dot.style.display = OneSignal.Notifications.permission ? 'none' : 'block';
+                }
+            };
+
+            OneSignal.Notifications.addEventListener('permissionChange', updateBellStatus);
+            updateBellStatus();
         });
+
+        async function handleOneSignalClick() {
+            OneSignalDeferred.push(async function (OneSignal) {
+                if (!OneSignal.Notifications.permission) {
+                    await OneSignal.Notifications.requestPermission();
+                } else {
+                    // Jika sudah berlangganan, opsional bisa buka UI kelola atau alert
+                    alert("Anda sudah berlangganan notifikasi kami. Terima kasih! 😊");
+                }
+            });
+        }
     </script>
     <link rel="icon" type="image/png" href="apple-touch-icon.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -91,6 +80,11 @@
             </ul>
             <div class="nav-icons">
                 <!-- <a href="#" class="search-icon"><i class="fas fa-search"></i></a> -->
+                <a href="javascript:void(0)" class="nav-notification" title="Notifikasi"
+                    onclick="handleOneSignalClick()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-dot" style="display: none;"></span>
+                </a>
                 <a href="javascript:void(0)" class="cart-icon" onclick="toggleCart(event)">
                     <i class="fas fa-shopping-bag"></i>
                     <span class="cart-count">0</span>
