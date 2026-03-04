@@ -190,7 +190,7 @@ const productDetails = {
     },
     'nestum': {
         name: 'Havana Nestum',
-        img: 'nestum.jpg',
+        img: 'Havana Nestum (1).png',
         desc: 'Kukis sereal Nestum yang super renyah dengan aroma susu yang menggugah selera.',
         details: [
             { icon: '⚖️', label: 'Pilihan Berat', value: '325g · 500g · 1 Kg' },
@@ -203,6 +203,57 @@ const productDetails = {
             { label: '1 Kg', price: 250000, key: 'Havana Nestum (1Kg)' },
             { label: '500g', price: 135000, key: 'Havana Nestum (500g)' },
             { label: '325g', price: 85000, key: 'Havana Nestum (325g)' },
+        ]
+    },
+    'butter_cookies': {
+        name: 'Butter Cookies',
+        img: 'butter cookies (1).png',
+        desc: 'Kukis mentega lembut yang gurih dan manis, dibuat dengan mentega premium pilihan.',
+        details: [
+            { icon: '⚖️', label: 'Pilihan Berat', value: '325g · 500g · 1 Kg' },
+            { icon: '📅', label: 'Ketahanan', value: '14–21 hari (suhu ruang)' },
+            { icon: '🥚', label: 'Bahan Utama', value: 'Mentega premium, gula halus, tepung terigu' },
+            { icon: '📦', label: 'Kemasan', value: 'Toples cantik / plastik standing pouch' },
+            { icon: '✨', label: 'Status', value: 'Kukis Klasik Premium' },
+        ],
+        prices: [
+            { label: '1 Kg', price: 210000, key: 'Butter Cookies (1Kg)' },
+            { label: '500g', price: 120000, key: 'Butter Cookies (500g)' },
+            { label: '325g', price: 80000, key: 'Butter Cookies (325g)' },
+        ]
+    },
+    'choco_chips': {
+        name: 'Choco Chips',
+        img: 'Choco chips (1).png',
+        desc: 'Kukis renyah dengan butiran coklat melimpah yang lumer di setiap gigitan.',
+        details: [
+            { icon: '⚖️', label: 'Pilihan Berat', value: '325g · 500g · 1 Kg' },
+            { icon: '📅', label: 'Ketahanan', value: '14–21 hari (suhu ruang)' },
+            { icon: '🍫', label: 'Bahan Utama', value: 'Dark choco chips, mentega, brown sugar' },
+            { icon: '📦', label: 'Kemasan', value: 'Toples cantik / plastik standing pouch' },
+            { icon: '😋', label: 'Status', value: 'Favorit Semua Umur' },
+        ],
+        prices: [
+            { label: '1 Kg', price: 230000, key: 'Choco Chips (1Kg)' },
+            { label: '500g', price: 120000, key: 'Choco Chips (500g)' },
+            { label: '325g', price: 80000, key: 'Choco Chips (325g)' },
+        ]
+    },
+    'cornflakes': {
+        name: 'Cornflakes',
+        img: 'Cornflakes (1).png',
+        desc: 'Kukis sereal cornflakes yang ekstra renyah dan gurih dengan sentuhan manis yang pas.',
+        details: [
+            { icon: '⚖️', label: 'Pilihan Berat', value: '325g · 500g · 1 Kg' },
+            { icon: '📅', label: 'Ketahanan', value: '14–21 hari (suhu ruang)' },
+            { icon: '🥣', label: 'Bahan Utama', value: 'Cornflakes renyah, mentega, susu' },
+            { icon: '📦', label: 'Kemasan', value: 'Toples cantik / plastik standing pouch' },
+            { icon: '👂', label: 'Status', value: 'Ekstra Crunchy!' },
+        ],
+        prices: [
+            { label: '1 Kg', price: 230000, key: 'Cornflakes (1Kg)' },
+            { label: '500g', price: 120000, key: 'Cornflakes (500g)' },
+            { label: '325g', price: 80000, key: 'Cornflakes (325g)' },
         ]
     },
     'brownies': {

@@ -525,12 +525,18 @@ img {
 
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 40px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
     margin-bottom: 60px;
     min-height: 400px;
-    /* Prevent jitter when filtering */
     transition: all 0.5s ease;
+}
+
+@media (max-width: 480px) {
+    .product-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -555,13 +561,11 @@ img {
 
 /* ===== Category Anchor (invisible divider for scrollspy) ===== */
 .category-anchor {
-    display: block;
+    grid-column: 1 / -1;
     height: 0;
     visibility: hidden;
     pointer-events: none;
-    /* Offset to account for sticky navbar + tab bar */
     margin-top: -130px;
-    padding-top: 130px;
 }
 
 /* ===== Floating Quick-Add Cart Button ===== */
@@ -740,33 +744,34 @@ img {
 
 .product-card {
     background-color: var(--white);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
-    border-radius: 8px;
-    /* Slight rounding */
+    box-shadow: 0 10px 40px rgba(176, 39, 98, 0.05);
+    border-radius: 12px;
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
     height: 100%;
+    border: 1px solid rgba(176, 39, 98, 0.05);
 }
 
 .product-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+    transform: translateY(-8px);
+    box-shadow: 0 15px 45px rgba(176, 39, 98, 0.12);
+    border-color: rgba(176, 39, 98, 0.1);
 }
 
 .product-image {
     position: relative;
-    height: 300px;
+    height: 280px;
     overflow: hidden;
-    background-color: #f9f9f9;
+    background-color: #fff9fb;
 }
 
 .product-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.6s ease;
+    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .product-card:hover .product-image img {
@@ -859,15 +864,14 @@ img {
 
 .product-meta {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid #fce4ec;
-    padding-top: 15px;
+    flex-direction: column;
+    gap: 12px;
+    border-top: 1px dashed #fce4ec;
+    padding-top: 20px;
+    margin-top: auto;
 }
 
 .product-meta.multi-price {
-    flex-direction: column;
-    align-items: stretch;
     gap: 10px;
 }
 
@@ -876,12 +880,25 @@ img {
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    padding: 6px 0;
 }
 
 .btn-quick-add.small {
-    padding: 6px 12px;
+    padding: 6px 14px;
     font-size: 0.7rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: 1.5px solid var(--primary-color);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--primary-color);
+    font-weight: 700;
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    white-space: nowrap;
+}
+
+.btn-quick-add.small:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: scale(1.05);
 }
 
 .price {
