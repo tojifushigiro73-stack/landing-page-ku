@@ -262,7 +262,7 @@ const productDetails = {
             { icon: '👂', label: 'Status', value: 'Ekstra Crunchy!' },
         ],
         prices: [
-            { label: '1 Kg', price: 230000, key: 'Cornflakes (1Kg)' },
+            { label: '1 Kg', price: 220000, key: 'Cornflakes (1Kg)' },
             { label: '500g', price: 120000, key: 'Cornflakes (500g)' },
             { label: 'Toples 800ml', price: 80000, key: 'Cornflakes (Toples 800ml)' },
         ]
@@ -270,7 +270,7 @@ const productDetails = {
     'tekwan': {
         name: 'Tekwan',
         img: 'tekwan (1).png',
-        desc: 'Tekwan khas Palembang dengan kuah yang gurih, lengkap dengan jamur kuping, soun, dan bengkoang.',
+        desc: 'Tekwan dengan kuah yang gurih serta menggugah selera, lengkap dengan jamur kuping, soun, dan bengkoang.',
         details: [
             { icon: '⚖️', label: 'Pilihan Berat', value: '500g · 1 Kg' },
             { icon: '📅', label: 'Ketahanan', value: '2–3 hari (kulkas)' },
