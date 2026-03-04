@@ -28,6 +28,17 @@ function filterCategory(category, fromScrollspy = false) {
             btn.classList.add('active');
             if (!fromScrollspy) {
                 btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                
+                // On mobile, also scroll to the top of catalog to "focus" the menu
+                if (window.innerWidth <= 768) {
+                    const catalog = document.querySelector('.catalog-section');
+                    if (catalog) {
+                        window.scrollTo({
+                            top: catalog.offsetTop - 70, // offset for sticky categories
+                            behavior: 'smooth'
+                        });
+                    }
+                }
             }
         }
     });
