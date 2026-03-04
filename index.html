@@ -8,6 +8,15 @@
     <meta name="google-site-verification" content="zun3rgELJF3QamAlbYlVzpNS594JuSzOvGZ0zloGDks" />
     <meta name="description"
         content="Kukis dan kue premium yang dipanggang segar setiap hari. Rasakan kemewahan dalam setiap gigitan.">
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        OneSignalDeferred.push(async function (OneSignal) {
+            await OneSignal.init({
+                appId: "5915e37b-4344-4f12-b442-067ced458d88",
+            });
+        });
+    </script>
     <link rel="icon" type="image/png" href="apple-touch-icon.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -746,7 +755,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
+                navigator.serviceWorker.register('OneSignalSDKWorker.js')
                     .then(reg => console.log('Service Worker registered!'))
                     .catch(err => console.log('Service Worker failed: ', err));
             });
