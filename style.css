@@ -2451,3 +2451,12 @@ footer {
         font-size: 1.1rem;
     }
 }
+/* CSS Safety Net: Force hide the floating OneSignal bell if SDK ignores settings */
+#onesignal-bell-container, 
+.onesignal-bell-container,
+.onesignal-bell-launcher {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
