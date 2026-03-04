@@ -28,7 +28,7 @@ function filterCategory(category, fromScrollspy = false) {
             btn.classList.add('active');
             if (!fromScrollspy) {
                 btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                
+
                 // On mobile, also scroll to the top of catalog to "focus" the menu
                 if (window.innerWidth <= 768) {
                     const catalog = document.querySelector('.catalog-section');
@@ -183,11 +183,11 @@ function addToCartWithFly(name, price, triggerEl) {
 // ===== 2. PRODUCT DETAIL BOTTOM SHEET / MODAL =====
 const productDetails = {
     'nastar': {
-        name: 'Nastar Gold',
+        name: 'Nastar',
         img: 'nastar.jpg',
         desc: 'Kukis nastar klasik dengan selai nanas homemade yang melimpah dan tekstur lumer di mulut.',
         details: [
-            { icon: '⚖️', label: 'Pilihan Berat', value: '500g · 325g · 1 Kg' },
+            { icon: '⚖️', label: 'Pilihan Berat', value: '500g · Toples 800ml · 1 Kg' },
             { icon: '📅', label: 'Ketahanan', value: '14–21 hari (suhu ruang)' },
             { icon: '🥚', label: 'Bahan Utama', value: 'Mentega premium, tepung terigu, nanas segar' },
             { icon: '📦', label: 'Kemasan', value: 'Toples cantik / plastik standing pouch' },
@@ -196,7 +196,7 @@ const productDetails = {
         prices: [
             { label: '1 Kg', price: 210000, key: 'Signature Nastar Gold (1Kg)' },
             { label: '500g', price: 135000, key: 'Signature Nastar Gold (500g)' },
-            { label: '325g', price: 65000, key: 'Signature Nastar Gold (325g)' },
+            { label: 'Toples 800ml', price: 65000, key: 'Signature Nastar Gold (Toples 800ml)' },
         ]
     },
     'nestum': {
@@ -204,7 +204,7 @@ const productDetails = {
         img: 'Havana Nestum (1).png',
         desc: 'Kukis sereal Nestum yang super renyah dengan aroma susu yang menggugah selera.',
         details: [
-            { icon: '⚖️', label: 'Pilihan Berat', value: '325g · 500g · 1 Kg' },
+            { icon: '⚖️', label: 'Pilihan Berat', value: 'Toples 800ml · 500g · 1 Kg' },
             { icon: '📅', label: 'Ketahanan', value: '14–21 hari (suhu ruang)' },
             { icon: '🥚', label: 'Bahan Utama', value: 'Nestum sereal, mentega premium, susu' },
             { icon: '📦', label: 'Kemasan', value: 'Toples cantik / plastik standing pouch' },
@@ -213,7 +213,7 @@ const productDetails = {
         prices: [
             { label: '1 Kg', price: 250000, key: 'Havana Nestum (1Kg)' },
             { label: '500g', price: 135000, key: 'Havana Nestum (500g)' },
-            { label: '325g', price: 85000, key: 'Havana Nestum (325g)' },
+            { label: 'Toples 800ml', price: 85000, key: 'Havana Nestum (Toples 800ml)' },
         ]
     },
     'butter_cookies': {
@@ -221,7 +221,7 @@ const productDetails = {
         img: 'butter cookies (1).png',
         desc: 'Kukis mentega lembut yang gurih dan manis, dibuat dengan mentega premium pilihan.',
         details: [
-            { icon: '⚖️', label: 'Pilihan Berat', value: '325g · 500g · 1 Kg' },
+            { icon: '⚖️', label: 'Pilihan Berat', value: 'Toples 800ml · 500g · 1 Kg' },
             { icon: '📅', label: 'Ketahanan', value: '14–21 hari (suhu ruang)' },
             { icon: '🥚', label: 'Bahan Utama', value: 'Mentega premium, gula halus, tepung terigu' },
             { icon: '📦', label: 'Kemasan', value: 'Toples cantik / plastik standing pouch' },
@@ -230,7 +230,7 @@ const productDetails = {
         prices: [
             { label: '1 Kg', price: 210000, key: 'Butter Cookies (1Kg)' },
             { label: '500g', price: 120000, key: 'Butter Cookies (500g)' },
-            { label: '325g', price: 80000, key: 'Butter Cookies (325g)' },
+            { label: 'Toples 800ml', price: 80000, key: 'Butter Cookies (Toples 800ml)' },
         ]
     },
     'choco_chips': {
@@ -238,7 +238,7 @@ const productDetails = {
         img: 'Choco chips (1).png',
         desc: 'Kukis renyah dengan butiran coklat melimpah yang lumer di setiap gigitan.',
         details: [
-            { icon: '⚖️', label: 'Pilihan Berat', value: '325g · 500g · 1 Kg' },
+            { icon: '⚖️', label: 'Pilihan Berat', value: 'Toples 800ml · 500g · 1 Kg' },
             { icon: '📅', label: 'Ketahanan', value: '14–21 hari (suhu ruang)' },
             { icon: '🍫', label: 'Bahan Utama', value: 'Dark choco chips, mentega, brown sugar' },
             { icon: '📦', label: 'Kemasan', value: 'Toples cantik / plastik standing pouch' },
@@ -247,7 +247,7 @@ const productDetails = {
         prices: [
             { label: '1 Kg', price: 230000, key: 'Choco Chips (1Kg)' },
             { label: '500g', price: 120000, key: 'Choco Chips (500g)' },
-            { label: '325g', price: 80000, key: 'Choco Chips (325g)' },
+            { label: 'Toples 800ml', price: 80000, key: 'Choco Chips (Toples 800ml)' },
         ]
     },
     'cornflakes': {
@@ -255,7 +255,7 @@ const productDetails = {
         img: 'Cornflakes (1).png',
         desc: 'Kukis sereal cornflakes yang ekstra renyah dan gurih dengan sentuhan manis yang pas.',
         details: [
-            { icon: '⚖️', label: 'Pilihan Berat', value: '325g · 500g · 1 Kg' },
+            { icon: '⚖️', label: 'Pilihan Berat', value: 'Toples 800ml · 500g · 1 Kg' },
             { icon: '📅', label: 'Ketahanan', value: '14–21 hari (suhu ruang)' },
             { icon: '🥣', label: 'Bahan Utama', value: 'Cornflakes renyah, mentega, susu' },
             { icon: '📦', label: 'Kemasan', value: 'Toples cantik / plastik standing pouch' },
@@ -264,37 +264,23 @@ const productDetails = {
         prices: [
             { label: '1 Kg', price: 230000, key: 'Cornflakes (1Kg)' },
             { label: '500g', price: 120000, key: 'Cornflakes (500g)' },
-            { label: '325g', price: 80000, key: 'Cornflakes (325g)' },
+            { label: 'Toples 800ml', price: 80000, key: 'Cornflakes (Toples 800ml)' },
         ]
     },
-    'brownies': {
-        name: 'Brownies',
-        img: 'broww.jpg',
-        desc: 'Brownies lembut dengan rasa coklat yang endulita — perpaduan sempurna antara dense dan fudgy.',
+    'tekwan': {
+        name: 'Tekwan',
+        img: 'tekwan (1).png',
+        desc: 'Tekwan khas Palembang dengan kuah yang gurih, lengkap dengan jamur kuping, soun, dan bengkoang.',
         details: [
-            { icon: '⚖️', label: 'Ukuran', value: 'Loyang 20x20 cm (±16 potong)' },
-            { icon: '📅', label: 'Ketahanan', value: '3–5 hari (suhu ruang), 7 hari (kulkas)' },
-            { icon: '🥚', label: 'Bahan Utama', value: 'Dark chocolate, mentega, telur segar' },
-            { icon: '📦', label: 'Kemasan', value: 'Box karton premium' },
-            { icon: '🕐', label: 'Status', value: 'Pre Order — pesan H-2' },
+            { icon: '⚖️', label: 'Pilihan Berat', value: '500g · 1 Kg' },
+            { icon: '📅', label: 'Ketahanan', value: '2–3 hari (kulkas)' },
+            { icon: '🦐', label: 'Bahan Utama', value: 'Ikan, tapioka, kuah kaldu udang' },
+            { icon: '📦', label: 'Kemasan', value: 'Pouch vakum / Wadah take away' },
+            { icon: '⭐', label: 'Status', value: 'Menu Spesial — Fresh Everyday' },
         ],
         prices: [
-            { label: 'Pre-order (tanya harga)', price: undefined, key: 'Brownies' },
-        ]
-    },
-    'chesee': {
-        name: 'Chesee Cake',
-        img: 'chesee_cake.jpg',
-        desc: 'Chesee cake lembut dengan topping yang lezat — creamy, legit, dan bikin nagih!',
-        details: [
-            { icon: '⚖️', label: 'Ukuran', value: 'Diameter 18 cm (±8 slice)' },
-            { icon: '📅', label: 'Ketahanan', value: '3 hari (kulkas)' },
-            { icon: '🥚', label: 'Bahan Utama', value: 'Cream cheese import, telur, biskuit' },
-            { icon: '📦', label: 'Kemasan', value: 'Box karton + ribbon' },
-            { icon: '⚡', label: 'Status', value: 'Limited — stok sangat terbatas' },
-        ],
-        prices: [
-            { label: 'Pre-order (tanya harga)', price: undefined, key: 'Chesee Cake' },
+            { label: '1 Kg', price: 100000, key: 'Tekwan (1Kg)' },
+            { label: '500g', price: 55000, key: 'Tekwan (500g)' },
         ]
     }
 };
