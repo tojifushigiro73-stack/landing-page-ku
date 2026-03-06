@@ -760,12 +760,21 @@ function confirmOrderToWhatsApp() {
     const btn = document.getElementById('confirmWaBtn');
     const btnText = btn.querySelector('.btn-text');
     const loader = btn.querySelector('.btn-loader');
-    const customerName = document.getElementById('customerName').value || "Pelanggan";
+    const customerNameElement = document.getElementById('customerName');
+    const customerName = (customerNameElement && customerNameElement.value) || "Pelanggan";
+
+    // Detect iOS Platform
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
     // Show Loading
     btnText.style.opacity = '0.5';
     loader.style.display = 'inline-block';
     btn.disabled = true;
+
+    // Use shorter delay for iOS (300ms) to maintain user gesture context 
+    // and avoid iOS Safari's strict popup/navigation blocking.
+    const delay = isIOS ? 300 : 1500;
 
     // Delay for "System Processing" effect
     setTimeout(() => {
@@ -786,20 +795,32 @@ function confirmOrderToWhatsApp() {
         message += `*ID Pesanan:* ${invoiceId}\n\n`;
         message += `Silahkan upload bukti transfernya di chat ini yaa. Terima kasih.🙏`;
 
-        const whatsappUrl = `https://wa.me/${adminNumber}?text=${encodeURIComponent(message)}`;
+        // Platform-specific URL format and navigation method
+        if (isIOS) {
+            // iOS prefer api.whatsapp.com for universal link reliability
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=${adminNumber}&text=${encodeURIComponent(message)}`;
+
+            // iOS Safari requires direct navigation for universal links to work correctly
+            window.location.href = whatsappUrl;
+        } else {
+            // Desktop/Android standard wa.me format
+            const whatsappUrl = `https://wa.me/${adminNumber}?text=${encodeURIComponent(message)}`;
+
+            // Use _blank for other platforms
+            window.open(whatsappUrl, '_blank');
+        }
 
         // Reset button state
         btnText.style.opacity = '1';
         loader.style.display = 'none';
         btn.disabled = false;
 
-        window.open(whatsappUrl, '_blank');
         closeOrderSummary();
 
         // Empty cart after successful checkout
         cart = [];
         updateCartUI();
-    }, 1500);
+    }, delay);
 }
 
 
