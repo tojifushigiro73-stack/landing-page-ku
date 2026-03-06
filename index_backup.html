@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lamisha Bakehouse - Kue Rumahan di kota Metro yang menggunakan bahan-bahan terbaik dan premium</title>
+    <meta name="google-site-verification" content="zun3rgELJF3QamAlbYlVzpNS594JuSzOvGZ0zloGDks" />
+    <meta name="description"
+        content="Kukis dan kue premium yang dipanggang segar setiap hari. Rasakan kemewahan dalam setiap gigitan.">
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        OneSignalDeferred.push(async function (OneSignal) {
+            await OneSignal.init({
+                appId: "5915e37b-4344-4f12-b442-067ced458d88",
+                notifyButton: {
+                    enable: false, /* Matikan lonceng melayang agar lebih estetik */
+                }
+            });
+
+            // Update status dot notifikasi jika belum berlangganan
+            const updateBellStatus = () => {
+                const dot = document.querySelector('.notification-dot');
+                if (dot) {
+                    dot.style.display = OneSignal.Notifications.permission ? 'none' : 'block';
+                }
+            };
+
+            OneSignal.Notifications.addEventListener('permissionChange', updateBellStatus);
+            updateBellStatus();
+        });
+
+        async function handleOneSignalClick() {
+            OneSignalDeferred.push(async function (OneSignal) {
+                if (!OneSignal.Notifications.permission) {
+                    await OneSignal.Notifications.requestPermission();
+                } else {
+                    // Jika sudah berlangganan, opsional bisa buka UI kelola atau alert
+                    alert("Anda sudah berlangganan notifikasi kami. Terima kasih! 😊");
+                }
+            });
+        }
+    </script>
+    <link rel="icon" type="image/png" href="apple-touch-icon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css?v=1.8">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#b02762">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="LaMisha">
+</head>
+
+<body>
+
+    <!-- Announcement Bar -->
+    <!-- <div class="announcement-bar">
+        Gratis Ongkir se Kota-Metro untuk jumlah Pembelian 3 (tiga) item jenis kue | Penawaran Terbatas!
+    </div> -->
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">LA MISHA Bakehouse.</div>
+            <ul class="nav-links">
+                <li><a href="#home">Beranda</a></li>
+                <li><a href="#catalog">Menu</a></li>
+                <!-- <li><a href="#about">Tentang Kami</a></li>
+                <li><a href="#gift">Hampers</a></li> -->
+            </ul>
+            <div class="nav-icons">
+                <!-- <a href="#" class="search-icon"><i class="fas fa-search"></i></a> -->
+                <a href="javascript:void(0)" class="nav-notification" title="Notifikasi"
+                    onclick="handleOneSignalClick()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-dot" style="display: none;"></span>
+                </a>
+                <a href="javascript:void(0)" class="cart-icon" onclick="toggleCart(event)">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-count">0</span>
+                </a>
+                <a href="#" class="mobile-menu-btn"><i class="fas fa-bars"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-bg">
+            <img src="softcake.jpg" alt="Close up of premium chocolate chip cookie">
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+            <span class="hero-subtitle">Est. 2023 • Disajikan dengan Cinta</span>
+            <h1>Kukis yang<br>Dibuat dengan cinta<br>Setiap Hari.</h1>
+            <p class="hero-description">Kepuasan anda adalah prioritas bagi kami, serta setiap Pesanan adalah suatu
+                kehormatan dan
+                kebahagiaan bagi kami. Rasakan
+                perpaduan bahan premium
+                dan cinta dalam setiap keping kukis.</p>
+            <div class="hero-buttons">
+                <a href="#catalog" class="btn btn-primary">Pesan Sekarang</a>
+                <!-- <a href="https://wa.me/6285836695103?text=Halo%20LaMisha%20Bakehouse,%20saya%20ingin%20tanya%20tentang%20produknya."
+                    class="btn btn-outline" target="_blank">Tanya tentang produk kami</a> -->
+            </div>
+        </div>
+    </section>
+
+    <!-- USP Section -->
+    <section class="usp-section">
+        <div class="container usp-grid">
+            <div class="usp-item">
+                <div class="icon-circle"><i class="fas fa-star"></i></div>
+                <h3>Bahan Premium Pilihan</h3>
+                <p>Kami hanya menggunakan bahan-bahan pilihan terbaik untuk menghasilkan kukis yang lezat dan
+                    berkualitas.</p>
+            </div>
+            <div class="usp-item">
+                <div class="icon-circle"><i class="fas fa-fire"></i></div>
+                <h3>Dipanggang Hangat</h3>
+                <p>Semua pesanan dipanggang pada hari pengiriman demi kualitas terbaik.</p>
+            </div>
+            <div class="usp-item">
+                <div class="icon-circle"><i class="fas fa-gift"></i></div>
+                <h3>Packaging Menarik</h3>
+                <p>Buat momen spesial Anda lebih berkesan dengan kemasan yang aman dan menarik.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Catalog Preview -->
+    <section id="catalog" class="catalog-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle">Pilihan Favorit untukmu</span>
+                <h2>Silahkan di pesan ini menu nya :)</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <!-- Category Tabs -->
+            <div class="catalog-tabs-container">
+                <div class="catalog-tabs" id="catalogTabs">
+                    <button class="tab-btn active" onclick="filterCategory('all')">Semua Menu</button>
+                    <button class="tab-btn" onclick="filterCategory('cookies')">Kukis Premium</button>
+                    <button class="tab-btn" onclick="filterCategory('cakes')">Menu Spesial</button>
+                    <!-- <button class="tab-btn" onclick="filterCategory('hampers')">Hampers</button> -->
+                </div>
+            </div>
+
+            <div class="product-grid" id="productGrid">
+
+                <!-- ===== SECTION: Kukis Premium ===== -->
+                <div class="category-anchor" id="section-cookies" data-category-label="cookies"></div>
+
+                <!-- Product: Nastar -->
+                <div class="product-card" data-category="cookies" data-detail-key="nastar">
+                    <div class="product-image">
+                        <span class="badge bestseller">⭐ Best Seller</span>
+                        <img src="nastar.jpg" alt="Nastar Premium Gold" loading="lazy">
+                        <button class="btn-float-cart"
+                            onclick="addToCart('Signature Nastar Gold (Toples 800ml)', 65000)"
+                            title="Tambah ke Keranjang">
+                            <i class="fas fa-shopping-bag"></i>
+                        </button>
+                        <div class="skeleton-shimmer"></div>
+                    </div>
+                    <div class="product-info">
+                        <h3>Nastar</h3>
+                        <p class="product-desc">Kukis nastar klasik dengan selai nanas homemade yang melimpah dan
+                            tekstur lumer di mulut.</p>
+                        <div class="product-meta multi-price">
+                            <div class="price-row">
+                                <span class="price">Rp 210.000/Kg</span>
+                                <button class="btn-quick-add small"
+                                    onclick="addToCart('Signature Nastar Gold (1Kg)', 210000)">+ Checkout</button>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">Rp 130.000/500g</span>
+                                <button class="btn-quick-add small"
+                                    onclick="addToCart('Signature Nastar Gold (500g)', 130000)">+ Checkout</button>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">Rp 65.000/Toples 800ml</span>
+                                <button class="btn-quick-add small"
+                                    onclick="addToCart('Signature Nastar Gold (Toples 800ml)', 65000)">+
+                                    Checkout</button>
+                            </div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                    class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product: Nestum -->
+                <div class="product-card" data-category="cookies" data-detail-key="nestum">
+                    <div class="product-image">
+                        <span class="badge new">🔥 Favorit Pelanggan</span>
+                        <img src="Havana Nestum (1).png" alt="Crunchy Nestum Cookies" loading="lazy">
+                        <button class="btn-float-cart" onclick="addToCart('Havana Nestum (Toples 800ml)', 85000)"
+                            title="Tambah ke Keranjang">
+                            <i class="fas fa-shopping-bag"></i>
+                        </button>
+                        <div class="skeleton-shimmer"></div>
+                    </div>
+                    <div class="product-info">
+                        <h3>Havana Nestum</h3>
+                        <p class="product-desc">Kukis sereal Nestum yang super renyah dengan aroma susu yang menggugah
+                            selera.</p>
+                        <div class="product-meta multi-price">
+                            <div class="price-row">
+                                <span class="price">Rp 250.000/Kg</span>
+                                <button class="btn-quick-add small" onclick="addToCart('Havana Nestum (1Kg)', 250000)">+
+                                    Checkout</button>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">Rp 135.000/500g</span>
+                                <button class="btn-quick-add small"
+                                    onclick="addToCart('Havana Nestum (500g)', 135000)">+
+                                    Checkout</button>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">Rp 85.000/Toples 800ml</span>
+                                <button class="btn-quick-add small"
+                                    onclick="addToCart('Havana Nestum (Toples 800ml)', 85000)">+
+                                    Checkout</button>
+                            </div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                    class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product: Butter Cookies -->
+                <div class="product-card" data-category="cookies" data-detail-key="butter_cookies">
+                    <div class="product-image">
+                        <span class="badge new">✨ Baru</span>
+                        <img src="butter cookies (1).png" alt="Butter Cookies Premium" loading="lazy">
+                        <button class="btn-float-cart" onclick="addToCart('Butter Cookies (Toples 800ml)', 75000)"
+                            title="Tambah ke Keranjang">
+                            <i class="fas fa-shopping-bag"></i>
+                        </button>
+                        <div class="skeleton-shimmer"></div>
+                    </div>
+                    <div class="product-info">
+                        <h3>Butter Cookies</h3>
+                        <p class="product-desc">Kukis mentega lembut yang gurih dan manis, dibuat dengan mentega premium
+                            pilihan.</p>
+                        <div class="product-meta multi-price">
+                            <div class="price-row">
+                                <span class="price">Rp 210.000/Kg</span>
+                                <button class="btn-quick-add small"
+                                    onclick="addToCart('Butter Cookies (1Kg)', 210000)">+ Checkout</button>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">Rp 120.000/500g</span>
+                                <button class="btn-quick-add small"
+                                    onclick="addToCart('Butter Cookies (500g)', 120000)">+ Checkout</button>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">Rp 80.000/Toples 800ml</span>
+                                <button class="btn-quick-add small"
+                                    onclick="addToCart('Butter Cookies (Toples 800ml)', 80000)">+ Checkout</button>
+                            </div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                    class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product: Choco Chips -->
+                <div class="product-card" data-category="cookies" data-detail-key="choco_chips">
+                    <div class="product-image">
+                        <span class="badge bestseller">🍫 Cokelat Melimpah</span>
+                        <img src="Choco chips (1).png" alt="Choco Chips Cookies" loading="lazy">
+                        <button class="btn-float-cart" onclick="addToCart('Choco Chips (Toples 800ml)', 80000)"
+                            title="Tambah ke Keranjang">
+                            <i class="fas fa-shopping-bag"></i>
+                        </button>
+                        <div class="skeleton-shimmer"></div>
+                    </div>
+                    <div class="product-info">
+                        <h3>Choco Chips</h3>
+                        <p class="product-desc">Kukis renyah dengan butiran coklat melimpah yang lumer di setiap
+                            gigitan.</p>
+                        <div class="product-meta multi-price">
+                            <div class="price-row">
+                                <span class="price">Rp 230.000/Kg</span>
+                                <button class="btn-quick-add small" onclick="addToCart('Choco Chips (1Kg)', 230000)">+
+                                    Checkout</button>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">Rp 120.000/500g</span>
+                                <button class="btn-quick-add small" onclick="addToCart('Choco Chips (500g)', 120000)">+
+                                    Checkout</button>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">Rp 80.000/Toples 800ml</span>
+                                <button class="btn-quick-add small"
+                                    onclick="addToCart('Choco Chips (Toples 800ml)', 80000)">+
+                                    Checkout</button>
+                            </div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                    class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product: Cornflakes -->
+                <div class="product-card" data-category="cookies" data-detail-key="cornflakes">
+                    <div class="product-image">
+                        <span class="badge limited">🥣 Ekstra Crunchy</span>
+                        <img src="Cornflakes (1).png" alt="Cornflakes Cookies" loading="lazy">
+                        <button class="btn-float-cart" onclick="addToCart('Cornflakes (Toples 800ml)', 80000)"
+                            title="Tambah ke Keranjang">
+                            <i class="fas fa-shopping-bag"></i>
+                        </button>
+                        <div class="skeleton-shimmer"></div>
+                    </div>
+                    <div class="product-info">
+                        <h3>Cornflakes</h3>
+                        <p class="product-desc">Kukis sereal cornflakes yang ekstra renyah dan gurih dengan sentuhan
+                            manis yang pas.</p>
+                        <div class="product-meta multi-price">
+                            <div class="price-row">
+                                <span class="price">Rp 220.000/Kg</span>
+                                <button class="btn-quick-add small" onclick="addToCart('Cornflakes (1Kg)', 220000)">+
+                                    Checkout</button>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">Rp 120.000/500g</span>
+                                <button class="btn-quick-add small" onclick="addToCart('Cornflakes (500g)', 120000)">+
+                                    Checkout</button>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">Rp 80.000/Toples 800ml</span>
+                                <button class="btn-quick-add small"
+                                    onclick="addToCart('Cornflakes (Toples 800ml)', 80000)">+
+                                    Checkout</button>
+                            </div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                    class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECTION: Menu Spesial ===== -->
+                <div class="category-anchor" id="section-cakes" data-category-label="cakes"></div>
+
+                <!-- Product: Tekwan -->
+                <div class="product-card" data-category="cakes" data-detail-key="tekwan">
+                    <div class="product-image">
+                        <span class="badge bestseller">🍲 Terlengkap</span>
+                        <img src="tekwan (1).png" alt="Tekwan" loading="lazy">
+                        <button class="btn-float-cart" onclick="addToCart('Tekwan (500g)', 55000)"
+                            title="Tambah ke Keranjang">
+                            <i class="fas fa-shopping-bag"></i>
+                        </button>
+                        <div class="skeleton-shimmer"></div>
+                    </div>
+                    <div class="product-info">
+                        <h3>Tekwan</h3>
+                        <p class="product-desc">Tekwan khas Palembang dengan kuah yang gurih, lengkap dengan jamur
+                            kuping, soun, dan bengkoang.</p>
+                        <div class="product-meta multi-price">
+                            <div class="price-row">
+                                <span class="price">Rp 100.000/Kg</span>
+                                <button class="btn-quick-add small" onclick="addToCart('Tekwan (1Kg)', 100000)">+
+                                    Checkout</button>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">Rp 55.000/500g</span>
+                                <button class="btn-quick-add small" onclick="addToCart('Tekwan (500g)', 55000)">+
+                                    Checkout</button>
+                            </div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                    class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hampers (coming soon) -->
+                <!-- <div class="category-anchor" id="section-hampers" data-category-label="hampers"></div>
+                <div class="product-card" data-category="hampers">...</div> -->
+
+            </div>
+
+            <!-- Empty State (shown when filter returns 0 results) -->
+            <div class="empty-state" id="emptyState" style="display:none;">
+                <div class="empty-state-icon">🍪</div>
+                <h3>Belum ada menu di kategori ini</h3>
+                <p>Kami sedang mempersiapkan produk terbaru. Pantau terus ya!</p>
+                <button class="btn btn-primary" onclick="filterCategory('all')">Lihat Semua Menu</button>
+            </div>
+
+            <!-- <div class="catalog-footer">
+                <a href="#" class="btn btn-secondary">Lihat Semua Menu</a>
+            </div> -->
+        </div>
+    </section>
+
+    <!-- Social Proof / How It Works -->
+    <section class="social-proof-section">
+        <div class="container">
+            <div class="proof-content">
+                <div class="proof-text">
+                    <h2>Kualitas Premium & Layanan Terpercaya dari La Misha Bakehouse</h2>
+                    <p class="highlight-text">"Hadirkan kebahagiaan melalui kelezatan kue rumahan premium untuk setiap
+                        momen berharga Anda di Kota Metro."</p>
+                    <div class="testimonials">
+                        <div class="testimonial-card">
+                            <p>"Visi kami adalah menyediakan produk kue berkualitas tinggi dengan pelayanan terbaik
+                                serta harga yang tetap terjangkau bagi seluruh pelanggan setia kami."</p>
+                            <div class="author">- Rendy Sena, Co-Owner</div>
+                        </div>
+                        <div class="testimonial-card">
+                            <p>"Kami hanya menggunakan bahan baku premium pilihan yang diproses secara higienis untuk
+                                menjamin kesegaran dan cita rasa autentik di setiap gigitan."</p>
+                            <div class="author">- Ferina Pratiwi, Owner</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-number">01</div>
+                        <h4>Pilih Menu Favorit</h4>
+                        <p>Telusuri koleksi kukis premium dan cake lezat kami yang dipanggang segar setiap hari.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">02</div>
+                        <h4>Pemesanan Mudah</h4>
+                        <p>Lakukan konfirmasi pesanan dengan cepat dan praktis melalui layanan admin WhatsApp kami.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">03</div>
+                        <h4>Pengiriman Langsung</h4>
+                        <p>Nikmati layanan pengiriman langsung ke alamat Anda untuk wilayah Metro dan sekitarnya.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lead Magnet: Birthday Club
+    <section class="lead-magnet-section">
+        <div class="container">tauri://localhost/images/login-illustration-3.svg
+            <div class="lead-content">
+                <h2>Jangan Lewatkan Momen Manis</h2>
+                <p>Daftarkan ulang tahun Anda atau orang terkasih, dan kami akan mengirimkan kejutan spesial di hari
+                    bahagia tersebut.</p>
+                <form class="lead-form"
+                    onsubmit="event.preventDefault(); alert('Terima kasih! Anda telah terdaftar.');">
+                    <input type="text" placeholder="Nama Lengkap" required>
+                    <input type="email" placeholder="Alamat Email" required>
+                    <button type="submit" class="btn btn-primary">Daftar Birthday Club</button>
+                </form>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <h3>LA MISHA Bakehouse.</h3>
+                <p>Menghadirkan kehangatan dan kebahagiaan dalam setiap gigitan kukis dan kue terbaik.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Menu</h4>
+                <ul>
+                    <li><a href="#">Kukis</a></li>
+                    <li><a href="#">Kue Basah</a></li>
+                    <li><a href="#">Hampers</a></li>
+                    <li><a href="#">Pesanan untuk acara</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Bantuan</h4>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Pengiriman</a></li>
+                    <li><a href="#">Kebijakan Privasi</a></li>
+                    <li><a href="#">Hubungi Kami</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Ikuti Kami</h4>
+                <div class="social-links">
+                    <a href="https://www.instagram.com/lamishabakehouse?igsh=enh6d2ltNGFuNTVk"><i
+                            class="fab fa-instagram"></i></a>
+                    <!-- <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a> -->
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 LaMisha Bakehouse. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Sticky Menu (Left) -->
+    <a href="#catalog" class="sticky-menu">
+        <i class="fas fa-cookie-bite"></i> <span>Lihat Menu</span>
+    </a>
+
+    <!-- Sticky WhatsApp (Right) -->
+    <a href="https://wa.me/6285836695103" class="sticky-wa" target="_blank">
+        <i class="fab fa-whatsapp"></i> <span>Chat Kami</span>
+    </a>
+
+    <!-- Floating Cart (Mobile Only) -->
+    <div class="floating-cart" onclick="toggleCart()">
+        <i class="fas fa-shopping-bag"></i>
+        <span class="cart-count">0</span>
+    </div>
+
+    <!-- Ramadan Welcome Popup -->
+    <div id="ramadanPopup" class="popup-overlay">
+        <div class="popup-content">
+            <button class="close-popup" onclick="closeRamadanPopup()">&times;</button>
+            <div class="popup-layout">
+                <div class="popup-image ramadan-bg"></div>
+                <div class="popup-text">
+                    <span class="badge new" style="position: static; display: inline-block; margin-bottom: 15px;">Edisi
+                        Spesial</span>
+                    <h3>Sambut Ramadhan Penuh Berkah ✨</h3>
+                    <p>Lengkapi momen buka puasa dan sahurmu dengan kelezatan kukis premium dari La Misha Bakehouse.</p>
+                    <div style="margin: 20px 0;">
+                        <button class="btn btn-primary btn-full"
+                            onclick="closeRamadanPopup(); document.querySelector('#catalog').scrollIntoView({behavior: 'smooth'})">
+                            Lihat Menu Ramadhan
+                        </button>
+                    </div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Tersedia paket hampers spesial Ramadhan!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exit Intent Popup -->
+    <div id="exitPopup" class="popup-overlay">
+        <div class="popup-content">
+            <button class="close-popup" onclick="closeModal()">&times;</button>
+            <div class="popup-layout">
+                <div class="popup-image"></div>
+                <div class="popup-text">
+                    <h3>Kabar Gembira! 🚚</h3>
+                    <p>Untuk wilayah Kota Metro, kue bisa dikirim sampai ke depan rumahmu loh. Pesan yuk! 😊</p>
+                    <div style="margin: 20px 0;">
+                        <button class="btn btn-primary btn-full"
+                            onclick="closeModal(); document.querySelector('#catalog').scrollIntoView({behavior: 'smooth'})">Cek
+                            Menu & Pesan</button>
+                    </div>
+                    <span class="no-thanks" onclick="closeModal()">Nanti saja</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Side Drawer -->
+    <div id="cartDrawer" class="cart-drawer">
+        <div class="cart-header">
+            <h3>Keranjang Belanja</h3>
+            <button class="close-cart" onclick="toggleCart()">&times;</button>
+        </div>
+        <div class="cart-content">
+            <div id="cartItems" class="cart-items">
+                <!-- Items will be injected here -->
+                <div class="empty-cart-msg">Keranjang Anda kosong</div>
+            </div>
+
+            <!-- Location Selection Section -->
+            <div class="cart-location-section" id="locationSection" style="display: none;">
+                <div class="section-divider"></div>
+                <h4>Lokasi Pengiriman</h4>
+
+                <!-- Address Search bar for reliability -->
+                <div class="search-box">
+                    <input type="text" id="searchAddr" placeholder="Ketik nama jalan / perumahan di Metro..."
+                        onkeydown="if(event.key==='Enter') searchAddress()">
+                    <button onclick="searchAddress()"><i class="fas fa-search"></i></button>
+                </div>
+
+                <p class="location-help" style="margin-top: 5px;">Atau pilih langsung titik di peta</p>
+
+                <div id="map"
+                    style="height: 200px; width: 100%; border-radius: 8px; margin: 10px 0; border: 1px solid #ddd;">
+                </div>
+
+                <button class="btn-location-me" onclick="useCurrentLocation()">
+                    <i class="fas fa-location-crosshairs"></i> Gunakan Lokasi Saya
+                </button>
+
+                <div id="locationStatus" class="location-status">Belum ada lokasi terpilih</div>
+
+                <input type="hidden" id="coords" name="coords">
+                <input type="hidden" id="distance" name="distance">
+            </div>
+        </div>
+
+        <div class="cart-footer">
+            <div class="cart-summary-item">
+                <span>Subtotal:</span>
+                <span id="cartSubtotal">Rp 0</span>
+            </div>
+            <div class="cart-summary-item">
+                <span>Ongkos Kirim (<span id="displayDistance">0</span> km):</span>
+                <span id="deliveryFeeDisplay">Rp 0</span>
+            </div>
+            <div class="cart-total" style="margin-top: 10px; border-top: 1px dashed #eee; padding-top: 10px;">
+                <span>Total Bayar:</span>
+                <span id="cartTotalAmount">Rp 0</span>
+            </div>
+            <button id="btn-wa" class="btn btn-primary btn-full tombol-normal" onclick="checkoutToWhatsApp()">
+                <i class="fab fa-whatsapp"></i> Lanjut ke pemesanan 🛒📱
+            </button>
+            <button class="btn btn-outline btn-full" onclick="toggleCart()" style="margin-top: 12px;">
+                Lanjut cari Kue Lagi 🍰
+            </button>
+        </div>
+    </div>
+    <div id="cartOverlay" class="cart-overlay" onclick="toggleCart()"></div>
+
+    <!-- Order Summary Modal -->
+    <div id="orderSummaryModal" class="popup-overlay">
+        <div class="popup-content order-summary-content">
+            <button class="close-popup" onclick="closeOrderSummary()">&times;</button>
+            <div class="order-summary-header">
+                <h3>Ringkasan Pesanan</h3>
+                <p id="orderInvoiceId" class="invoice-id">#INV-20260219</p>
+            </div>
+
+            <div class="order-summary-body">
+                <!-- Order Details -->
+                <div class="summary-section">
+                    <h4><i class="fas fa-shopping-basket"></i> Detail Pesanan</h4>
+                    <div id="summaryItems" class="summary-items">
+                        <!-- Items injected here -->
+                    </div>
+                    <div class="summary-totals">
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span id="summarySubtotal">Rp 0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Ongkos Kirim</span>
+                            <span id="summaryShipping">Rp 0</span>
+                        </div>
+                        <div class="summary-row total-row">
+                            <span>Total Bayar</span>
+                            <span id="summaryTotal">Rp 0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Instructions -->
+                <div class="summary-section payment-section">
+                    <h4><i class="fas fa-credit-card"></i> Instruksi Pembayaran</h4>
+                    <p class="payment-note">Silakan transfer sesuai total di atas ke rekening berikut:</p>
+
+                    <div class="bank-details">
+                        <!-- BRI -->
+                        <div class="bank-info" style="margin-bottom: 15px;">
+                            <span class="bank-name">Bank BRI</span>
+                            <div class="account-row">
+                                <span id="briNumber" class="account-number">009801076603506</span>
+                                <button class="btn-copy"
+                                    onclick="copyToClipboard('009801076603506', 'No. Rekening BRI')"
+                                    title="Salin No. Rekening">
+                                    <i class="fas fa-copy"></i> Salin
+                                </button>
+                            </div>
+                            <span class="account-holder">a/n Rendy Sena</span>
+                        </div>
+
+                        <!-- OVO & ShopeePay -->
+                        <div class="e-wallet-info"
+                            style="border-top: 1px solid rgba(176, 39, 98, 0.1); padding-top: 15px; display: grid; gap: 15px;">
+                            <div class="wallet-item">
+                                <span class="bank-name">OVO</span>
+                                <div class="account-row">
+                                    <span class="account-number">082348315200</span>
+                                    <button class="btn-copy" onclick="copyToClipboard('082348315200', 'No. OVO')"
+                                        title="Salin No. OVO">
+                                        <i class="fas fa-copy"></i> Salin
+                                    </button>
+                                </div>
+                                <span class="account-holder">a/n Ferina Pratiwi</span>
+                            </div>
+
+                            <div class="wallet-item">
+                                <span class="bank-name">ShopeePay</span>
+                                <div class="account-row">
+                                    <span class="account-number">082348315200</span>
+                                    <button class="btn-copy" onclick="copyToClipboard('082348315200', 'No. ShopeePay')"
+                                        title="Salin No. ShopeePay">
+                                        <i class="fas fa-copy"></i> Salin
+                                    </button>
+                                </div>
+                                <span class="account-holder">a/n Ferina Pratiwi</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Confirmation Form -->
+            <div class="summary-section confirmation-form">
+                <h4><i class="fas fa-user-check"></i> Konfirmasi Penerima</h4>
+                <div class="form-group">
+                    <label for="customerName">Nama Lengkap</label>
+                    <input type="text" id="customerName" placeholder="Masukkan nama Anda">
+                </div>
+                <!-- Alamat Section -->
+                <div class="form-group">
+                    <label>Alamat Pengiriman</label>
+                    <p id="summaryAddress" class="summary-address-text">Mencari alamat...</p>
+                </div>
+            </div>
+
+            <div class="order-summary-footer">
+                <button class="btn btn-primary btn-full" id="confirmWaBtn" onclick="confirmOrderToWhatsApp()">
+                    <span class="btn-text">Konfirmasi pembayaran dan upload bukti transfer 😊</span>
+                    <div class="btn-loader" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                </button>
+                <p class="footer-note">*Klik tombol di atas untuk mengirim bukti transfer dan pesananmu siap meluncur 😊
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast">Tersalin!</div>
+
+    <!-- Static QRIS Data Source placeholder link might be needed if dynamic generation fails -->
+
+    <!-- Product Detail Bottom Sheet -->
+    <div id="productDetailOverlay" onclick="closeProductDetail()"></div>
+    <div id="productDetailSheet" role="dialog" aria-modal="true" aria-label="Detail Produk">
+        <div class="detail-handle"></div>
+        <button class="detail-close-btn" onclick="closeProductDetail()" aria-label="Tutup">✕</button>
+        <div class="detail-body">
+            <div class="detail-img-wrap">
+                <img class="detail-img" src="" alt="" loading="lazy">
+            </div>
+            <h3 class="detail-name"></h3>
+            <p class="detail-desc"></p>
+            <div class="detail-info-list"></div>
+            <div class="detail-prices"></div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="script.js?v=2.1"></script>
+    <script>
+        // OneSignal SDK otomatis mendaftarkan OneSignalSDKWorker.js
+        // Tidak perlu mendaftarkan sw.js secara manual untuk menghindari konflik
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // Unregister sw.js lama yang mungkin masih aktif
+                navigator.serviceWorker.getRegistrations().then(registrations => {
+                    registrations.forEach(reg => {
+                        if (reg.active && reg.active.scriptURL.includes('/sw.js')) {
+                            reg.unregister();
+                            console.log('sw.js lama di-unregister, digantikan OneSignalSDKWorker');
+                        }
+                    });
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>
