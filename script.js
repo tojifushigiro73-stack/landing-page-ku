@@ -1,7 +1,7 @@
 /* --- PRODUCT DATA --- */
 const products = [
     {
-        id: 1, n: 'Nastar Gold', c: 'cookies', i: 'nastar.jpg', b: 'Best Seller',
+        id: 1, n: 'Nastar', c: 'cookies', i: 'nastar.jpg', b: 'Best Seller',
         d: 'Selai nanas homemade premium serta lumer di mulut.',
         opts: [{ l: '500 gr', p: 130000 }, { l: '1 kg', p: 250000 }]
     },
@@ -389,10 +389,19 @@ injectAskWA();
 
 // Cleanup for external scripts/elements
 function cleanEnvironment() {
-    const oldElements = ['.sticky-menu', '.sticky-wa', '.floating-cart', '.nav-notification', '.mobile-menu-btn'];
+    const oldElements = [
+        '.sticky-menu', '.sticky-wa', '.floating-cart', 
+        '.nav-notification', '.mobile-menu-btn', '.notification-bell',
+        '#onesignal-bell-container', '.onesignal-bell-launcher',
+        '.onesignal-popover-container', '#onesignal-slidedown-container'
+    ];
     oldElements.forEach(selector => {
-        document.querySelectorAll(selector).forEach(el => el.style.display = 'none');
+        document.querySelectorAll(selector).forEach(el => {
+            el.style.display = 'none';
+            el.style.visibility = 'hidden';
+            el.style.opacity = '0';
+        });
     });
 }
 cleanEnvironment();
-setInterval(cleanEnvironment, 2000);
+setInterval(cleanEnvironment, 1000); // Run every second to catch late-loading elements
