@@ -21,7 +21,12 @@ const products = [
         opts: [{ l: '500 gr', p: 125000 }, { l: '1 kg', p: 240000 }, { l: 'Toples 800ml', p: 80000 }]
     },
     {
-        id: 5, n: 'Tekwan', c: 'cakes', i: 'tekwan (1).png', b: 'Fresh',
+        id: 5, n: 'Cornflakes', c: 'cookies', i: 'Cornflakes (1).png', b: 'Crunchy',
+        d: 'Kukis sereal cornflakes yang ekstra renyah dan gurih dengan sentuhan manis yang pas.',
+        opts: [{ l: '500 gr', p: 120000 }, { l: '1 kg', p: 220000 }, { l: 'Toples 800ml', p: 80000 }]
+    },
+    {
+        id: 6, n: 'Tekwan', c: 'cakes', i: 'tekwan (1).png', b: 'Fresh',
         d: 'Bakso ikan asli khas Palembang dengan kuah udang yang gurih segar.',
         opts: [{ l: 'Porsi 500gr', p: 55000 }, { l: 'Porsi 1kg', p: 100000 }]
     }
@@ -391,9 +396,8 @@ injectAskWA();
 function cleanEnvironment() {
     const oldElements = [
         '.sticky-menu', '.sticky-wa', '.floating-cart', 
-        '.nav-notification', '.mobile-menu-btn', '.notification-bell',
-        '#onesignal-bell-container', '.onesignal-bell-launcher',
-        '.onesignal-popover-container', '#onesignal-slidedown-container'
+        '.nav-notification', '.mobile-menu-btn', '.notification-bell'
+        // Teropong/OneSignal selectors removed so they don't disappear
     ];
     oldElements.forEach(selector => {
         document.querySelectorAll(selector).forEach(el => {
@@ -404,4 +408,55 @@ function cleanEnvironment() {
     });
 }
 cleanEnvironment();
-setInterval(cleanEnvironment, 1000); // Run every second to catch late-loading elements
+setInterval(cleanEnvironment, 2000); // Increased interval
+
+/* --- PWA INSTALL PROMPT --- */
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    // Show the install UI after a delay
+    setTimeout(showInstallPopup, 5000);
+});
+
+function showInstallPopup() {
+    if (localStorage.getItem('pwa_dismissed')) return;
+    
+    const popup = document.createElement('div');
+    popup.id = 'pwa-install-popup';
+    popup.innerHTML = `
+        <div class="pwa-content">
+            <img src="apple-touch-icon.png" alt="Logo" class="pwa-icon">
+            <div class="pwa-text">
+                <strong>Pasang Aplikasi Lamisha</strong>
+                <p>Akses lebih cepat & hemat kuota langsung dari layar utama Anda.</p>
+            </div>
+            <div class="pwa-actions">
+                <button onclick="dismissPWA()" class="pwa-btn-later">Nanti</button>
+                <button onclick="installPWA()" class="pwa-btn-install">Pasang</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(popup);
+    requestAnimationFrame(() => popup.classList.add('active'));
+}
+
+window.installPWA = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+    }
+    deferredPrompt = null;
+    dismissPWA();
+};
+
+window.dismissPWA = () => {
+    const popup = document.getElementById('pwa-install-popup');
+    if (popup) {
+        popup.classList.remove('active');
+        setTimeout(() => popup.remove(), 500);
+    }
+    localStorage.setItem('pwa_dismissed', 'true');
+};
