@@ -74,20 +74,30 @@ nav.scrolled {
 
 /* --- Hero --- */
 .hero {
-    background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), url('background.jpg') no-repeat center/cover;
-    height: 80vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     position: relative;
     padding-top: 80px;
     color: white;
     overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('background (1).jpg') no-repeat center/cover;
+    z-index: -1;
     animation: heroZoom 20s infinite alternate;
 }
 
 @keyframes heroZoom {
-    0% { background-size: 110%; }
-    100% { background-size: 130%; }
+    0% { transform: scale(1); }
+    100% { transform: scale(1.1); }
 }
 
 .hero-content {
@@ -102,7 +112,7 @@ nav.scrolled {
 }
 
 @media (max-width: 768px) {
-    .hero { height: 60vh; text-align: center; }
+    .hero { min-height: 100vh; text-align: center; }
 }
 
 .hero h1 {
