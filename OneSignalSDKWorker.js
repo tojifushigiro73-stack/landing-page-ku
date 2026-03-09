@@ -1,11 +1,7 @@
-// =============================================
-// OneSignal SDK Service Worker (v16)
-// Menangani: Push Notifications + PWA Caching
-// =============================================
 importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
 
-// --- PWA Caching Logic ---
-const CACHE_NAME = 'lamisha-cache-v4';
+// PWA Caching Logic
+const CACHE_NAME = 'lamisha-cache-v5';
 const ASSETS = [
     '/',
     '/index.html',
@@ -36,7 +32,12 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+    // Only cache GET requests and skip onesignal/external requests
+    if (event.request.method !== 'GET' || event.request.url.includes('onesignal')) return;
+    
     event.respondWith(
-        caches.match(event.request).then((response) => response || fetch(event.request))
+        caches.match(event.request).then((response) => {
+            return response || fetch(event.request);
+        })
     );
 });
