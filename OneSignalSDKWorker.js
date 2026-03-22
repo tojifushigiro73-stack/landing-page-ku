@@ -1,15 +1,15 @@
 importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
 
 // PWA Caching Logic
-const CACHE_NAME = 'lamisha-cache-v5';
+const CACHE_NAME = 'lamisha-cache-v6';
 const ASSETS = [
     '/',
     '/index.html',
     '/style.css',
     '/script.js',
     '/apple-touch-icon.png',
-    '/softcake.jpg',
-    '/nastar.jpg',
+    '/softcake.webp',
+    '/nastar.webp',
     '/manifest.json'
 ];
 
