@@ -382,8 +382,8 @@ function injectAskWA() {
     btn.innerHTML = `
         <a href="https://wa.me/6285836695103?text=Halo%20La%20Misha,%20saya%20mau%20tanya-tanya%20dulu%20dong%20seputar%20kue-nya..." 
            target="_blank"
-           style="position:fixed; bottom:100px; right:20px; z-index:1400; background:#25D366; color:white; padding:12px 20px; border-radius:50px; text-decoration:none; font-weight:700; font-size:0.85rem; box-shadow:0 8px 20px rgba(37,211,102,0.3); display:flex; align-items:center; gap:8px; animation: bounce 3s infinite">
-           <i class="fa-brands fa-whatsapp" style="font-size:1.2rem"></i>
+           style="position:fixed; bottom:95px; right:15px; z-index:1400; background:#25D366; color:white; padding:10px 18px; border-radius:50px; text-decoration:none; font-weight:700; font-size:0.8rem; box-shadow:0 8px 20px rgba(37,211,102,0.3); display:flex; align-items:center; gap:8px; animation: bounce 3s infinite">
+           <i class="fa-brands fa-whatsapp" style="font-size:1.1rem"></i>
            <span>Tanya Dulu Boleh</span>
         </a>
         <style>
