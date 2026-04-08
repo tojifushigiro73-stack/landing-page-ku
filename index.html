@@ -44,14 +44,9 @@
                 bell.id = 'custom-one-signal-bell';
                 bell.className = 'bell-floating-icon';
                 bell.innerHTML = '<div class="bell-hint" id="bell-hint">Berlangganan Promo & Diskon</div><i class="fa-solid fa-bell"></i>';
-                bell.onclick = async () => {
-                    // Always try to show prompt when clicked
-                    try {
-                        await OneSignal.Slidedown.show();
-                    } catch (e) {
-                        // Fallback to native if slidedown fails/blocked
-                        await OneSignal.Notifications.requestPermission();
-                    }
+                bell.onclick = () => {
+                    // Direct trigger for subscription
+                    OneSignal.Notifications.requestPermission();
                 };
                 document.body.appendChild(bell);
 
@@ -62,7 +57,8 @@
                 }, 7000);
             }
 
-            if (isSubscribed === 'granted') {
+            // In v16, OneSignal.Notifications.permission is a boolean
+            if (isSubscribed) {
                 bell.classList.remove('active');
             } else {
                 bell.classList.add('active');

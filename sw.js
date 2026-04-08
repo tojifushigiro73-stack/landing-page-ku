@@ -1,4 +1,5 @@
 const CACHE_NAME = 'lamisha-cache-v4'; // Versi naik ke v4
+self.addEventListener('message', (event) => { });
 const ASSETS = [
     '/',
     '/index.html',

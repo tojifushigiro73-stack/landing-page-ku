@@ -1,5 +1,7 @@
 importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
 
+self.addEventListener('message', (event) => { });
+
 const CACHE_NAME = 'lamisha-cache-v4'; // Versi naik ke v4 sesuai permintaan user
 const ASSETS = [
     '/',
