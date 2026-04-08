@@ -318,12 +318,34 @@ function show() {
     document.getElementById('overlay').classList.add('active');
     document.getElementById('sheet').classList.add('active');
     document.body.style.overflow = 'hidden';
+
+    // Hide CS and Bell icons when sheet (cart) is open
+    const csIcon = document.getElementById('cs-icon');
+    if (csIcon) csIcon.classList.add('cs-hide');
+    const bellIcon = document.getElementById('custom-one-signal-bell');
+    if (bellIcon) bellIcon.style.opacity = '0';
+
+    // Hide Tawk.to if it exists
+    if (typeof Tawk_API !== 'undefined' && Tawk_API.hideWidget) {
+        Tawk_API.hideWidget();
+    }
 }
 
 function hide() {
     document.getElementById('overlay').classList.remove('active');
     document.getElementById('sheet').classList.remove('active');
     document.body.style.overflow = '';
+
+    // Show CS and Bell icons when sheet is closed
+    const csIcon = document.getElementById('cs-icon');
+    if (csIcon) csIcon.classList.remove('cs-hide');
+    const bellIcon = document.getElementById('custom-one-signal-bell');
+    if (bellIcon) bellIcon.style.opacity = '1';
+
+    // Show Tawk.to if needed (though we use custom icon, Tawk.to must be 'showed' to be interactable)
+    if (typeof Tawk_API !== 'undefined' && Tawk_API.showWidget) {
+        Tawk_API.showWidget();
+    }
 }
 
 function copy(t) {
@@ -376,26 +398,40 @@ function fly(x, y) {
 render();
 updateUI();
 
-// Inject 'Tanya Dulu' floating button
+// Inject 'Tanya Dulu' floating button (WhatsApp) - REMOVED AS PER USER REQUEST
 function injectAskWA() {
-    const btn = document.createElement('div');
-    btn.innerHTML = `
-        <a href="https://wa.me/6285836695103?text=Halo%20La%20Misha,%20saya%20mau%20tanya-tanya%20dulu%20dong%20seputar%20kue-nya..." 
-           target="_blank"
-           style="position:fixed; bottom:95px; right:15px; z-index:1400; background:#25D366; color:white; padding:10px 18px; border-radius:50px; text-decoration:none; font-weight:700; font-size:0.8rem; box-shadow:0 8px 20px rgba(37,211,102,0.3); display:flex; align-items:center; gap:8px; animation: bounce 3s infinite">
-           <i class="fa-brands fa-whatsapp" style="font-size:1.1rem"></i>
-           <span>Tanya Dulu Boleh</span>
-        </a>
-        <style>
-            @keyframes bounce {
-                0%, 100% { transform: translateY(0); }
-                50% { transform: translateY(-10px); }
-            }
-        </style>
-    `;
-    document.body.appendChild(btn);
+    // Floating WA button is now replaced by a static button in the Hero section
 }
 injectAskWA();
+
+// Inject Custom CS Icon (Tawk.to)
+function injectCSIcon() {
+    const cs = document.createElement('div');
+    cs.id = 'cs-icon';
+    cs.className = 'cs-floating-icon';
+    cs.innerHTML = `
+        <div id="hints-wrapper" class="chat-hints-container" style="position: absolute; bottom: 70px; left: 0; display: flex; flex-direction: column; gap: 7px; align-items: flex-start; pointer-events: none;">
+            <div class="chat-hint" style="position:static; animation: fadeInUp 0.5s ease-out both;">Assalamualaikum</div>
+            <div class="chat-hint outline" style="position:static; animation: fadeInUp 0.5s ease-out 0.2s both; background: white; border: 1.5px solid var(--primary); color: var(--primary);">Selamat datang di Lamisha Bakehouse</div>
+            <div class="chat-hint outline" style="position:static; animation: fadeInUp 0.5s ease-out 0.4s both; background: white; border: 1.5px solid var(--primary); color: var(--primary);">Silahkan klik untuk tanya aku :)</div>
+        </div>
+        <i class="fa-solid fa-user"></i>
+        <div class="cs-badge">1</div>
+    `;
+    cs.onclick = () => {
+        if (typeof Tawk_API !== 'undefined') {
+            Tawk_API.maximize();
+        }
+    };
+    document.body.appendChild(cs);
+
+    // Auto-hide hints after 6 seconds to avoid clutter
+    setTimeout(() => {
+        const wrapper = document.getElementById('hints-wrapper');
+        if (wrapper) wrapper.classList.add('chat-hints-hide');
+    }, 6000);
+}
+injectCSIcon();
 
 // Cleanup for external scripts/elements
 function cleanEnvironment() {

@@ -167,6 +167,34 @@ nav.scrolled {
     box-shadow: 0 12px 40px rgba(176, 39, 98, 0.5);
 }
 
+.wa-hero-btn {
+    background: #25D366;
+    box-shadow: 0 8px 30px rgba(37, 211, 102, 0.4);
+    margin-left: 15px; /* Side by side on desktop */
+}
+
+.wa-hero-btn:hover {
+    background: #20BA56;
+    box-shadow: 0 12px 40px rgba(37, 211, 102, 0.5);
+}
+
+@media (max-width: 768px) {
+    .wa-hero-btn {
+        margin-left: 0;
+        margin-top: 15px;
+        display: block; /* Stack on mobile */
+        width: fit-content;
+        margin-right: auto;
+        margin-left: auto;
+    }
+    .cta-btn {
+        display: block;
+        width: fit-content;
+        margin-right: auto;
+        margin-left: auto;
+    }
+}
+
 /* --- Sticky Tabs --- */
 .tabs-sticky {
     position: sticky; 
@@ -428,4 +456,178 @@ nav.scrolled {
 @media (max-width: 480px) {
     .pwa-content { flex-direction: column; text-align: center; }
     .pwa-actions { flex-direction: row; width: 100%; justify-content: center; }
+}
+
+/* --- Custom CS Icon --- */
+.cs-floating-icon {
+    position: fixed;
+    bottom: 25px;
+    left: 20px;
+    width: 65px;
+    height: 65px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(176, 39, 98, 0.3);
+    z-index: 1600;
+    transition: var(--transition);
+    animation: bounce 3s infinite;
+    border: 3px solid white;
+}
+
+.cs-floating-icon i {
+    font-size: 2rem;
+}
+
+.cs-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background: #e74c3c;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid white;
+}
+
+.cs-floating-icon:hover {
+    transform: scale(1.1) rotate(10deg);
+    filter: brightness(1.1);
+}
+
+.chat-hints-hide {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateY(10px) !important;
+    transition: all 0.8s ease-in-out !important;
+    pointer-events: none;
+}
+
+.cs-hide {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8);
+    pointer-events: none;
+}
+
+/* --- Custom OneSignal Bell --- */
+.bell-floating-icon {
+    position: fixed;
+    bottom: 110px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: white;
+    color: var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(212, 160, 23, 0.3);
+    z-index: 1400;
+    transition: var(--transition);
+    border: 3px solid var(--accent);
+    display: none; /* Hidden by default, shown via JS */
+}
+
+.bell-floating-icon i {
+    font-size: 1.6rem;
+    animation: ring 4s .7s ease-in-out infinite;
+    transform-origin: 50% 4px;
+}
+
+@keyframes ring {
+    0% { transform: rotate(0); }
+    1% { transform: rotate(30deg); }
+    3% { transform: rotate(-28deg); }
+    5% { transform: rotate(34deg); }
+    7% { transform: rotate(-32deg); }
+    9% { transform: rotate(30deg); }
+    11% { transform: rotate(-28deg); }
+    13% { transform: rotate(26deg); }
+    15% { transform: rotate(-24deg); }
+    17% { transform: rotate(22deg); }
+    19% { transform: rotate(-20deg); }
+    21% { transform: rotate(18deg); }
+    23% { transform: rotate(-16deg); }
+    25% { transform: rotate(14deg); }
+    27% { transform: rotate(-12deg); }
+    29% { transform: rotate(10deg); }
+    31% { transform: rotate(-8deg); }
+    33% { transform: rotate(6deg); }
+    35% { transform: rotate(-4deg); }
+    37% { transform: rotate(2deg); }
+    39% { transform: rotate(-1deg); }
+    41% { transform: rotate(1deg); }
+    43% { transform: rotate(0); }
+    100% { transform: rotate(0); }
+}
+
+.bell-floating-icon.active {
+    display: flex;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.bell-floating-icon:hover {
+    transform: scale(1.1);
+    background: var(--accent);
+    color: white;
+}
+
+.bell-hint {
+    position: absolute;
+    right: 75px;
+    background: var(--accent);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    white-space: nowrap;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    pointer-events: none;
+    animation: fadeInUp 0.5s ease-out 1s both;
+}
+
+/* Chat bubble messages */
+.chat-hint {
+    position: absolute;
+    bottom: 80px;
+    left: 0;
+    background: white;
+    padding: 12px 20px;
+    border-radius: 18px 18px 18px 5px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+    animation: fadeInUp 0.5s ease-out both;
+    cursor: default;
+    color: #333;
+}
+
+.chat-hint::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 10px;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid white;
+}
+
+/* Hide Tawk.to default widget */
+#tawk-container, .tawk-min-container {
+    display: none !important;
 }

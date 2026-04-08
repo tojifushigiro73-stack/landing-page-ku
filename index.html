@@ -17,9 +17,7 @@
         OneSignalDeferred.push(async function (OneSignal) {
             await OneSignal.init({
                 appId: "5915e37b-4344-4f12-b442-067ced458d88",
-                notifyButton: {
-                    enable: false, // Matikan bell merah yang mengganggu
-                },
+                notifyButton: { enable: false },
                 promptOptions: {
                     slidedown: {
                         enabled: true,
@@ -29,7 +27,33 @@
                     }
                 }
             });
+
+            // Custom UI logic for Subscription Bell
+            updateBellUI(OneSignal);
+            
+            // Listen for changes
+            OneSignal.Notifications.addEventListener("permissionChange", () => updateBellUI(OneSignal));
         });
+
+        async function updateBellUI(OneSignal) {
+            const isSubscribed = OneSignal.Notifications.permission;
+            let bell = document.getElementById('custom-one-signal-bell');
+            
+            if (!bell) {
+                bell = document.createElement('div');
+                bell.id = 'custom-one-signal-bell';
+                bell.className = 'bell-floating-icon';
+                bell.innerHTML = '<div class="bell-hint">Info Promo & Diskon!</div><i class="fa-solid fa-bell"></i>';
+                bell.onclick = () => OneSignal.Slidedown.show();
+                document.body.appendChild(bell);
+            }
+
+            if (isSubscribed) {
+                bell.classList.remove('active');
+            } else {
+                bell.classList.add('active');
+            }
+        }
     </script>
     <style>
         /* Sembunyikan paksa notify button/bell dari OneSignal jika masih muncul */
@@ -83,6 +107,10 @@
             <p>Pilihan kue rumahan terbaik di Kota Metro. Dibuat dengan cinta setiap hari untuk
                 Anda.</p>
             <a href="#menu" class="cta-btn">Pesan Sekarang</a>
+            <a href="https://wa.me/6285836695103?text=Halo%20La%20Misha,%20saya%20mau%20tanya-tanya%20dulu%20dong%20seputar%20kue-nya..." 
+               target="_blank" class="cta-btn wa-hero-btn">
+               <i class="fa-brands fa-whatsapp"></i> Tanya via WhatsApp
+            </a>
         </div>
     </section>
 
@@ -132,6 +160,9 @@
     <!-- Tawk.to Chat Widget -->
     <script type="text/javascript">
         var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+        Tawk_API.onLoad = function() {
+            Tawk_API.hideWidget();
+        };
         (function () {
             var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
             s1.async = true;
