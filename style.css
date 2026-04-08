@@ -598,6 +598,14 @@ nav.scrolled {
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     pointer-events: none;
     animation: fadeInUp 0.5s ease-out 1s both;
+    pointer-events: none;
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.bell-hint.hide-hint {
+    opacity: 0 !important;
+    transform: translateX(20px) scale(0.9);
+    visibility: hidden;
 }
 
 /* Chat bubble messages */
@@ -627,7 +635,7 @@ nav.scrolled {
     border-top: 8px solid white;
 }
 
-/* Hide Tawk.to default widget */
-#tawk-container, .tawk-min-container {
+/* Hide Tawk.to default widget components while allowing the chat window to function if maximized */
+.tawk-min-container, .tawk-launcher, .tawk-badge, #tawk-container, .tawk-attention-grabber {
     display: none !important;
 }

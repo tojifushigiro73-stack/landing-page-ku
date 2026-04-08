@@ -43,19 +43,26 @@
                 bell = document.createElement('div');
                 bell.id = 'custom-one-signal-bell';
                 bell.className = 'bell-floating-icon';
-                bell.innerHTML = '<div class="bell-hint">Berlangganan Promo & Diskon</div><i class="fa-solid fa-bell"></i>';
+                bell.innerHTML = '<div class="bell-hint" id="bell-hint">Berlangganan Promo & Diskon</div><i class="fa-solid fa-bell"></i>';
                 bell.onclick = async () => {
-                   // Coba tampilkan slidedown, jika tidak muncul (sudah diblokir browser), ajukan native prompt
-                   try {
-                       await OneSignal.Slidedown.show();
-                   } catch (e) {
-                       await OneSignal.Notifications.requestPermission();
-                   }
+                    // Always try to show prompt when clicked
+                    try {
+                        await OneSignal.Slidedown.show();
+                    } catch (e) {
+                        // Fallback to native if slidedown fails/blocked
+                        await OneSignal.Notifications.requestPermission();
+                    }
                 };
                 document.body.appendChild(bell);
+
+                // Auto-hide hint after 7 seconds
+                setTimeout(() => {
+                    const hint = document.getElementById('bell-hint');
+                    if (hint) hint.classList.add('hide-hint');
+                }, 7000);
             }
 
-            if (isSubscribed) {
+            if (isSubscribed === 'granted') {
                 bell.classList.remove('active');
             } else {
                 bell.classList.add('active');
@@ -168,6 +175,10 @@
     <script type="text/javascript">
         var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
         Tawk_API.onLoad = function () {
+            Tawk_API.hideWidget();
+        };
+        // Specifically hide widget again if it tries to show itself
+        Tawk_API.onChatMinimized = function () {
             Tawk_API.hideWidget();
         };
         (function () {

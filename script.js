@@ -339,12 +339,13 @@ function hide() {
     // Show floating icons when sheet is closed
     const csIcon = document.getElementById('cs-icon');
     if (csIcon) csIcon.classList.remove('cs-hide');
+    
     const bellIcon = document.getElementById('custom-one-signal-bell');
     if (bellIcon) bellIcon.classList.remove('cs-hide');
 
-    // Show Tawk.to if needed (though we use custom icon, Tawk.to must be 'showed' to be interactable)
-    if (typeof Tawk_API !== 'undefined' && Tawk_API.showWidget) {
-        Tawk_API.showWidget();
+    // Tawk.to should stay hidden (launcher/default bubble), custom icon handles it.
+    if (typeof Tawk_API !== 'undefined') {
+        Tawk_API.hideWidget();
     }
 }
 
@@ -424,6 +425,16 @@ function injectCSIcon() {
         }
     };
     document.body.appendChild(cs);
+
+    // Tawk.to events to keep it hidden unless maximized
+    if (typeof Tawk_API !== 'undefined') {
+        Tawk_API.onChatMinimized = function () {
+            Tawk_API.hideWidget();
+        };
+        Tawk_API.onChatHidden = function () {
+            Tawk_API.hideWidget();
+        };
+    }
 
     // Auto-hide hints after 6 seconds to avoid clutter
     setTimeout(() => {
