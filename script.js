@@ -319,11 +319,11 @@ function show() {
     document.getElementById('sheet').classList.add('active');
     document.body.style.overflow = 'hidden';
 
-    // Hide CS and Bell icons when sheet (cart) is open
+    // Hide floating icons when sheet (cart) is open
     const csIcon = document.getElementById('cs-icon');
     if (csIcon) csIcon.classList.add('cs-hide');
     const bellIcon = document.getElementById('custom-one-signal-bell');
-    if (bellIcon) bellIcon.style.opacity = '0';
+    if (bellIcon) bellIcon.classList.add('cs-hide');
 
     // Hide Tawk.to if it exists
     if (typeof Tawk_API !== 'undefined' && Tawk_API.hideWidget) {
@@ -336,11 +336,11 @@ function hide() {
     document.getElementById('sheet').classList.remove('active');
     document.body.style.overflow = '';
 
-    // Show CS and Bell icons when sheet is closed
+    // Show floating icons when sheet is closed
     const csIcon = document.getElementById('cs-icon');
     if (csIcon) csIcon.classList.remove('cs-hide');
     const bellIcon = document.getElementById('custom-one-signal-bell');
-    if (bellIcon) bellIcon.style.opacity = '1';
+    if (bellIcon) bellIcon.classList.remove('cs-hide');
 
     // Show Tawk.to if needed (though we use custom icon, Tawk.to must be 'showed' to be interactable)
     if (typeof Tawk_API !== 'undefined' && Tawk_API.showWidget) {

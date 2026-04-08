@@ -525,8 +525,8 @@ nav.scrolled {
     position: fixed;
     bottom: 110px;
     right: 20px;
-    width: 60px;
-    height: 60px;
+    width: 48px;
+    height: 48px;
     background: white;
     color: var(--accent);
     border-radius: 50%;
@@ -534,15 +534,15 @@ nav.scrolled {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 8px 25px rgba(212, 160, 23, 0.3);
+    box-shadow: 0 6px 20px rgba(212, 160, 23, 0.25);
     z-index: 1400;
     transition: var(--transition);
-    border: 3px solid var(--accent);
+    border: 2px solid var(--accent);
     display: none; /* Hidden by default, shown via JS */
 }
 
 .bell-floating-icon i {
-    font-size: 1.6rem;
+    font-size: 1.25rem;
     animation: ring 4s .7s ease-in-out infinite;
     transform-origin: 50% 4px;
 }
