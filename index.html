@@ -36,6 +36,7 @@
         });
 
         async function updateBellUI(OneSignal) {
+            console.log("OneSignal Bell UI Update. Subscribed:", OneSignal.Notifications.permission);
             const isSubscribed = OneSignal.Notifications.permission;
             let bell = document.getElementById('custom-one-signal-bell');
             
@@ -44,9 +45,15 @@
                 bell.id = 'custom-one-signal-bell';
                 bell.className = 'bell-floating-icon';
                 bell.innerHTML = '<div class="bell-hint" id="bell-hint">Berlangganan Promo & Diskon</div><i class="fa-solid fa-bell"></i>';
-                bell.onclick = () => {
-                    // Direct trigger for subscription
-                    OneSignal.Notifications.requestPermission();
+                bell.onclick = async () => {
+                    console.log("Bell Clicked. Requesting Permission...");
+                    try {
+                        const result = await OneSignal.Notifications.requestPermission();
+                        console.log("Permission Result:", result);
+                    } catch (err) {
+                        console.error("Subscription Error:", err);
+                        alert("Gagal memicu notifikasi. Pastikan Anda tidak memblokir notifikasi di pengaturan browser Anda.");
+                    }
                 };
                 document.body.appendChild(bell);
 
@@ -57,10 +64,12 @@
                 }, 7000);
             }
 
-            // In v16, OneSignal.Notifications.permission is a boolean
+            // Update visibility based on current state
             if (isSubscribed) {
+                console.log("User is subscribed. Hiding bell.");
                 bell.classList.remove('active');
             } else {
+                console.log("User is NOT subscribed. Showing bell.");
                 bell.classList.add('active');
             }
         }
