@@ -37,6 +37,7 @@
 
         function updateBellUI(OneSignal) {
             const isSubscribed = OneSignal.Notifications.permission;
+            const nativePermission = Notification.permission;
             let bell = document.getElementById('custom-one-signal-bell');
             
             if (!bell) {
@@ -44,34 +45,37 @@
                 bell.id = 'custom-one-signal-bell';
                 bell.className = 'bell-floating-icon';
                 bell.innerHTML = '<div class="bell-hint" id="bell-hint">Berlangganan Promo & Diskon</div><i class="fa-solid fa-bell"></i>';
-                bell.onclick = function() {
-                    console.log("Mencoba memicu langganan...");
-                    OneSignal.Notifications.requestPermission().then((res) => {
-                        console.log("Hasil request:", res);
-                    }).catch(err => {
-                        console.error("Gagal:", err);
-                    });
-                };
                 document.body.appendChild(bell);
 
-                // Auto-hide hint
                 setTimeout(() => {
                     const hint = document.getElementById('bell-hint');
-                    if (hint) hint.style.opacity = '0';
+                    if (hint) hint.classList.add('hide-hint');
                 }, 7000);
             }
 
-            // UNTUK TESTING: Kita paksa bel tetap muncul (active) agar Anda bisa klik
-            bell.classList.add('active');
-            
-            /* 
-            // Logika asli untuk menyembunyikan jika sudah subscribe:
+            // Atur fungsi klik berdasarkan status permission
+            bell.onclick = function() {
+                if (Notification.permission === 'denied') {
+                    alert("Anda telah memblokir notifikasi. Klik ikon gembok di pojok kiri atas (dekat alamat website) lalu ubah 'Block' menjadi 'Allow' agar tidak ketinggalan info promo.");
+                } else {
+                    OneSignal.Notifications.requestPermission().then((res) => {
+                        console.log("Subscription success:", res);
+                    });
+                }
+            };
+
+            // Atur teks hint jika diblokir
+            const hint = document.getElementById('bell-hint');
+            if (nativePermission === 'denied' && hint) {
+                hint.innerText = "Klik untuk cara aktifkan notifikasi";
+            }
+
+            // Sembunyikan bel HANYA jika sudah benar-benar subscribed
             if (isSubscribed) {
                 bell.classList.remove('active');
             } else {
                 bell.classList.add('active');
             }
-            */
         }
     </script>
     <style>
