@@ -35,8 +35,7 @@
             OneSignal.Notifications.addEventListener("permissionChange", () => updateBellUI(OneSignal));
         });
 
-        async function updateBellUI(OneSignal) {
-            console.log("OneSignal Bell UI Update. Subscribed:", OneSignal.Notifications.permission);
+        function updateBellUI(OneSignal) {
             const isSubscribed = OneSignal.Notifications.permission;
             let bell = document.getElementById('custom-one-signal-bell');
             
@@ -45,33 +44,34 @@
                 bell.id = 'custom-one-signal-bell';
                 bell.className = 'bell-floating-icon';
                 bell.innerHTML = '<div class="bell-hint" id="bell-hint">Berlangganan Promo & Diskon</div><i class="fa-solid fa-bell"></i>';
-                bell.onclick = async () => {
-                    console.log("Bell Clicked. Requesting Permission...");
-                    try {
-                        const result = await OneSignal.Notifications.requestPermission();
-                        console.log("Permission Result:", result);
-                    } catch (err) {
-                        console.error("Subscription Error:", err);
-                        alert("Gagal memicu notifikasi. Pastikan Anda tidak memblokir notifikasi di pengaturan browser Anda.");
-                    }
+                bell.onclick = function() {
+                    console.log("Mencoba memicu langganan...");
+                    OneSignal.Notifications.requestPermission().then((res) => {
+                        console.log("Hasil request:", res);
+                    }).catch(err => {
+                        console.error("Gagal:", err);
+                    });
                 };
                 document.body.appendChild(bell);
 
-                // Auto-hide hint after 7 seconds
+                // Auto-hide hint
                 setTimeout(() => {
                     const hint = document.getElementById('bell-hint');
-                    if (hint) hint.classList.add('hide-hint');
+                    if (hint) hint.style.opacity = '0';
                 }, 7000);
             }
 
-            // Update visibility based on current state
+            // UNTUK TESTING: Kita paksa bel tetap muncul (active) agar Anda bisa klik
+            bell.classList.add('active');
+            
+            /* 
+            // Logika asli untuk menyembunyikan jika sudah subscribe:
             if (isSubscribed) {
-                console.log("User is subscribed. Hiding bell.");
                 bell.classList.remove('active');
             } else {
-                console.log("User is NOT subscribed. Showing bell.");
                 bell.classList.add('active');
             }
+            */
         }
     </script>
     <style>
