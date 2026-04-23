@@ -5,10 +5,10 @@ import { products } from "@/data/products";
 export default function Catalog() {
   const [activeCat, setActiveCat] = useState("all");
 
-  const filteredProducts = activeCat === "all" ? products : products.filter(p => p.c === activeCat);
-
-  const cookies = filteredProducts.filter(p => p.c === "cookies");
-  const cakes = filteredProducts.filter(p => p.c === "cakes");
+  const groups = { 
+    cookies: "Kukis Terpopuler", 
+    cakes: "Cake & Special" 
+  };
 
   return (
     <>
@@ -31,23 +31,33 @@ export default function Catalog() {
         </div>
       </div>
 
-      <main className="container catalog" id="menu">
-        {(activeCat === "all" || activeCat === "cookies") && (
-          <div className="cat-group" id="sec-cookies">
-            <h2 className="cat-title">Kukis Terpopuler</h2>
-            <div className="grid">
-              {cookies.map(p => <ProductCard key={p.id} p={p} />)}
+      <main className="container catalog" id="menu" style={{ paddingBottom: "80px" }}>
+        {Object.keys(groups).map((key) => {
+          if (activeCat !== "all" && activeCat !== key) return null;
+          
+          const items = products.filter((p) => p.c === key);
+          
+          return (
+            <div key={key} className="cat-group" id={`sec-${key}`} style={{ marginBottom: "40px" }}>
+              <h2 className="cat-title" style={{ 
+                fontFamily: "var(--font-playfair)", fontSize: "2rem", color: "var(--primary)",
+                marginBottom: "25px", borderLeft: "5px solid var(--primary)", paddingLeft: "15px"
+              }}>
+                {groups[key]}
+              </h2>
+              <div className="grid" style={{
+                display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+                gap: "25px"
+              }}>
+                {items.length > 0 ? items.map((p) => (
+                  <ProductCard key={p.id} p={p} />
+                )) : (
+                  <p style={{ color: "#ccc", fontStyle: "italic" }}>Stok sedang disiapkan...</p>
+                )}
+              </div>
             </div>
-          </div>
-        )}
-        {(activeCat === "all" || activeCat === "cakes") && (
-          <div className="cat-group" id="sec-cakes">
-            <h2 className="cat-title">Cake & Special</h2>
-            <div className="grid">
-              {cakes.map(p => <ProductCard key={p.id} p={p} />)}
-            </div>
-          </div>
-        )}
+          );
+        })}
       </main>
     </>
   );
