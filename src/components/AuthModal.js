@@ -27,10 +27,7 @@ export default function AuthModal() {
   }, []);
 
   const handleLogin = async () => {
-    if (!auth || !provider) {
-      alert("Sistem login sedang bersiap. Silakan coba lagi dalam beberapa saat.");
-      return;
-    }
+    if (!auth || !provider) return;
     try {
       await signInWithPopup(auth, provider);
       setActive(false);
@@ -68,14 +65,19 @@ export default function AuthModal() {
             </p>
           </div>
           
-          <button className="google-btn" onClick={handleLogin} style={{
-            width: "100%", display: "flex", alignItems: "center", justifyContent: "center",
-            gap: "12px", background: "white", border: "1.5px solid #eee", padding: "14px",
-            borderRadius: "16px", fontWeight: "700", color: "#3c4043", cursor: "pointer",
-            transition: "0.3s", fontSize: "0.95rem"
-          }}>
+          <button 
+            className="google-btn" 
+            onClick={handleLogin} 
+            disabled={!auth}
+            style={{
+              width: "100%", display: "flex", alignItems: "center", justifyContent: "center",
+              gap: "12px", background: "white", border: "1.5px solid #eee", padding: "14px",
+              borderRadius: "16px", fontWeight: "700", color: "#3c4043", cursor: auth ? "pointer" : "wait",
+              transition: "0.3s", fontSize: "0.95rem", opacity: auth ? 1 : 0.6
+            }}
+          >
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style={{ width: "20px" }} />
-            Lanjutkan dengan Google
+            {auth ? "Lanjutkan dengan Google" : "Mempersiapkan..."}
           </button>
 
           <div className="auth-footer" style={{ marginTop: "30px", fontSize: "0.85rem", color: "#999" }}>

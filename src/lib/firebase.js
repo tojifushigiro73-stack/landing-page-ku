@@ -1,41 +1,29 @@
-import { initializeApp, getApps } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { getAnalytics, isSupported } from "firebase/analytics";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
-// Initialize Firebase only on the Client Side
-let app = null;
-let auth = null;
-let db = null;
-let provider = null;
+let app, auth, db, provider;
 
+// Pastikan inisialisasi hanya terjadi di sisi klien (Browser)
 if (typeof window !== "undefined") {
     try {
-        if (firebaseConfig.apiKey) {
-            app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-            auth = getAuth(app);
-            db = getFirestore(app);
-            provider = new GoogleAuthProvider();
-
-            // Analytics
-            isSupported().then(yes => {
-                if (yes) getAnalytics(app);
-            });
-        }
-    } catch (e) {
-        console.error("Firebase initialization failed:", e);
+        // Gunakan getApps() untuk mencegah inisialisasi ganda yang bisa merusak state login
+        app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+        auth = getAuth(app);
+        db = getFirestore(app);
+        provider = new GoogleAuthProvider();
+    } catch (error) {
+        console.error("Firebase Init Error:", error);
     }
 }
 
-export { app, auth, db, provider };
+export { auth, db, provider };
