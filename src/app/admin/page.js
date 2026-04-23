@@ -15,7 +15,7 @@ export default function AdminPage() {
   const [stats, setStats] = useState({ totalMembers: 0, totalPoints: 0 });
 
   useEffect(() => {
-    if (currentUser && currentUser.email === ADMIN_EMAIL) {
+    if (currentUser && currentUser.email === ADMIN_EMAIL && db) {
       const q = query(collection(db, "users"), orderBy("points", "desc"));
       const unsubscribe = onSnapshot(q, (snapshot) => {
         const membersData = [];

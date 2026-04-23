@@ -14,18 +14,21 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase safely for Build environment
-let app, auth, db, provider;
+// Initialize Firebase only on the Client Side
+let app = null;
+let auth = null;
+let db = null;
+let provider = null;
 
-if (typeof window !== "undefined" || firebaseConfig.apiKey) {
+if (typeof window !== "undefined") {
     try {
-        app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-        auth = getAuth(app);
-        db = getFirestore(app);
-        provider = new GoogleAuthProvider();
+        if (firebaseConfig.apiKey) {
+            app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+            auth = getAuth(app);
+            db = getFirestore(app);
+            provider = new GoogleAuthProvider();
 
-        // Analytics (Client Side only)
-        if (typeof window !== "undefined") {
+            // Analytics
             isSupported().then(yes => {
                 if (yes) getAnalytics(app);
             });
