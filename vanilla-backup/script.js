@@ -4,20 +4,27 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase
 import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-import { firebaseConfig } from "./config.js";
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+let app, auth, db;
 const provider = new GoogleAuthProvider();
 
-// Analytics is optional, wrap to prevent blocking
-try {
-    const analytics = getAnalytics(app);
-} catch (e) {
-    console.warn("Analytics blocked or failed to load");
+async function initFirebase() {
+    try {
+        const module = await import("./config.js");
+        const firebaseConfig = module.firebaseConfig;
+        app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getFirestore(app);
+        console.log("Firebase initialized.");
+        
+        // Connect listeners that depend on 'auth' or 'db'
+        onAuthStateChanged(auth, handleAuthStateChanged);
+    } catch (e) {
+        console.warn("config.js not found. Auth features disabled.", e);
+    }
 }
+
+initFirebase();
 
 /* --- PRODUCT DATA --- */
 const products = [
@@ -541,7 +548,7 @@ getRedirectResult(auth).then((result) => {
 });
 
 // Listener Auth State
-onAuthStateChanged(auth, async (user) => {
+const handleAuthStateChanged = async (user) => {
     console.log("Firebase Auth State Changed. User:", user ? user.displayName : "None");
     if (user) {
         currentUser = {

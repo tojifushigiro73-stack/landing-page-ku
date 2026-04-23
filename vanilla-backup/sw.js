@@ -1,8 +1,4 @@
-importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
-
-self.addEventListener('message', (event) => { });
-
-const CACHE_NAME = 'lamisha-cache-v4'; // Versi naik ke v4 sesuai permintaan user
+const CACHE_NAME = 'lamisha-cache-v4'; // Versi naik ke v4
 const ASSETS = [
     '/',
     '/index.html',
@@ -25,15 +21,16 @@ const ASSETS = [
     '/tekwan%20(1).webp'
 ];
 
+// Install Service Worker
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
             return cache.addAll(ASSETS);
         })
     );
-    self.skipWaiting();
 });
 
+// Activate Service Worker
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
@@ -46,16 +43,11 @@ self.addEventListener('activate', (event) => {
             );
         })
     );
-    self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
-    // JANGAN cache request dari Tawk.to atau OneSignal agar chat real-time & push lancar
-    if (
-        event.request.url.includes('tawk.to') || 
-        event.request.url.includes('onesignal') || 
-        event.request.method !== 'GET'
-    ) {
+    // JANGAN cache request dari Tawk.to atau OneSignal (agar tetap real-time)
+    if (event.request.url.includes('tawk.to') || event.request.url.includes('onesignal')) {
         return; 
     }
 
