@@ -16,7 +16,11 @@ export default function Home() {
     setIsClient(true);
   }, []);
 
-  if (!isClient) return null;
+  if (!isClient) return (
+    <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#fff2f6" }}>
+      <img src="/apple-touch-icon.png" style={{ width: "80px", opacity: 0.5 }} alt="Loading..." />
+    </div>
+  );
 
   const subtotal = cart.reduce((s, i) => s + i.p, 0);
   const potentialPoints = Math.floor(subtotal / 10000);
