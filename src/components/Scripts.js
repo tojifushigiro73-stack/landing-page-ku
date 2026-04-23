@@ -2,6 +2,18 @@
 import Script from "next/script";
 
 export default function Scripts() {
+  // Clean up legacy service workers from vanilla JS version
+  if (typeof window !== 'undefined') {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        for (let registration of registrations) {
+          registration.unregister();
+          console.log("Legacy Service Worker unregistered");
+        }
+      });
+    }
+  }
+
   return (
     <>
       {/* OneSignal */}

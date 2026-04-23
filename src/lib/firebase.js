@@ -14,16 +14,17 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase
+// Initialize Firebase safely
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
 // Analytics (Client Side only)
-let analytics;
 if (typeof window !== "undefined") {
-    isSupported().then(yes => yes && (analytics = getAnalytics(app)));
+    isSupported().then(yes => {
+        if (yes) getAnalytics(app);
+    });
 }
 
-export { app, auth, db, provider, analytics };
+export { app, auth, db, provider };
