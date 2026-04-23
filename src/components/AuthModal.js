@@ -32,8 +32,12 @@ export default function AuthModal() {
       await signInWithPopup(auth, provider);
       setActive(false);
     } catch (err) {
+      if (err.code === 'auth/popup-closed-by-user') {
+        // User closed the popup, no need to alert or log as error
+        return;
+      }
       console.error("Login Error:", err);
-      alert("Gagal login. Pastikan pop-up diperbolehkan di browser Anda.");
+      alert("Gagal login. Silakan coba lagi atau pastikan pop-up diperbolehkan di browser Anda.");
     }
   };
 

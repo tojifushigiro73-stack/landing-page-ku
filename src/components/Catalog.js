@@ -40,15 +40,13 @@ export default function Catalog() {
           return (
             <div key={key} className="cat-group" id={`sec-${key}`} style={{ marginBottom: "40px" }}>
               <h2 className="cat-title" style={{ 
-                fontFamily: "var(--font-playfair)", fontSize: "2rem", color: "var(--primary)",
-                marginBottom: "25px", borderLeft: "5px solid var(--primary)", paddingLeft: "15px"
+                fontFamily: "var(--font-playfair)", fontSize: "1.8rem", color: "var(--primary)",
+                marginBottom: "25px", borderLeft: "5px solid var(--accent)", paddingLeft: "15px",
+                fontWeight: "700"
               }}>
                 {groups[key]}
               </h2>
-              <div className="grid" style={{
-                display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-                gap: "25px"
-              }}>
+              <div className="grid">
                 {items.length > 0 ? items.map((p) => (
                   <ProductCard key={p.id} p={p} />
                 )) : (
@@ -74,7 +72,6 @@ function ProductCard({ p }) {
           alt={p.n}
           onError={(e) => e.target.src = `https://placehold.co/400?text=${p.n}`} 
         />
-        <button className="btn-plus"><i className="fa-solid fa-eye"></i></button>
       </div>
       <div className="card-body">
         <div className="card-name">{p.n}</div>

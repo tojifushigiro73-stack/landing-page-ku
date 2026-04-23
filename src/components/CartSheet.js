@@ -30,9 +30,9 @@ export default function CartSheet() {
       <div className={`overlay ${active ? 'active' : ''}`} onClick={() => setActive(false)}></div>
       <div className={`sheet ${active ? 'active' : ''}`}>
         <div className="handle"></div>
-        
+
         {peekProduct && (
-          <button 
+          <button
             onClick={() => { setPeekProduct(null); setActive(false); }}
             style={{
               position: "absolute", top: "20px", left: "20px", background: "#f5f5f5",
@@ -68,14 +68,14 @@ function ProductPeek({ p, close }) {
       <div>
         <h2 style={{ fontFamily: "var(--font-playfair)", fontSize: "2rem", color: "var(--primary)", marginBottom: "8px" }}>{p.n}</h2>
         <p style={{ color: "var(--text-muted)", marginBottom: "24px", fontSize: "1rem", lineHeight: "1.5" }}>{p.d}</p>
-        
+
         <p style={{ fontWeight: "800", marginBottom: "15px", color: "#2d1b22", fontSize: "0.9rem", textTransform: "uppercase", letterSpacing: "0.5px" }}>Pilih Varian / Berat:</p>
-        
+
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           {p.opts.map((o, idx) => (
-            <button 
-              key={idx} 
-              className="opt-btn" 
+            <button
+              key={idx}
+              className="opt-btn"
               onClick={(e) => { addToCart(p, o, e); close(); }}
               style={{
                 width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center",
@@ -92,8 +92,8 @@ function ProductPeek({ p, close }) {
           ))}
         </div>
       </div>
-      <button 
-        onClick={close} 
+      <button
+        onClick={close}
         style={{ width: "100%", background: "#f5f5f5", color: "#666", border: "none", padding: "14px", borderRadius: "16px", fontWeight: "700", cursor: "pointer", marginTop: "10px" }}
       >KEMBALI KE MENU</button>
     </div>
@@ -104,13 +104,14 @@ import dynamic from 'next/dynamic';
 const Map = dynamic(() => import('./Map'), { ssr: false });
 
 function CartView() {
-  const { cart, removeFromCart, loyaltyPoints, isRedeemingPoints, setIsRedeemingPoints, customerName, setCustomerName, distance, setDistance, setLocation } = useApp();
+  const { cart, removeFromCart, loyaltyPoints, isRedeemingPoints, setIsRedeemingPoints, customerName, setCustomerName, distance, setDistance, setLocation, currentUser } = useApp();
   const [addressQuery, setAddressQuery] = useState("");
-  
+
   const subtotal = cart.reduce((s, i) => s + i.p, 0);
   const discount = (isRedeemingPoints && loyaltyPoints >= 10) ? Math.floor(loyaltyPoints / 10) * 5000 : 0;
+  const potentialPoints = Math.floor(subtotal / 10000);
   const isTooFar = distance > 10;
-  
+
   // Logic: < 5km (Free), 5-7km (5rb), > 7km (ceil * 2rb), 3+ items within 7km (Free)
   let ongkir = 0;
   if (distance > 0 && distance <= 10) {
@@ -133,8 +134,10 @@ function CartView() {
     cart.forEach(i => msg += `• ${i.n} (${i.l}) - Rp ${i.p.toLocaleString('id-ID')}\n`);
     msg += `\nSubtotal: Rp ${subtotal.toLocaleString('id-ID')}\n`;
     msg += `Ongkir: ${isTooFar ? '*Tanya via WA*' : (ongkir === 0 ? 'GRATIS' : 'Rp ' + ongkir.toLocaleString('id-ID'))}\n`;
-    if (discount > 0) msg += `Diskon Poin: -Rp ${discount.toLocaleString('id-ID')}\n`;
+    if (discount > 0) msg += `Diskon Poin: -Rp ${discount.toLocaleString('id-ID')} (Gunakan ${Math.floor(loyaltyPoints / 10) * 10} Poin)\n`;
+    msg += `Estimasi Poin Masuk: +${potentialPoints} Poin\n`;
     msg += `*Grand Total: Rp ${total.toLocaleString('id-ID')}*\n\n`;
+    msg += `ID Pelanggan: ${currentUser ? currentUser.email : 'Guest/Bukan Member'}\n\n`;
     msg += isTooFar ? `Mohon info ongkirnya ya kak karena lokasi saya cukup jauh. 😊` : `Saya akan segera upload bukti transfernya. 😊`;
     window.open(`https://wa.me/6285836695103?text=${encodeURIComponent(msg)}`, '_blank');
   };
@@ -165,8 +168,24 @@ function CartView() {
 
   return (
     <>
-      <h2 style={{ marginBottom: "20px", fontFamily: "var(--font-playfair)" }}>Cek Pesanan</h2>
-      
+      <div style={{ display: "flex", alignItems: "center", gap: "15px", marginBottom: "20px" }}>
+        <button
+          onClick={() => window.dispatchEvent(new CustomEvent('close-modals'))}
+          onMouseEnter={(e) => e.currentTarget.style.background = "#fae1eb"}
+          onMouseLeave={(e) => e.currentTarget.style.background = "#fdf2f6"}
+          style={{
+            background: "#fdf2f6", border: "none", width: "38px", height: "38px",
+            borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center",
+            cursor: "pointer", color: "var(--primary)", transition: "all 0.3s ease"
+          }}
+        >
+          <i className="fa-solid fa-chevron-left"></i>
+        </button>
+
+        <h2 style={{ fontFamily: "var(--font-playfair)", fontSize: "1.6rem", color: "var(--primary)" }}>Cek Pesanan</h2>
+      </div>
+
+
       {/* LOYALTY BOX */}
       <div style={{ background: "#fff9f0", border: "1px dashed #e67e22", borderRadius: "16px", padding: "15px", marginBottom: "24px", display: "flex", alignItems: "center", gap: "12px" }}>
         <div style={{ fontSize: "2rem" }}>🎁</div>
@@ -192,7 +211,7 @@ function CartView() {
               <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>{item.l}</div>
             </div>
             <span style={{ fontWeight: "600" }}>
-              Rp {item.p.toLocaleString('id-ID')} 
+              Rp {item.p.toLocaleString('id-ID')}
               <i className="fa-solid fa-trash" style={{ color: "#ff7675", cursor: "pointer", marginLeft: "10px" }} onClick={() => removeFromCart(idx)}></i>
             </span>
           </div>
@@ -203,11 +222,11 @@ function CartView() {
       <div className="bank-box" style={{ background: "#fdf2f6", padding: "16px", borderRadius: "16px", marginBottom: "24px", border: "1px dashed var(--primary-light)" }}>
         <p style={{ fontWeight: 700, color: "var(--primary)", marginBottom: "10px" }}>💳 Pembayaran Transfer</p>
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px", fontSize: "0.85rem" }}>
-          <span>BRI: 009801076603506<br/><small style={{ color: "var(--text-muted)" }}>a/n Rendy Sena Giwandita</small></span>
+          <span>BRI: 009801076603506<br /><small style={{ color: "var(--text-muted)" }}>a/n Rendy Sena Giwandita</small></span>
           <span className="copy-btn" style={{ color: "var(--primary)", fontWeight: "800", cursor: "pointer" }} onClick={() => { navigator.clipboard.writeText("009801076603506"); alert("Salin!"); }}>SALIN</span>
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem" }}>
-          <span>DANA/GOPAY: 082348315200<br/><small style={{ color: "var(--text-muted)" }}>a/n Ferina Pratiwi</small></span>
+          <span>DANA/GOPAY: 082348315200<br /><small style={{ color: "var(--text-muted)" }}>a/n Ferina Pratiwi</small></span>
           <span className="copy-btn" style={{ color: "var(--primary)", fontWeight: "800", cursor: "pointer" }} onClick={() => { navigator.clipboard.writeText("082348315200"); alert("Salin!"); }}>SALIN</span>
         </div>
       </div>
@@ -215,33 +234,33 @@ function CartView() {
       {/* LOCATION SECTION */}
       <div className="map-section" style={{ marginTop: "24px", borderTop: "1px solid #f0f0f0", paddingTop: "24px" }}>
         <p style={{ fontWeight: 700, marginBottom: "15px" }}>📍 Lokasi Pengiriman</p>
-        <input 
-          type="text" placeholder="Nama Penerima" className="loc-input" 
+        <input
+          type="text" placeholder="Nama Penerima" className="loc-input"
           style={{ width: "100%", padding: "12px", borderRadius: "12px", border: "1px solid #eee", marginBottom: "10px" }}
-          value={customerName} onChange={(e) => setCustomerName(e.target.value)} 
+          value={customerName} onChange={(e) => setCustomerName(e.target.value)}
         />
-        
+
         <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
-          <input 
-            type="text" placeholder="Cari Alamat..." className="loc-input" 
+          <input
+            type="text" placeholder="Cari Alamat..." className="loc-input"
             style={{ flex: 1, padding: "12px", borderRadius: "12px", border: "1px solid #eee" }}
             value={addressQuery} onChange={(e) => setAddressQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && searchAddress()}
           />
-          <button 
+          <button
             onClick={searchAddress}
             style={{ padding: "0 15px", background: "var(--primary)", color: "white", border: "none", borderRadius: "12px", cursor: "pointer" }}
           >Cari</button>
         </div>
 
-        <button 
+        <button
           onClick={useMyLocation}
-          className="loc-btn" 
+          className="loc-btn"
           style={{ width: "100%", background: "#fff", border: "1.5px solid var(--primary)", color: "var(--primary)", padding: "12px", borderRadius: "12px", fontWeight: "700", cursor: "pointer", marginBottom: "15px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
         >
           <i className="fa-solid fa-location-crosshairs"></i> Gunakan Lokasi Saya
         </button>
-        
+
         <div style={{ fontSize: "0.85rem", color: isTooFar ? "#d35400" : "var(--primary)", fontWeight: 700, marginBottom: "10px" }}>
           {distance > 0 ? (isTooFar ? `📍 Lokasi cukup jauh (${distance} km)` : `Jarak: ${distance}km | Ongkir: ${ongkir === 0 ? 'GRATIS' : 'Rp ' + ongkir.toLocaleString('id-ID')}`) : "Seret titik atau klik lokasi di peta"}
         </div>
@@ -259,6 +278,9 @@ function CartView() {
         <button onClick={handleWA} className="cta-btn" style={{ width: "100%", border: "none", marginTop: "20px", background: isTooFar ? "#e67e22" : "#27ae60" }}>
           {isTooFar ? 'TANYA ONGKIR VIA WHATSAPP' : 'KIRIM KE WHATSAPP'} <i className="fa-brands fa-whatsapp" style={{ marginLeft: "8px" }}></i>
         </button>
+        <p style={{ textAlign: "center", fontSize: "0.75rem", color: "#999", marginTop: "15px", fontStyle: "italic" }}>
+          *Poin akan ditambahkan/dikurangi secara otomatis setelah pembayaran Anda dikonfirmasi oleh Admin.
+        </p>
       </div>
     </>
   );

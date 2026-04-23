@@ -37,18 +37,21 @@ export default function Home() {
 
       {/* Floating Checkout Bar */}
       {cart.length > 0 && (
-        <div className="floating-checkout" style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+        <div className="floating-checkout">
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: "0.65rem", color: "#ff85c0", fontWeight: "700", marginBottom: "2px" }}>
-              {potentialPoints > 0 ? `+${potentialPoints} Poin Pilihan` : ""}
-            </div>
-            <div style={{ fontSize: "0.75rem", opacity: "0.8", fontWeight: "600" }}>Total + Ongkir</div>
-            <div style={{ fontSize: "1.1rem", fontWeight: "700" }}>
+            {potentialPoints > 0 && (
+              <div className="points-badge">
+                <i className="fa-solid fa-gift" style={{ marginRight: "5px" }}></i>
+                +{potentialPoints} Poin Pilihan
+              </div>
+            )}
+            <div style={{ fontSize: "0.75rem", opacity: "0.8", fontWeight: "600", color: "#ffd1e3" }}>Estimasi Total</div>
+            <div style={{ fontSize: "1.2rem", fontWeight: "800", letterSpacing: "0.5px" }}>
               Rp {subtotal.toLocaleString('id-ID')}
             </div>
           </div>
           <button className="checkout-btn" onClick={() => window.dispatchEvent(new CustomEvent('open-cart'))}>
-            Checkout <i className="fa-solid fa-arrow-right" style={{ marginLeft: "8px" }}></i>
+            Checkout <i className="fa-solid fa-arrow-right"></i>
           </button>
         </div>
       )}

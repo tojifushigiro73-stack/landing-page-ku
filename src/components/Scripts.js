@@ -3,12 +3,14 @@ import { useEffect } from "react";
 
 const Scripts = () => {
     useEffect(() => {
-        // 1. PEMBERSIHAN SERVICE WORKER (ZOMBIE CODE CLEANER)
+        // 1. PWA SERVICE WORKER REGISTRATION
         if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(registrations => {
-                for (let registration of registrations) {
-                    registration.unregister();
-                }
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                    console.log('PWA SW registered with scope: ', registration.scope);
+                }, function(err) {
+                    console.log('PWA SW registration failed: ', err);
+                });
             });
         }
 

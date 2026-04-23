@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useApp } from "@/context/AppContext";
 
 export default function Navbar() {
-  const { cart, currentUser } = useApp();
+  const { cart, currentUser, isAdmin } = useApp();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -58,6 +58,13 @@ export default function Navbar() {
                   {(currentUser.name || currentUser.email.split('@')[0] || 'Member').split(' ')[0]}
                 </span>
               </div>
+              
+              {isAdmin && (
+                <a href="/admin" style={{ 
+                  textDecoration: "none", background: "#34495e", color: "white", 
+                  padding: "8px 12px", borderRadius: "10px", fontSize: "0.75rem", fontWeight: "700" 
+                }}>Admin</a>
+              )}
             </div>
           )}
           

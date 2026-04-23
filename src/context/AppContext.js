@@ -15,6 +15,10 @@ export function AppProvider({ children }) {
     const [distance, setDistance] = useState(0);
     const [location, setLocation] = useState(null);
 
+    const ADMIN_EMAILS = ["ferinapratiwi72@gmail.com", "rendy.sena09@gmail.com"];
+
+    const isAdmin = currentUser && ADMIN_EMAILS.includes(currentUser.email);
+
     // Initial Load
     useEffect(() => {
         const savedCart = JSON.parse(localStorage.getItem('cart_v17')) || [];
@@ -48,10 +52,23 @@ export function AppProvider({ children }) {
         try {
             const userRef = doc(db, "users", user.uid);
             const userSnap = await getDoc(userRef);
+            
             if (userSnap.exists()) {
                 const points = userSnap.data().points || 0;
                 setLoyaltyPoints(points);
                 localStorage.setItem('loyalty_v1', points);
+            } else {
+                // User baru, buat record di Firestore
+                const newUserData = {
+                    uid: user.uid,
+                    name: user.displayName || user.email.split('@')[0],
+                    email: user.email,
+                    points: 0,
+                    createdAt: serverTimestamp()
+                };
+                await setDoc(userRef, newUserData);
+                setLoyaltyPoints(0);
+                localStorage.setItem('loyalty_v1', 0);
             }
         } catch (err) {
             console.error("Sync Error:", err);
@@ -85,7 +102,8 @@ export function AppProvider({ children }) {
             isRedeemingPoints, setIsRedeemingPoints,
             customerName, setCustomerName,
             distance, setDistance,
-            location, setLocation
+            location, setLocation,
+            isAdmin, ADMIN_EMAILS
         }}>
             {children}
         </AppContext.Provider>
