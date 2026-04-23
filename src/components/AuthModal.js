@@ -27,6 +27,10 @@ export default function AuthModal() {
   }, []);
 
   const handleLogin = async () => {
+    if (!auth || !provider) {
+      alert("Sistem login sedang bersiap. Silakan coba lagi dalam beberapa saat.");
+      return;
+    }
     try {
       await signInWithPopup(auth, provider);
       setActive(false);

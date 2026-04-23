@@ -14,17 +14,25 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase safely
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-const auth = getAuth(app);
-const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
+// Initialize Firebase safely for Build environment
+let app, auth, db, provider;
 
-// Analytics (Client Side only)
-if (typeof window !== "undefined") {
-    isSupported().then(yes => {
-        if (yes) getAnalytics(app);
-    });
+if (typeof window !== "undefined" || firebaseConfig.apiKey) {
+    try {
+        app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+        auth = getAuth(app);
+        db = getFirestore(app);
+        provider = new GoogleAuthProvider();
+
+        // Analytics (Client Side only)
+        if (typeof window !== "undefined") {
+            isSupported().then(yes => {
+                if (yes) getAnalytics(app);
+            });
+        }
+    } catch (e) {
+        console.error("Firebase initialization failed:", e);
+    }
 }
 
 export { app, auth, db, provider };

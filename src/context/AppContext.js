@@ -25,6 +25,7 @@ export function AppProvider({ children }) {
 
     // Auth Listener
     useEffect(() => {
+        if (!auth) return;
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
                 const userData = {
