@@ -44,16 +44,21 @@ export function AppProvider({ children }) {
     }, []);
 
     const syncPoints = async (user) => {
-        const userRef = doc(db, "users", user.uid);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-            const points = userSnap.data().points || 0;
-            setLoyaltyPoints(points);
-            localStorage.setItem('loyalty_v1', points);
+        if (!user || !db) return;
+        try {
+            const userRef = doc(db, "users", user.uid);
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+                const points = userSnap.data().points || 0;
+                setLoyaltyPoints(points);
+                localStorage.setItem('loyalty_v1', points);
+            }
+        } catch (err) {
+            console.error("Sync Error:", err);
         }
     };
 
-    const addToCart = (product, variant, e) => {
+    const addToCart = (product, variant) => {
         const newCart = [...cart, { n: product.n, l: variant.l, p: variant.p, i: product.i }];
         setCart(newCart);
         localStorage.setItem('cart_v17', JSON.stringify(newCart));
@@ -67,6 +72,7 @@ export function AppProvider({ children }) {
     };
 
     const logout = async () => {
+        if (!auth) return;
         await signOut(auth);
         setCurrentUser(null);
     };
