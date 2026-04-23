@@ -7,41 +7,45 @@ const Scripts = () => {
         if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then(registrations => {
                 for (let registration of registrations) {
-                    console.log("Menghapus Service Worker Lama...");
                     registration.unregister();
                 }
             });
         }
 
-        // 2. ONE SIGNAL (Hanya di domain produksi)
+        // 2. ONE SIGNAL (ID Valid dari Website Lama)
         const isProd = window.location.hostname === 'www.lamishabake.shop' || window.location.hostname === 'lamishabake.shop';
         if (isProd) {
             window.OneSignal = window.OneSignal || [];
             if (!document.getElementById('onesignal-sdk')) {
                 const script = document.createElement('script');
                 script.id = 'onesignal-sdk';
-                script.src = "https://cdn.onesignal.com/sdks/OneSignalSDK.js";
+                script.src = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
                 script.async = true;
+                script.defer = true;
                 document.head.appendChild(script);
 
                 script.onload = () => {
                     window.OneSignal.push(function() {
                         window.OneSignal.init({
-                            appId: "9316d29d-400a-4712-ae01-44331e847704",
-                            safari_web_id: "web.onesignal.auto.10a9f6a6-4442-4217-a00d-565a0438a36d",
-                            notifyButton: { enable: true },
+                            appId: "5915e37b-4344-4f12-b442-067ced458d88", // ID asli yang sudah terdaftar
+                            notifyButton: { enable: false },
                         });
                     });
                 };
             }
         }
 
-        // 3. TAWK.TO (Chat Widget)
+        // 3. TAWK.TO (ID Valid dari Website Lama)
         if (!document.getElementById('tawk-script')) {
+            window.Tawk_API = window.Tawk_API || {};
+            window.Tawk_API.onLoad = function () {
+                window.Tawk_API.hideWidget();
+            };
+            
             const tawk = document.createElement('script');
             tawk.id = 'tawk-script';
             tawk.async = true;
-            tawk.src = 'https://embed.tawk.to/67035f5f3739577d91eac607/1i9j1883v';
+            tawk.src = 'https://embed.tawk.to/69d3437ec81db11c3ab8d6ee/1jlgjv9qc'; // Link asli yang valid
             tawk.charset = 'UTF-8';
             tawk.setAttribute('crossorigin', '*');
             document.head.appendChild(tawk);
