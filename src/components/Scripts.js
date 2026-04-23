@@ -25,9 +25,10 @@ const Scripts = () => {
                 document.head.appendChild(script);
 
                 script.onload = () => {
-                    window.OneSignal.push(function() {
-                        window.OneSignal.init({
-                            appId: "5915e37b-4344-4f12-b442-067ced458d88", // ID asli yang sudah terdaftar
+                    window.OneSignalDeferred = window.OneSignalDeferred || [];
+                    window.OneSignalDeferred.push(async function(OneSignal) {
+                        await OneSignal.init({
+                            appId: "5915e37b-4344-4f12-b442-067ced458d88",
                             notifyButton: { enable: false },
                         });
                     });
@@ -35,17 +36,12 @@ const Scripts = () => {
             }
         }
 
-        // 3. TAWK.TO (ID Valid dari Website Lama)
+        // 3. TAWK.TO (Munculkan Widget)
         if (!document.getElementById('tawk-script')) {
-            window.Tawk_API = window.Tawk_API || {};
-            window.Tawk_API.onLoad = function () {
-                window.Tawk_API.hideWidget();
-            };
-            
             const tawk = document.createElement('script');
             tawk.id = 'tawk-script';
             tawk.async = true;
-            tawk.src = 'https://embed.tawk.to/69d3437ec81db11c3ab8d6ee/1jlgjv9qc'; // Link asli yang valid
+            tawk.src = 'https://embed.tawk.to/69d3437ec81db11c3ab8d6ee/1jlgjv9qc';
             tawk.charset = 'UTF-8';
             tawk.setAttribute('crossorigin', '*');
             document.head.appendChild(tawk);

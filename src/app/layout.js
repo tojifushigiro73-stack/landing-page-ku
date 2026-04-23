@@ -19,6 +19,10 @@ export const metadata = {
   title: "La Misha Bakehouse | Kukis & Cake Terbaik di Kota Metro",
   description: "Kukis dan kue premium yang dipanggang segar setiap hari di Kota Metro. Rasakan kelezatan dalam setiap gigitan.",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/apple-touch-icon.png",
+    apple: "/apple-touch-icon.png",
+  }
 };
 
 export default function RootLayout({ children }) {
