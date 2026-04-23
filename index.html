@@ -14,26 +14,32 @@
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
         window.OneSignalDeferred = window.OneSignalDeferred || [];
-        OneSignalDeferred.push(async function (OneSignal) {
-            await OneSignal.init({
-                appId: "5915e37b-4344-4f12-b442-067ced458d88",
-                notifyButton: { enable: false },
-                promptOptions: {
-                    slidedown: {
-                        enabled: true,
-                        autoPrompt: true,
-                        timeDelay: 10,
-                        pageViews: 1
+        
+        // Only initialize OneSignal on the production domain to avoid errors on localhost
+        if (window.location.hostname === 'www.lamishabake.shop' || window.location.hostname === 'lamishabake.shop') {
+            OneSignalDeferred.push(async function (OneSignal) {
+                await OneSignal.init({
+                    appId: "5915e37b-4344-4f12-b442-067ced458d88",
+                    notifyButton: { enable: false },
+                    promptOptions: {
+                        slidedown: {
+                            enabled: true,
+                            autoPrompt: true,
+                            timeDelay: 10,
+                            pageViews: 1
+                        }
                     }
-                }
+                });
+
+                // Custom UI logic for Subscription Bell
+                updateBellUI(OneSignal);
+
+                // Listen for changes
+                OneSignal.Notifications.addEventListener("permissionChange", () => updateBellUI(OneSignal));
             });
-
-            // Custom UI logic for Subscription Bell
-            updateBellUI(OneSignal);
-
-            // Listen for changes
-            OneSignal.Notifications.addEventListener("permissionChange", () => updateBellUI(OneSignal));
-        });
+        } else {
+            console.log("OneSignal skipped on this domain:", window.location.hostname);
+        }
 
         function updateBellUI(OneSignal) {
             const isSubscribed = OneSignal.Notifications.permission;
@@ -54,7 +60,7 @@
             }
 
             // Atur fungsi klik berdasarkan status permission
-            bell.onclick = function() {
+            bell.addEventListener('click', function() {
                 if (Notification.permission === 'denied') {
                     alert("Anda telah memblokir notifikasi. Klik ikon gembok di pojok kiri atas (dekat alamat website) lalu ubah 'Block' menjadi 'Allow' agar tidak ketinggalan info promo.");
                 } else {
@@ -62,7 +68,7 @@
                         console.log("Subscription success:", res);
                     });
                 }
-            };
+            });
 
             // Atur teks hint jika diblokir
             const hint = document.getElementById('bell-hint');
@@ -117,9 +123,22 @@
     <nav id="nav">
         <div class="container nav-content">
             <a href="#" class="logo">La Misha Bakehouse</a>
-            <div class="cart-btn" onclick="openCart()">
-                <i class="fa-solid fa-shopping-bag"></i>
-                <span class="cart-badge" id="c-count">0</span>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div id="login-section">
+                    <button class="user-nav-btn" data-action="open-auth">
+                        <i class="fa-solid fa-user-circle"></i> Login
+                    </button>
+                </div>
+                <div id="user-profile" style="display: none;">
+                    <div class="user-nav-btn" data-action="logout">
+                        <img id="user-photo" src="" alt="" onerror="this.src='https://ui-avatars.com/api/?name=User&background=b02762&color=fff'">
+                        <span id="user-name">Member</span>
+                    </div>
+                </div>
+                <div class="cart-btn" data-action="open-cart">
+                    <i class="fa-solid fa-shopping-bag"></i>
+                    <span class="cart-badge" id="c-count">0</span>
+                </div>
             </div>
         </div>
     </nav>
@@ -137,12 +156,16 @@
         </div>
     </section>
 
+    <section class="loyalty-section">
+        <div class="container" id="loyalty-card-container"></div>
+    </section>
+
     <div class="tabs-sticky">
         <div class="container">
             <div class="tabs-scroll" id="tab-container">
-                <button class="tab active" onclick="go('all')">Semua</button>
-                <button class="tab" onclick="go('cookies')">Kukis</button>
-                <button class="tab" onclick="go('cakes')">Cakes</button>
+                <button class="tab active" data-action="go" data-cat="all">Semua</button>
+                <button class="tab" data-action="go" data-cat="cookies">Kukis</button>
+                <button class="tab" data-action="go" data-cat="cakes">Cakes</button>
             </div>
         </div>
     </div>
@@ -158,7 +181,7 @@
         </div>
     </main>
 
-    <div class="overlay" id="overlay" onclick="hide()"></div>
+    <div class="overlay" id="overlay" data-action="close-cart"></div>
     <div class="sheet" id="sheet">
         <div class="handle"></div>
         <div id="sheet-body"></div>
@@ -166,11 +189,12 @@
 
     <div class="floating-checkout" id="checkout-bar">
         <div class="total-v">
+            <div id="loyalty-msg" style="font-size:0.65rem; color:var(--primary); font-weight:700; margin-bottom:2px"></div>
             <div style="font-size:0.75rem; opacity:0.8; font-weight:600">Total + Ongkir</div>
             <div id="total-val" style="font-size:1.1rem; font-weight:700">Rp 0</div>
         </div>
-        <button class="checkout-btn" onclick="openCart()">
-            Bayar <i class="fa-solid fa-arrow-right"></i>
+        <button class="checkout-btn" data-action="open-cart">
+            Buka Keranjang <i class="fa-solid fa-arrow-right" style="margin-left:8px"></i>
         </button>
     </div>
 
@@ -178,8 +202,72 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
+    <footer style="text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid #f0f0f0; margin-top: 50px;">
+        <p>&copy; 2024 La Misha Bakehouse Metro. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Auth Modal -->
+    <div class="auth-overlay" id="auth-overlay">
+        <div class="auth-modal">
+            <button class="auth-close" data-action="close-auth">&times;</button>
+            <div class="auth-header">
+                <img src="apple-touch-icon.png" alt="Logo">
+                <h2 class="auth-title">Halo, Pecinta Kukis!</h2>
+                <p class="auth-desc">Masuk untuk simpan poin belanja dan nikmati diskon khusus member La Misha.</p>
+            </div>
+            
+            <button class="google-btn" data-action="start-login">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                Lanjut dengan Google
+            </button>
+
+            <div class="auth-footer">
+                Dengan masuk, Anda menyetujui <br><a href="javascript:void(0)" data-action="open-terms">Syarat & Ketentuan</a> kami.
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="auth-overlay" id="logout-overlay">
+        <div class="auth-modal logout-modal" style="max-width: 320px; text-align: center;">
+            <div class="logout-icon" style="font-size: 3rem; margin-bottom: 15px;">👋</div>
+            <h2 class="auth-title">Mau Keluar?</h2>
+            <p class="auth-desc">Jangan khawatir, poin Pilihan Anda tetap aman di akun Google Anda.</p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 25px;">
+                <button class="cta-btn" data-action="close-logout" style="flex: 1; background: #eee; color: #666; border: none;">Batal</button>
+                <button class="cta-btn" data-action="confirm-logout" style="flex: 1; border: none;">Keluar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms & Conditions Modal -->
+    <div class="auth-overlay" id="terms-overlay">
+        <div class="auth-modal terms-modal">
+            <button class="auth-close" data-action="close-terms">&times;</button>
+            <h2 class="auth-title">Syarat & Ketentuan</h2>
+            <div class="terms-content">
+                <p>Selamat datang di La Misha Bakehouse. Dengan menggunakan layanan kami, Anda menyetujui ketentuan berikut:</p>
+                
+                <h3>1. Akun & Poin</h3>
+                <p>Poin pilihan diberikan untuk setiap transaksi kelipatan Rp 10.000. Poin tidak dapat diuangkan dan hanya berlaku untuk penukaran diskon di platform La Misha.</p>
+                
+                <h3>2. Pemesanan</h3>
+                <p>Pesanan yang telah dikirim ke WhatsApp akan diproses setelah konfirmasi pembayaran diterima oleh admin kami.</p>
+                
+                <h3>3. Pengiriman</h3>
+                <p>Radius pengiriman maksimal adalah 10km dari lokasi workshop kami di Kota Metro. Biaya ongkir di luar radius tersebut akan ditentukan kemudian melalui chat WhatsApp.</p>
+                
+                <h3>4. Privasi</h3>
+                <p>Data yang Anda berikan melalui Google Login hanya digunakan untuk identitas member dan pencatatan poin loyalitas Anda secara aman.</p>
+
+                <button class="cta-btn" data-action="close-terms" style="width:100%; margin-top:20px; border:none">SAYA MENGERTI</button>
+            </div>
+        </div>
+    </div>
+
     <!-- External Business Logic -->
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
     <!-- Tawk.to Chat Widget -->
     <script type="text/javascript">
         var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
