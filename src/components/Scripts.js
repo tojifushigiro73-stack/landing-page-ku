@@ -1,73 +1,55 @@
 "use client";
-import Script from "next/script";
+import { useEffect } from "react";
 
-export default function Scripts() {
-  // Clean up legacy service workers from vanilla JS version
-  if (typeof window !== 'undefined') {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(registrations => {
-        for (let registration of registrations) {
-          registration.unregister();
-          console.log("Legacy Service Worker unregistered");
-        }
-      });
-    }
-  }
-
-  return (
-    <>
-      {/* OneSignal */}
-      <Script
-        src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
-        strategy="afterInteractive"
-        onLoad={() => {
-          window.OneSignalDeferred = window.OneSignalDeferred || [];
-          if (window.location.hostname === 'www.lamishabake.shop' || window.location.hostname === 'lamishabake.shop') {
-            window.OneSignalDeferred.push(async function (OneSignal) {
-              await OneSignal.init({
-                appId: "5915e37b-4344-4f12-b442-067ced458d88",
-                notifyButton: { enable: false },
-              });
+const Scripts = () => {
+    useEffect(() => {
+        // 1. PEMBERSIHAN SERVICE WORKER (ZOMBIE CODE CLEANER)
+        if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                for (let registration of registrations) {
+                    console.log("Menghapus Service Worker Lama...");
+                    registration.unregister();
+                }
             });
-          }
-        }}
-      />
+        }
 
-      {/* Tawk.to */}
-      <Script
-        id="tawk-script"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
-            (function(){
-              var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-              s1.async=true;
-              s1.src='https://embed.tawk.to/69d3437ec81db11c3ab8d6ee/1jlgjv9qc';
-              s1.charset='UTF-8';
-              s1.setAttribute('crossorigin','*');
-              s0.parentNode.insertBefore(s1,s0);
-              Tawk_API.onLoad = function() {
-                Tawk_API.hideWidget();
-              };
-            })();
-          `,
-        }}
-      />
+        // 2. ONE SIGNAL (Hanya di domain produksi)
+        const isProd = window.location.hostname === 'www.lamishabake.shop' || window.location.hostname === 'lamishabake.shop';
+        if (isProd) {
+            window.OneSignal = window.OneSignal || [];
+            if (!document.getElementById('onesignal-sdk')) {
+                const script = document.createElement('script');
+                script.id = 'onesignal-sdk';
+                script.src = "https://cdn.onesignal.com/sdks/OneSignalSDK.js";
+                script.async = true;
+                document.head.appendChild(script);
 
-      {/* Custom Floating Icon for Tawk.to */}
-      <div 
-        className="cs-floating-icon" 
-        onClick={() => window.Tawk_API && window.Tawk_API.maximize()}
-      >
-        <i className="fa-solid fa-comment-dots"></i>
-        <div className="cs-badge" style={{
-          position: "absolute", top: "-2px", right: "-2px", background: "#e74c3c",
-          color: "white", fontSize: "0.75rem", fontWeight: "700", width: "24px",
-          height: "24px", borderRadius: "50%", display: "flex", alignItems: "center",
-          justifyContent: "center", border: "3px solid white"
-        }}>1</div>
-      </div>
-    </>
-  );
-}
+                script.onload = () => {
+                    window.OneSignal.push(function() {
+                        window.OneSignal.init({
+                            appId: "9316d29d-400a-4712-ae01-44331e847704",
+                            safari_web_id: "web.onesignal.auto.10a9f6a6-4442-4217-a00d-565a0438a36d",
+                            notifyButton: { enable: true },
+                        });
+                    });
+                };
+            }
+        }
+
+        // 3. TAWK.TO (Chat Widget)
+        if (!document.getElementById('tawk-script')) {
+            const tawk = document.createElement('script');
+            tawk.id = 'tawk-script';
+            tawk.async = true;
+            tawk.src = 'https://embed.tawk.to/67035f5f3739577d91eac607/1i9j1883v';
+            tawk.charset = 'UTF-8';
+            tawk.setAttribute('crossorigin', '*');
+            document.head.appendChild(tawk);
+        }
+
+    }, []);
+
+    return null;
+};
+
+export default Scripts;
