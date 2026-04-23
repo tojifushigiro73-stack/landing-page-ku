@@ -1,13 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  trailingSlash: true,
-  eslint: {
-    // Abaikan error ESLint saat build agar website bisa segera online
-    ignoreDuringBuilds: true,
-  },
+  // Hapus trailingSlash untuk memastikan routing kembali ke standar dasar
   typescript: {
-    // Abaikan error TypeScript saat build (opsional tapi disarankan)
     ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 
