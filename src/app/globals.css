@@ -21,8 +21,9 @@ body {
     overflow-x: hidden;
 }
 
-.container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 15px; width: 100%; }
 @media (min-width: 768px) { .container { padding: 0 25px; } }
+@media (max-width: 380px) { .container { padding: 0 10px; } }
 
 
 /* --- Navbar --- */
@@ -51,6 +52,14 @@ nav.scrolled {
     color: var(--primary);
     text-decoration: none;
     white-space: nowrap;
+}
+
+@media (max-width: 400px) {
+    .logo { font-size: 1.1rem; }
+}
+
+@media (max-width: 340px) {
+    .logo { font-size: 0.95rem; }
 }
 
 .cart-btn {
@@ -107,6 +116,13 @@ nav.scrolled {
     max-width: 800px;
 }
 
+@media (max-width: 768px) {
+    .hero-content {
+        text-align: center;
+        margin: 0 auto;
+    }
+}
+
 .accent-text {
     background: linear-gradient(90deg, #ff85c0, #ff69b4, #e0527a);
     -webkit-background-clip: text;
@@ -114,9 +130,13 @@ nav.scrolled {
     -webkit-text-fill-color: transparent;
 }
 
+@media (max-width: 380px) {
+    .hero h1 { font-size: 2.1rem; }
+}
+
 .hero h1 {
     font-family: var(--font-playfair), serif;
-    font-size: clamp(2.8rem, 10vw, 4.5rem);
+    font-size: clamp(2.4rem, 10vw, 4.5rem);
     line-height: 1.1;
     margin-bottom: 20px;
     text-shadow: 0 10px 30px rgba(0,0,0,0.5);
@@ -124,7 +144,7 @@ nav.scrolled {
 }
 
 .hero p {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     color: rgba(255,255,255,0.95);
     max-width: 650px;
     margin-bottom: 40px;
@@ -132,7 +152,12 @@ nav.scrolled {
     animation: fadeInUp 1s ease-out 0.3s both;
     backdrop-filter: blur(5px);
     background: rgba(0,0,0,0.1);
-    padding: 10px 0;
+    padding: 15px 12px;
+    border-radius: 12px;
+}
+
+@media (min-width: 768px) {
+    .hero p { font-size: 1.3rem; padding: 10px 0; background: transparent; backdrop-filter: none; }
 }
 
 @keyframes fadeInDown {
@@ -146,35 +171,43 @@ nav.scrolled {
 }
 
 .cta-btn {
-    display: inline-block;
-    background: var(--primary); color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
     padding: 16px 40px; border-radius: 50px;
-    text-decoration: none; font-weight: 600;
-    box-shadow: 0 8px 30px rgba(176, 39, 98, 0.4);
+    text-decoration: none; font-weight: 700;
+    box-shadow: 0 10px 30px rgba(176, 39, 98, 0.25);
     transition: var(--transition);
     animation: fadeInUp 1s ease-out 0.6s both;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 0.9rem;
+    letter-spacing: 1.2px;
+    font-size: 0.85rem;
+    color: white;
     cursor: pointer;
     border: none;
+    gap: 10px;
 }
 
 .cta-btn:hover { 
-    transform: translateY(-5px) scale(1.05); 
-    background: var(--primary-light);
-    box-shadow: 0 12px 40px rgba(176, 39, 98, 0.5);
+    transform: translateY(-5px) scale(1.02); 
+    box-shadow: 0 15px 40px rgba(176, 39, 98, 0.35);
 }
 
 .wa-hero-btn {
-    background: #25D366;
-    box-shadow: 0 8px 30px rgba(37, 211, 102, 0.4);
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    box-shadow: 0 10px 30px rgba(37, 211, 102, 0.25);
     margin-left: 15px;
 }
 
+.wa-hero-btn:hover {
+    box-shadow: 0 15px 40px rgba(37, 211, 102, 0.35);
+}
+
 @media (max-width: 768px) {
-    .wa-hero-btn { margin-left: 0; margin-top: 15px; display: block; width: fit-content; margin-right: auto; margin-left: auto; }
-    .cta-btn { display: block; width: fit-content; margin-right: auto; margin-left: auto; }
+    .wa-hero-btn { margin-left: 0; margin-top: 15px; display: flex; width: 100%; max-width: 300px; margin-right: auto; margin-left: auto; }
+    .cta-btn { display: flex; width: 100%; max-width: 300px; margin-right: auto; margin-left: auto; padding: 18px 20px; }
+    .hero p { margin-right: auto; margin-left: auto; }
 }
 
 /* --- Sticky Tabs --- */
@@ -417,6 +450,9 @@ nav.scrolled {
 @keyframes slideInRight {
     from { opacity: 0; transform: translateX(20px); }
     to { opacity: 1; transform: translateX(0); }
+}
+@media (max-width: 350px) {
+    .login-text { display: none; }
 }
 
 .user-nav-btn:hover {

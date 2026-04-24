@@ -187,20 +187,50 @@ function CartView() {
 
 
       {/* LOYALTY BOX */}
-      <div style={{ background: "#fff9f0", border: "1px dashed #e67e22", borderRadius: "16px", padding: "15px", marginBottom: "24px", display: "flex", alignItems: "center", gap: "12px" }}>
-        <div style={{ fontSize: "2rem" }}>🎁</div>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontWeight: 700, color: "#d35400", fontSize: "0.9rem" }}>Poin Pilihan Anda</div>
-          <div style={{ fontSize: "1.1rem", fontWeight: 800, color: "var(--primary)" }}>{loyaltyPoints} Poin</div>
-        </div>
-        {loyaltyPoints >= 10 ? (
-          <button onClick={() => setIsRedeemingPoints(!isRedeemingPoints)} style={{ background: isRedeemingPoints ? "#e74c3c" : "var(--primary)", color: "white", border: "none", padding: "8px 15px", borderRadius: "10px", fontWeight: 700, cursor: "pointer", fontSize: "0.8rem" }}>
-            {isRedeemingPoints ? 'BATAL' : 'TUKAR'}
+      {!currentUser ? (
+        <div style={{ 
+          background: "linear-gradient(135deg, #fff9f0 0%, #fff4e6 100%)", 
+          border: "1.5px dashed #e67e22", 
+          borderRadius: "20px", padding: "18px", marginBottom: "24px", 
+          position: "relative", overflow: "hidden"
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+            <div style={{ fontSize: "1.8rem" }}>✨</div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: 800, color: "#d35400", fontSize: "0.95rem" }}>Simpan Poinmu Yuk?</div>
+              <p style={{ fontSize: "0.75rem", color: "#666", lineHeight: "1.4" }}>Masuk ke akunmu biar poin belanjamu tetap aman dan bisa ditukar diskon nanti. Sayang kan kalau hilang! 😊</p>
+            </div>
+          </div>
+          <button 
+            onClick={() => window.dispatchEvent(new CustomEvent('open-auth'))}
+            style={{ 
+              width: "100%", background: "#e67e22", color: "white", border: "none", 
+              padding: "10px", borderRadius: "12px", fontWeight: 700, cursor: "pointer", 
+              fontSize: "0.85rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px"
+            }}
+          >
+            <i className="fa-solid fa-right-to-bracket"></i> MASUK / DAFTAR MEMBER
           </button>
-        ) : (
-          <div style={{ fontSize: "0.75rem", color: "#888", fontStyle: "italic", width: "80px", textAlign: "right" }}>Min. 10 Poin</div>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div style={{ 
+          background: "#fff9f0", border: "1px dashed #e67e22", borderRadius: "16px", 
+          padding: "15px", marginBottom: "24px", display: "flex", alignItems: "center", gap: "12px" 
+        }}>
+          <div style={{ fontSize: "2rem" }}>🎁</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontWeight: 700, color: "#d35400", fontSize: "0.9rem" }}>Poin Pilihan Anda</div>
+            <div style={{ fontSize: "1.1rem", fontWeight: 800, color: "var(--primary)" }}>{loyaltyPoints} Poin</div>
+          </div>
+          {loyaltyPoints >= 10 ? (
+            <button onClick={() => setIsRedeemingPoints(!isRedeemingPoints)} style={{ background: isRedeemingPoints ? "#e74c3c" : "var(--primary)", color: "white", border: "none", padding: "8px 15px", borderRadius: "10px", fontWeight: 700, cursor: "pointer", fontSize: "0.8rem" }}>
+              {isRedeemingPoints ? 'BATAL' : 'TUKAR'}
+            </button>
+          ) : (
+            <div style={{ fontSize: "0.75rem", color: "#888", fontStyle: "italic", width: "80px", textAlign: "right" }}>Min. 10 Poin</div>
+          )}
+        </div>
+      )}
 
       {/* ITEMS LIST */}
       <div style={{ marginBottom: "24px" }}>
@@ -272,14 +302,24 @@ function CartView() {
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}><span>Subtotal</span><span style={{ fontWeight: "600" }}>Rp {subtotal.toLocaleString('id-ID')}</span></div>
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}><span>Ongkir</span><span style={{ fontWeight: "600" }}>{isTooFar ? 'Tanya di WA' : (ongkir === 0 ? 'GRATIS' : 'Rp ' + ongkir.toLocaleString('id-ID'))}</span></div>
         {discount > 0 && <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px", color: "#e74c3c", fontWeight: 700 }}><span>Diskon Poin</span><span>-Rp {discount.toLocaleString('id-ID')}</span></div>}
+        {potentialPoints > 0 && (
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px", alignItems: "center" }}>
+            <span style={{ fontSize: "0.85rem", color: "var(--primary)", fontWeight: "600" }}>Estimasi Poin Baru</span>
+            <div style={{ textAlign: "right" }}>
+              <span style={{ fontWeight: "700", color: "var(--primary)" }}>+{potentialPoints} Poin</span>
+              {!currentUser && <div style={{ fontSize: "0.6rem", color: "#999" }}>*Khusus Member: Login untuk klaim</div>}
+            </div>
+          </div>
+        )}
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: "1.2rem", fontWeight: 800, color: "var(--primary)", marginTop: "10px" }}>
           <span>Total</span><span>Rp {total.toLocaleString('id-ID')}</span>
         </div>
         <button onClick={handleWA} className="cta-btn" style={{ width: "100%", border: "none", marginTop: "20px", background: isTooFar ? "#e67e22" : "#27ae60" }}>
           {isTooFar ? 'TANYA ONGKIR VIA WHATSAPP' : 'KIRIM KE WHATSAPP'} <i className="fa-brands fa-whatsapp" style={{ marginLeft: "8px" }}></i>
         </button>
-        <p style={{ textAlign: "center", fontSize: "0.75rem", color: "#999", marginTop: "15px", fontStyle: "italic" }}>
-          *Poin akan ditambahkan/dikurangi secara otomatis setelah pembayaran Anda dikonfirmasi oleh Admin.
+        <p style={{ textAlign: "center", fontSize: "0.75rem", color: "#999", marginTop: "15px", fontStyle: "italic", lineHeight: "1.5" }}>
+          *Poin akan ditambahkan/dikurangi secara otomatis setelah pembayaran Anda dikonfirmasi oleh Admin.<br />
+          {!currentUser && <span style={{ color: "var(--primary)", fontWeight: "600" }}>💡 Tips: Masuk ke akunmu yuk, biar poin dari pesanan ini otomatis tersimpan buatmu!</span>}
         </p>
       </div>
     </>

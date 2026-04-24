@@ -9,7 +9,7 @@ import CartSheet from "@/components/CartSheet";
 import AuthModal from "@/components/AuthModal";
 
 export default function Home() {
-  const { cart } = useApp();
+  const { cart, currentUser } = useApp();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -40,9 +40,16 @@ export default function Home() {
         <div className="floating-checkout">
           <div style={{ flex: 1 }}>
             {potentialPoints > 0 && (
-              <div className="points-badge">
-                <i className="fa-solid fa-gift" style={{ marginRight: "5px" }}></i>
-                +{potentialPoints} Poin Pilihan
+              <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                <div className="points-badge" style={{ width: "fit-content" }}>
+                  <i className="fa-solid fa-gift" style={{ marginRight: "5px" }}></i>
+                  +{potentialPoints} Poin Pilihan
+                </div>
+                {!currentUser && (
+                  <div style={{ fontSize: "0.6rem", color: "#ffd1e3", opacity: "0.9", fontWeight: "600" }}>
+                    *Khusus Member: Login untuk klaim poin ini.
+                  </div>
+                )}
               </div>
             )}
             <div style={{ fontSize: "0.75rem", opacity: "0.8", fontWeight: "600", color: "#ffd1e3" }}>Estimasi Total</div>
