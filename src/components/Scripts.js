@@ -5,17 +5,24 @@ const Scripts = () => {
     useEffect(() => {
         // 1. PWA SERVICE WORKER REGISTRATION
         if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
+            const registerSW = () => {
                 navigator.serviceWorker.register('/sw.js').then(function(registration) {
                     console.log('PWA SW registered with scope: ', registration.scope);
-                }, function(err) {
+                }).catch(function(err) {
                     console.log('PWA SW registration failed: ', err);
                 });
-            });
+            };
+
+            if (document.readyState === 'complete') {
+                registerSW();
+            } else {
+                window.addEventListener('load', registerSW);
+            }
         }
 
-        // 2. ONE SIGNAL (ID Valid dari Website Lama)
-        const isProd = window.location.hostname === 'www.lamishabake.shop' || window.location.hostname === 'lamishabake.shop';
+        // 2. ONE SIGNAL
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const isProd = window.location.hostname.includes('lamishabake') || window.location.hostname.includes('vercel.app') || isLocal;
         if (isProd) {
             window.OneSignal = window.OneSignal || [];
             if (!document.getElementById('onesignal-sdk')) {
