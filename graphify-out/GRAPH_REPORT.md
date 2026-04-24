@@ -1,11 +1,11 @@
 # Graph Report - /Users/ferinapratiwi/page  (2026-04-24)
 
 ## Corpus Check
-- 24 files · ~290,047 words
+- 25 files · ~271,430 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 84 nodes · 117 edges · 19 communities detected
+- 85 nodes · 117 edges · 20 communities detected
 - Extraction: 87% EXTRACTED · 13% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
@@ -29,6 +29,7 @@
 - [[_COMMUNITY_Community 16|Community 16]]
 - [[_COMMUNITY_Community 17|Community 17]]
 - [[_COMMUNITY_Community 18|Community 18]]
+- [[_COMMUNITY_Community 19|Community 19]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `updateUI()` - 13 edges
@@ -132,6 +133,10 @@ Nodes (0):
 Cohesion: 1.0
 Nodes (0): 
 
+### Community 19 - "Community 19"
+Cohesion: 1.0
+Nodes (0): 
+
 ## Knowledge Gaps
 - **Thin community `Community 5`** (2 nodes): `fetchMembers()`, `admin.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
@@ -145,30 +150,32 @@ Nodes (0):
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Community 10`** (1 nodes): `eslint.config.mjs`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 11`** (1 nodes): `generate-config.js`
+- **Thin community `Community 11`** (1 nodes): `sw.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 12`** (1 nodes): `OneSignalSDKWorker.js`
+- **Thin community `Community 12`** (1 nodes): `generate-config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 13`** (1 nodes): `config.js`
+- **Thin community `Community 13`** (1 nodes): `OneSignalSDKWorker.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 14`** (1 nodes): `OneSignalSDKUpdaterWorker.js`
+- **Thin community `Community 14`** (1 nodes): `config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 15`** (1 nodes): `config.example.js`
+- **Thin community `Community 15`** (1 nodes): `OneSignalSDKUpdaterWorker.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 16`** (1 nodes): `sw.js`
+- **Thin community `Community 16`** (1 nodes): `config.example.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 17`** (1 nodes): `firebase.js`
+- **Thin community `Community 17`** (1 nodes): `sw.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 18`** (1 nodes): `products.js`
+- **Thin community `Community 18`** (1 nodes): `firebase.js`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 19`** (1 nodes): `products.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Map()` connect `Community 1` to `Community 2`, `Community 3`, `Community 4`?**
-  _High betweenness centrality (0.294) - this node is a cross-community bridge._
+  _High betweenness centrality (0.287) - this node is a cross-community bridge._
 - **Why does `openCart()` connect `Community 2` to `Community 0`, `Community 1`, `Community 3`?**
-  _High betweenness centrality (0.117) - this node is a cross-community bridge._
+  _High betweenness centrality (0.115) - this node is a cross-community bridge._
 - **Are the 8 inferred relationships involving `useApp()` (e.g. with `Home()` and `AdminPage()`) actually correct?**
   _`useApp()` has 8 INFERRED edges - model-reasoned connections that need verification._
 - **Should `Community 0` be split into smaller, more focused modules?**

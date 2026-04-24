@@ -96,7 +96,7 @@ export function AppProvider({ children }) {
 
     return (
         <AppContext.Provider value={{
-            cart, addToCart, removeFromCart,
+            cart, setCart, addToCart, removeFromCart,
             loyaltyPoints, setLoyaltyPoints,
             currentUser, logout,
             isRedeemingPoints, setIsRedeemingPoints,

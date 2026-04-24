@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useApp } from "@/context/AppContext";
+import { db } from "@/lib/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 export default function CartSheet() {
   const { cart, removeFromCart, loyaltyPoints, isRedeemingPoints, setIsRedeemingPoints, customerName, setCustomerName, distance, setDistance } = useApp();
@@ -104,8 +106,9 @@ import dynamic from 'next/dynamic';
 const Map = dynamic(() => import('./Map'), { ssr: false });
 
 function CartView() {
-  const { cart, removeFromCart, loyaltyPoints, isRedeemingPoints, setIsRedeemingPoints, customerName, setCustomerName, distance, setDistance, setLocation, currentUser } = useApp();
+  const { cart, setCart, removeFromCart, loyaltyPoints, isRedeemingPoints, setIsRedeemingPoints, customerName, setCustomerName, distance, setDistance, setLocation, currentUser, location } = useApp();
   const [addressQuery, setAddressQuery] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const subtotal = cart.reduce((s, i) => s + i.p, 0);
   const discount = (isRedeemingPoints && loyaltyPoints >= 10) ? Math.floor(loyaltyPoints / 10) * 5000 : 0;
@@ -128,18 +131,55 @@ function CartView() {
 
   const total = subtotal + ongkir - discount;
 
-  const handleWA = () => {
+  const handleWA = async () => {
     if (!cart.length || distance == 0) return alert('Silakan lengkapi pesanan dan pilih lokasi pengiriman!');
-    let msg = `Halo La Misha! Saya *${customerName || 'Pelanggan'}* ingin pesan:\n\n`;
-    cart.forEach(i => msg += `• ${i.n} (${i.l}) - Rp ${i.p.toLocaleString('id-ID')}\n`);
-    msg += `\nSubtotal: Rp ${subtotal.toLocaleString('id-ID')}\n`;
-    msg += `Ongkir: ${isTooFar ? '*Tanya via WA*' : (ongkir === 0 ? 'GRATIS' : 'Rp ' + ongkir.toLocaleString('id-ID'))}\n`;
-    if (discount > 0) msg += `Diskon Poin: -Rp ${discount.toLocaleString('id-ID')} (Gunakan ${Math.floor(loyaltyPoints / 10) * 10} Poin)\n`;
-    msg += `Estimasi Poin Masuk: +${potentialPoints} Poin\n`;
-    msg += `*Grand Total: Rp ${total.toLocaleString('id-ID')}*\n\n`;
-    msg += `ID Pelanggan: ${currentUser ? currentUser.email : 'Guest/Bukan Member'}\n\n`;
-    msg += isTooFar ? `Mohon info ongkirnya ya kak karena lokasi saya cukup jauh. 😊` : `Saya akan segera upload bukti transfernya. 😊`;
-    window.open(`https://wa.me/6285836695103?text=${encodeURIComponent(msg)}`, '_blank');
+    
+    setLoading(true);
+    try {
+      // 1. Simpan ke Firestore
+      const orderData = {
+        userId: currentUser ? currentUser.uid : "GUEST",
+        userName: customerName || (currentUser ? currentUser.name : "Pelanggan"),
+        userEmail: currentUser ? currentUser.email : "Guest",
+        items: cart,
+        subtotal,
+        ongkir,
+        discount,
+        total,
+        distance,
+        location: location || null,
+        status: "MENUNGGU PEMBAYARAN",
+        createdAt: serverTimestamp(),
+        pointsGained: potentialPoints,
+        pointsUsed: (isRedeemingPoints && loyaltyPoints >= 10) ? Math.floor(loyaltyPoints / 10) * 10 : 0
+      };
+
+      const docRef = await addDoc(collection(db, "orders"), orderData);
+      console.log("Order saved with ID: ", docRef.id);
+
+      // 2. Siapkan Pesan WA
+      let msg = `Halo La Misha! Saya *${customerName || 'Pelanggan'}* ingin pesan (ID: ${docRef.id.slice(-5)}):\n\n`;
+      cart.forEach(i => msg += `• ${i.n} (${i.l}) - Rp ${i.p.toLocaleString('id-ID')}\n`);
+      msg += `\nSubtotal: Rp ${subtotal.toLocaleString('id-ID')}\n`;
+      msg += `Ongkir: ${isTooFar ? '*Tanya via WA*' : (ongkir === 0 ? 'GRATIS' : 'Rp ' + ongkir.toLocaleString('id-ID'))}\n`;
+      if (discount > 0) msg += `Diskon Poin: -Rp ${discount.toLocaleString('id-ID')} (Gunakan ${Math.floor(loyaltyPoints / 10) * 10} Poin)\n`;
+      msg += `Estimasi Poin Masuk: +${potentialPoints} Poin\n`;
+      msg += `*Grand Total: Rp ${total.toLocaleString('id-ID')}*\n\n`;
+      msg += `ID Pelanggan: ${currentUser ? currentUser.email : 'Guest/Bukan Member'}\n\n`;
+      msg += isTooFar ? `Mohon info ongkirnya ya kak karena lokasi saya cukup jauh. 😊` : `Saya akan segera upload bukti transfernya. 😊`;
+      
+      // 3. Reset Cart dan Buka WA
+      setCart([]);
+      localStorage.removeItem('cart_v17');
+      window.open(`https://wa.me/6285836695103?text=${encodeURIComponent(msg)}`, '_blank');
+      window.dispatchEvent(new CustomEvent('close-modals'));
+      alert("Pesanan berhasil dicatat! Silakan lanjutkan konfirmasi ke WhatsApp.");
+    } catch (err) {
+      console.error("Order Save Error:", err);
+      alert("Gagal menyimpan pesanan. Silakan coba lagi.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const searchAddress = async () => {
@@ -314,8 +354,8 @@ function CartView() {
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: "1.2rem", fontWeight: 800, color: "var(--primary)", marginTop: "10px" }}>
           <span>Total</span><span>Rp {total.toLocaleString('id-ID')}</span>
         </div>
-        <button onClick={handleWA} className="cta-btn" style={{ width: "100%", border: "none", marginTop: "20px", background: isTooFar ? "#e67e22" : "#27ae60" }}>
-          {isTooFar ? 'TANYA ONGKIR VIA WHATSAPP' : 'KIRIM KE WHATSAPP'} <i className="fa-brands fa-whatsapp" style={{ marginLeft: "8px" }}></i>
+        <button onClick={handleWA} disabled={loading} className="cta-btn" style={{ width: "100%", border: "none", marginTop: "20px", background: loading ? "#ccc" : (isTooFar ? "#e67e22" : "#27ae60"), cursor: loading ? "not-allowed" : "pointer" }}>
+          {loading ? 'MEMPROSES...' : (isTooFar ? 'TANYA ONGKIR VIA WHATSAPP' : 'KIRIM KE WHATSAPP')} <i className="fa-brands fa-whatsapp" style={{ marginLeft: "8px" }}></i>
         </button>
         <p style={{ textAlign: "center", fontSize: "0.75rem", color: "#999", marginTop: "15px", fontStyle: "italic", lineHeight: "1.5" }}>
           *Poin akan ditambahkan/dikurangi secara otomatis setelah pembayaran Anda dikonfirmasi oleh Admin.<br />

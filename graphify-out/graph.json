@@ -22,12 +22,21 @@
       "norm_label": "eslint.config.mjs"
     },
     {
+      "label": "sw.js",
+      "file_type": "code",
+      "source_file": "/Users/ferinapratiwi/page/public/sw.js",
+      "source_location": "L1",
+      "id": "users_ferinapratiwi_page_public_sw_js",
+      "community": 11,
+      "norm_label": "sw.js"
+    },
+    {
       "label": "generate-config.js",
       "file_type": "code",
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/generate-config.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_vanilla_backup_generate_config_js",
-      "community": 11,
+      "community": 12,
       "norm_label": "generate-config.js"
     },
     {
@@ -36,7 +45,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/OneSignalSDKWorker.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_vanilla_backup_onesignalsdkworker_js",
-      "community": 12,
+      "community": 13,
       "norm_label": "onesignalsdkworker.js"
     },
     {
@@ -45,7 +54,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/config.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_vanilla_backup_config_js",
-      "community": 13,
+      "community": 14,
       "norm_label": "config.js"
     },
     {
@@ -54,7 +63,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/OneSignalSDKUpdaterWorker.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_vanilla_backup_onesignalsdkupdaterworker_js",
-      "community": 14,
+      "community": 15,
       "norm_label": "onesignalsdkupdaterworker.js"
     },
     {
@@ -477,7 +486,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/config.example.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_vanilla_backup_config_example_js",
-      "community": 15,
+      "community": 16,
       "norm_label": "config.example.js"
     },
     {
@@ -486,7 +495,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/sw.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_vanilla_backup_sw_js",
-      "community": 16,
+      "community": 17,
       "norm_label": "sw.js"
     },
     {
@@ -511,7 +520,7 @@
       "label": "useApp()",
       "file_type": "code",
       "source_file": "/Users/ferinapratiwi/page/src/context/AppContext.js",
-      "source_location": "L88",
+      "source_location": "L113",
       "id": "appcontext_useapp",
       "community": 1,
       "norm_label": "useapp()"
@@ -529,7 +538,7 @@
       "label": "RootLayout()",
       "file_type": "code",
       "source_file": "/Users/ferinapratiwi/page/src/app/layout.js",
-      "source_location": "L22",
+      "source_location": "L28",
       "id": "layout_rootlayout",
       "community": 6,
       "norm_label": "rootlayout()"
@@ -565,7 +574,7 @@
       "label": "AdminPage()",
       "file_type": "code",
       "source_file": "/Users/ferinapratiwi/page/src/app/admin/page.js",
-      "source_location": "L11",
+      "source_location": "L8",
       "id": "page_adminpage",
       "community": 1,
       "norm_label": "adminpage()"
@@ -646,7 +655,7 @@
       "label": "ProductCard()",
       "file_type": "code",
       "source_file": "/Users/ferinapratiwi/page/src/components/Catalog.js",
-      "source_location": "L56",
+      "source_location": "L64",
       "id": "catalog_productcard",
       "community": 4,
       "norm_label": "productcard()"
@@ -747,7 +756,7 @@
       "source_file": "/Users/ferinapratiwi/page/src/lib/firebase.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_src_lib_firebase_js",
-      "community": 17,
+      "community": 18,
       "norm_label": "firebase.js"
     },
     {
@@ -756,7 +765,7 @@
       "source_file": "/Users/ferinapratiwi/page/src/data/products.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_src_data_products_js",
-      "community": 18,
+      "community": 19,
       "norm_label": "products.js"
     }
   ],
@@ -1845,7 +1854,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "/Users/ferinapratiwi/page/src/context/AppContext.js",
-      "source_location": "L88",
+      "source_location": "L113",
       "weight": 1.0,
       "_src": "users_ferinapratiwi_page_src_context_appcontext_js",
       "_tgt": "appcontext_useapp",
@@ -1944,8 +1953,8 @@
       "source_file": "/Users/ferinapratiwi/page/src/components/AuthModal.js",
       "source_location": "L9",
       "weight": 1.0,
-      "_src": "authmodal_authmodal",
-      "_tgt": "appcontext_useapp",
+      "_src": "appcontext_useapp",
+      "_tgt": "authmodal_authmodal",
       "source": "appcontext_useapp",
       "target": "authmodal_authmodal"
     },
@@ -1953,7 +1962,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "/Users/ferinapratiwi/page/src/app/layout.js",
-      "source_location": "L22",
+      "source_location": "L28",
       "weight": 1.0,
       "_src": "users_ferinapratiwi_page_src_app_layout_js",
       "_tgt": "layout_rootlayout",
@@ -1977,7 +1986,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "/Users/ferinapratiwi/page/src/app/admin/page.js",
-      "source_location": "L11",
+      "source_location": "L8",
       "weight": 1.0,
       "_src": "users_ferinapratiwi_page_src_app_admin_page_js",
       "_tgt": "page_adminpage",
@@ -2085,7 +2094,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "/Users/ferinapratiwi/page/src/components/Catalog.js",
-      "source_location": "L56",
+      "source_location": "L64",
       "weight": 1.0,
       "_src": "users_ferinapratiwi_page_src_components_catalog_js",
       "_tgt": "catalog_productcard",
