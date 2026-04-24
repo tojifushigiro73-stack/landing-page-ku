@@ -132,7 +132,8 @@ function CartView() {
   const total = subtotal + ongkir - discount;
 
   const handleWA = async () => {
-    if (!cart.length || distance == 0) return alert('Silakan lengkapi pesanan dan pilih lokasi pengiriman!');
+    if (!cart.length) return alert('Keranjang belanja masih kosong!');
+    if (!location) return alert('Silakan pilih lokasi pengiriman pada peta terlebih dahulu!');
     
     setLoading(true);
     try {
@@ -168,12 +169,20 @@ function CartView() {
       msg += `ID Pelanggan: ${currentUser ? currentUser.email : 'Guest/Bukan Member'}\n\n`;
       msg += isTooFar ? `Mohon info ongkirnya ya kak karena lokasi saya cukup jauh. 😊` : `Saya akan segera upload bukti transfernya. 😊`;
       
-      // 3. Reset Cart dan Buka WA
+      // 3. Buka WA
+      const waUrl = `https://wa.me/6285836695103?text=${encodeURIComponent(msg)}`;
+      
+      // Menggunakan window.location.href lebih handal untuk PWA/Mobile daripada window.open
+      // Namun jika ingin tetap di tab baru, window.open bisa dicoba lagi, tapi pastikan ini langkah terakhir
+      window.location.href = waUrl;
+
+      // 4. Reset Cart (Dilakukan setelah redirect dimulai)
       setCart([]);
       localStorage.removeItem('cart_v17');
-      window.open(`https://wa.me/6285836695103?text=${encodeURIComponent(msg)}`, '_blank');
       window.dispatchEvent(new CustomEvent('close-modals'));
-      alert("Pesanan berhasil dicatat! Silakan lanjutkan konfirmasi ke WhatsApp.");
+      
+      // Beri notifikasi singkat
+      console.log("Redirecting to WhatsApp...");
     } catch (err) {
       console.error("Order Save Error:", err);
       alert("Gagal menyimpan pesanan. Silakan coba lagi.");

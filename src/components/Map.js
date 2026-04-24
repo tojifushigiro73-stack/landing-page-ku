@@ -30,7 +30,7 @@ export default function Map({ distance, setDistance, setLocation }) {
           markerRef.current = L.marker(e.latlng).addTo(map);
         }
         
-        const dist = (L.latLng(shopLoc).distanceTo(e.latlng) / 1000).toFixed(2);
+        const dist = parseFloat((L.latLng(shopLoc).distanceTo(e.latlng) / 1000).toFixed(2));
         setDistance(dist);
         setLocation(e.latlng);
       });
@@ -43,7 +43,7 @@ export default function Map({ distance, setDistance, setLocation }) {
         } else {
           markerRef.current = L.marker([lat, lng]).addTo(map);
         }
-        const dist = (L.latLng(shopLoc).distanceTo([lat, lng]) / 1000).toFixed(2);
+        const dist = parseFloat((L.latLng(shopLoc).distanceTo([lat, lng]) / 1000).toFixed(2));
         setDistance(dist);
       };
       window.addEventListener('map-move', mapMove);
