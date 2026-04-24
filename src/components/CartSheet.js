@@ -5,37 +5,32 @@ import { db } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 export default function CartSheet() {
-  const { cart, removeFromCart, loyaltyPoints, isRedeemingPoints, setIsRedeemingPoints, customerName, setCustomerName, distance, setDistance } = useApp();
-  const [active, setActive] = useState(false);
-  const [peekProduct, setPeekProduct] = useState(null);
+  const { cart, removeFromCart, loyaltyPoints, isRedeemingPoints, setIsRedeemingPoints, customerName, setCustomerName, distance, setDistance, isCartOpen, setIsCartOpen, peekedProduct, closePeek } = useApp();
 
   useEffect(() => {
-    const openCart = () => { setPeekProduct(null); setActive(true); };
-    const peek = (e) => { setPeekProduct(e.detail); setActive(true); };
-    const close = () => { setActive(false); setPeekProduct(null); };
+    const openCart = () => { closePeek(); setIsCartOpen(true); };
+    const close = () => { setIsCartOpen(false); closePeek(); };
 
     window.addEventListener('open-cart', openCart);
-    window.addEventListener('peek-product', peek);
     window.addEventListener('close-modals', close);
 
     return () => {
       window.removeEventListener('open-cart', openCart);
-      window.removeEventListener('peek-product', peek);
       window.removeEventListener('close-modals', close);
     };
   }, []);
 
-  if (!active) return null;
+  if (!isCartOpen) return null;
 
   return (
     <>
-      <div className={`overlay ${active ? 'active' : ''}`} onClick={() => setActive(false)}></div>
-      <div className={`sheet ${active ? 'active' : ''}`}>
+      <div className={`overlay ${isCartOpen ? 'active' : ''}`} onClick={() => setIsCartOpen(false)}></div>
+      <div className={`sheet ${isCartOpen ? 'active' : ''}`}>
         <div className="handle"></div>
 
-        {peekProduct && (
+        {peekedProduct && (
           <button
-            onClick={() => { setPeekProduct(null); setActive(false); }}
+            onClick={() => { closePeek(); setIsCartOpen(false); }}
             style={{
               position: "absolute", top: "20px", left: "20px", background: "#f5f5f5",
               border: "none", width: "40px", height: "40px", borderRadius: "50%",
@@ -48,8 +43,8 @@ export default function CartSheet() {
         )}
 
         <div id="sheet-body">
-          {peekProduct ? (
-            <ProductPeek p={peekProduct} close={() => { setPeekProduct(null); setActive(false); }} />
+          {peekedProduct ? (
+            <ProductPeek p={peekedProduct} close={() => { closePeek(); setIsCartOpen(false); }} />
           ) : (
             <CartView />
           )}

@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
+import { useApp } from "@/context/AppContext";
 import { products } from "@/data/products";
 
 export default function Catalog() {
+  const { openPeek } = useApp();
   const [activeCat, setActiveCat] = useState("all");
 
   const groups = { 
@@ -62,8 +64,9 @@ export default function Catalog() {
 }
 
 function ProductCard({ p }) {
+  const { openPeek } = useApp();
   return (
-    <div className="card" onClick={() => window.dispatchEvent(new CustomEvent('peek-product', { detail: p }))}>
+    <div className="card" onClick={() => openPeek(p)}>
       <div className="img-wrap">
         {p.b && <div className="card-badge">{p.b}</div>}
         <img 

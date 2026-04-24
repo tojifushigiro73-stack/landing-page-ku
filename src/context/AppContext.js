@@ -15,6 +15,18 @@ export function AppProvider({ children }) {
     const [distance, setDistance] = useState(0);
     const [location, setLocation] = useState(null);
 
+    const [peekedProduct, setPeekedProduct] = useState(null);
+    const [isCartOpen, setIsCartOpen] = useState(false);
+
+    const openPeek = (product) => {
+        setPeekedProduct(product);
+        setIsCartOpen(true);
+    };
+
+    const closePeek = () => {
+        setPeekedProduct(null);
+    };
+
     const ADMIN_EMAILS = ["ferinapratiwi72@gmail.com", "rendy.sena09@gmail.com"];
 
     const isAdmin = currentUser && ADMIN_EMAILS.includes(currentUser.email);
@@ -94,6 +106,13 @@ export function AppProvider({ children }) {
         setCurrentUser(null);
     };
 
+    const openWhatsApp = (customMsg = "") => {
+        const defaultMsg = "Halo La Misha! Saya mau tanya-tanya seputar kuenya dong... 😊";
+        const msg = customMsg || defaultMsg;
+        const waUrl = `https://wa.me/6285836695103?text=${encodeURIComponent(msg)}`;
+        window.location.href = waUrl;
+    };
+
     return (
         <AppContext.Provider value={{
             cart, setCart, addToCart, removeFromCart,
@@ -103,7 +122,10 @@ export function AppProvider({ children }) {
             customerName, setCustomerName,
             distance, setDistance,
             location, setLocation,
-            isAdmin, ADMIN_EMAILS
+            isAdmin, ADMIN_EMAILS,
+            peekedProduct, openPeek, closePeek,
+            isCartOpen, setIsCartOpen,
+            openWhatsApp
         }}>
             {children}
         </AppContext.Provider>

@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useApp } from "@/context/AppContext";
 import { db } from "@/lib/firebase";
-import { collection, query, getDocs, doc, updateDoc, where, orderBy, increment } from "firebase/firestore";
+import { collection, query, onSnapshot, doc, updateDoc, where, orderBy, increment } from "firebase/firestore";
 import Navbar from "@/components/Navbar";
 
 export default function AdminPage() {
@@ -15,39 +15,37 @@ export default function AdminPage() {
     const [updating, setUpdating] = useState(null);
 
     useEffect(() => {
-        if (isAdmin) {
-            if (activeTab === "users") fetchUsers();
-            else fetchOrders();
-        } else {
+        if (!isAdmin) {
             setLoading(false);
+            return;
         }
-    }, [isAdmin, activeTab]);
 
-    const fetchUsers = async () => {
         setLoading(true);
-        try {
+        let unsubscribe;
+
+        if (activeTab === "users") {
             const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
-            const snap = await getDocs(q);
-            setUsers(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-        } catch (err) {
-            const q = query(collection(db, "users"));
-            const snap = await getDocs(q);
-            setUsers(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-        }
-        setLoading(false);
-    };
-
-    const fetchOrders = async () => {
-        setLoading(true);
-        try {
+            unsubscribe = onSnapshot(q, (snap) => {
+                setUsers(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+                setLoading(false);
+            }, (err) => {
+                // Fallback jika index belum dibuat
+                const q2 = query(collection(db, "users"));
+                onSnapshot(q2, (snap) => {
+                    setUsers(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+                    setLoading(false);
+                });
+            });
+        } else {
             const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
-            const snap = await getDocs(q);
-            setOrders(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-        } catch (err) {
-            console.error(err);
+            unsubscribe = onSnapshot(q, (snap) => {
+                setOrders(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+                setLoading(false);
+            });
         }
-        setLoading(false);
-    };
+
+        return () => unsubscribe && unsubscribe();
+    }, [isAdmin, activeTab]);
 
     const updatePoints = async (userId, newPoints) => {
         setUpdating(userId);
@@ -78,8 +76,6 @@ export default function AdminPage() {
             } else {
                 alert(`Status pesanan diperbarui ke: ${newStatus}`);
             }
-            
-            fetchOrders();
         } catch (err) {
             alert("Gagal memperbarui status.");
         }
