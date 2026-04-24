@@ -1,7 +1,8 @@
-# Graph Report - .  (2026-04-24)
+# Graph Report - /Users/ferinapratiwi/page  (2026-04-24)
 
 ## Corpus Check
-- cluster-only mode — file stats not available
+- 27 files · ~273,016 words
+- Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
 - 87 nodes · 120 edges · 27 communities detected
@@ -52,10 +53,10 @@
 ## Surprising Connections (you probably didn't know these)
 - `useApp()` --calls--> `Home()`  [INFERRED]
   /Users/ferinapratiwi/page/src/context/AppContext.js → /Users/ferinapratiwi/page/src/app/page.js
+- `useApp()` --calls--> `CartSheet()`  [INFERRED]
+  /Users/ferinapratiwi/page/src/context/AppContext.js → /Users/ferinapratiwi/page/src/components/CartSheet.js
 - `useApp()` --calls--> `Navbar()`  [INFERRED]
   /Users/ferinapratiwi/page/src/context/AppContext.js → /Users/ferinapratiwi/page/src/components/Navbar.js
-- `useApp()` --calls--> `ProductCard()`  [INFERRED]
-  /Users/ferinapratiwi/page/src/context/AppContext.js → /Users/ferinapratiwi/page/src/components/Catalog.js
 - `useApp()` --calls--> `LoyaltyCard()`  [INFERRED]
   /Users/ferinapratiwi/page/src/context/AppContext.js → /Users/ferinapratiwi/page/src/components/LoyaltyCard.js
 - `useApp()` --calls--> `AuthModal()`  [INFERRED]
@@ -76,12 +77,12 @@ Cohesion: 0.29
 Nodes (7): add(), fly(), logout(), openAuth(), openTerms(), peek(), show()
 
 ### Community 3 - "Community 3"
-Cohesion: 0.29
-Nodes (4): Catalog(), ProductCard(), Map(), AdminPage()
+Cohesion: 0.4
+Nodes (4): CartSheet(), CartView(), ProductPeek(), Map()
 
 ### Community 4 - "Community 4"
-Cohesion: 0.6
-Nodes (4): useApp(), CartSheet(), CartView(), ProductPeek()
+Cohesion: 0.4
+Nodes (4): useApp(), Catalog(), ProductCard(), Hero()
 
 ### Community 5 - "Community 5"
 Cohesion: 1.0
@@ -93,27 +94,27 @@ Nodes (0):
 
 ### Community 7 - "Community 7"
 Cohesion: 1.0
-Nodes (1): AuthModal()
+Nodes (1): Home()
 
 ### Community 8 - "Community 8"
 Cohesion: 1.0
-Nodes (1): Navbar()
+Nodes (1): AuthModal()
 
 ### Community 9 - "Community 9"
 Cohesion: 1.0
-Nodes (1): Hero()
+Nodes (1): Navbar()
 
 ### Community 10 - "Community 10"
 Cohesion: 1.0
-Nodes (1): LoyaltyCard()
+Nodes (0): 
 
 ### Community 11 - "Community 11"
 Cohesion: 1.0
-Nodes (1): Home()
+Nodes (1): LoyaltyCard()
 
 ### Community 12 - "Community 12"
 Cohesion: 1.0
-Nodes (0): 
+Nodes (1): AdminPage()
 
 ### Community 13 - "Community 13"
 Cohesion: 1.0
@@ -176,17 +177,17 @@ Nodes (0):
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Community 6`** (2 nodes): `RootLayout()`, `layout.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 7`** (2 nodes): `AuthModal()`, `AuthModal.js`
+- **Thin community `Community 7`** (2 nodes): `Home()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 8`** (2 nodes): `Navbar()`, `Navbar.js`
+- **Thin community `Community 8`** (2 nodes): `AuthModal()`, `AuthModal.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 9`** (2 nodes): `Hero()`, `Hero.js`
+- **Thin community `Community 9`** (2 nodes): `Navbar()`, `Navbar.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 10`** (2 nodes): `LoyaltyCard()`, `LoyaltyCard.js`
+- **Thin community `Community 10`** (2 nodes): `AppProvider()`, `AppContext.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 11`** (2 nodes): `Home()`, `page.js`
+- **Thin community `Community 11`** (2 nodes): `LoyaltyCard()`, `LoyaltyCard.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 12`** (2 nodes): `AppProvider()`, `AppContext.js`
+- **Thin community `Community 12`** (2 nodes): `AdminPage()`, `page.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Community 13`** (2 nodes): `Scripts()`, `Scripts.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
@@ -220,7 +221,7 @@ Nodes (0):
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Map()` connect `Community 3` to `Community 1`, `Community 2`, `Community 4`?**
+- **Why does `Map()` connect `Community 3` to `Community 1`, `Community 2`, `Community 12`, `Community 4`?**
   _High betweenness centrality (0.285) - this node is a cross-community bridge._
 - **Why does `useApp()` connect `Community 4` to `Community 3`, `Community 7`, `Community 8`, `Community 9`, `Community 10`, `Community 11`, `Community 12`?**
   _High betweenness centrality (0.221) - this node is a cross-community bridge._

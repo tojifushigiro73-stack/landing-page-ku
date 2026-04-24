@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useApp } from "@/context/AppContext";
 import { db } from "@/lib/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
 
 export default function CartSheet() {
   const { cart, removeFromCart, loyaltyPoints, isRedeemingPoints, setIsRedeemingPoints, customerName, setCustomerName, distance, setDistance, isCartOpen, setIsCartOpen, peekedProduct, closePeek } = useApp();
@@ -132,8 +132,13 @@ function CartView() {
     
     setLoading(true);
     try {
-      // 1. Simpan ke Firestore
+      // 1. Siapkan Reference & ID secara instan (Client-side)
+      // Hubungan Graph: [[Firestore Save]] <---> [[Business Strategies]] & [[Cek Mutasi Otomatis]]
+      const orderRef = doc(collection(db, "orders"));
+      const orderId = orderRef.id;
+
       const orderData = {
+        orderId: orderId, // Simpan ID di dalam dokumen juga untuk referensi
         userId: currentUser ? currentUser.uid : "GUEST",
         userName: customerName || (currentUser ? currentUser.name : "Pelanggan"),
         userEmail: currentUser ? currentUser.email : "Guest",
@@ -150,11 +155,8 @@ function CartView() {
         pointsUsed: (isRedeemingPoints && loyaltyPoints >= 10) ? Math.floor(loyaltyPoints / 10) * 10 : 0
       };
 
-      const docRef = await addDoc(collection(db, "orders"), orderData);
-      console.log("Order saved with ID: ", docRef.id);
-
-      // 2. Siapkan Pesan WA
-      let msg = `Halo La Misha! Saya *${customerName || 'Pelanggan'}* ingin pesan (ID: ${docRef.id.slice(-5)}):\n\n`;
+      // 2. Siapkan Pesan WA (Bisa langsung dilakukan karena ID sudah ada)
+      let msg = `Halo La Misha! Saya *${customerName || 'Pelanggan'}* ingin pesan (ID: ${orderId.slice(-5)}):\n\n`;
       cart.forEach(i => msg += `• ${i.n} (${i.l}) - Rp ${i.p.toLocaleString('id-ID')}\n`);
       msg += `\nSubtotal: Rp ${subtotal.toLocaleString('id-ID')}\n`;
       msg += `Ongkir: ${isTooFar ? '*Tanya via WA*' : (ongkir === 0 ? 'GRATIS' : 'Rp ' + ongkir.toLocaleString('id-ID'))}\n`;
@@ -164,20 +166,19 @@ function CartView() {
       msg += `ID Pelanggan: ${currentUser ? currentUser.email : 'Guest/Bukan Member'}\n\n`;
       msg += isTooFar ? `Mohon info ongkirnya ya kak karena lokasi saya cukup jauh. 😊` : `Saya akan segera upload bukti transfernya. 😊`;
       
-      // 3. Buka WA
       const waUrl = `https://wa.me/6285836695103?text=${encodeURIComponent(msg)}`;
-      
-      // Menggunakan window.location.href lebih handal untuk PWA/Mobile daripada window.open
-      // Namun jika ingin tetap di tab baru, window.open bisa dicoba lagi, tapi pastikan ini langkah terakhir
-      window.location.href = waUrl;
 
-      // 4. Reset Cart (Dilakukan setelah redirect dimulai)
+      // 3. Simpan ke Firestore (Kita await agar data pasti masuk sebelum user pindah halaman)
+      // Namun proses ini sekarang lebih cepat karena ID tidak perlu di-generate oleh server lagi.
+      await setDoc(orderRef, orderData);
+      console.log("Order saved with ID: ", orderId);
+
+      // 4. Buka WA & Reset
+      window.location.href = waUrl;
+      
       setCart([]);
       localStorage.removeItem('cart_v17');
       window.dispatchEvent(new CustomEvent('close-modals'));
-      
-      // Beri notifikasi singkat
-      console.log("Redirecting to WhatsApp...");
     } catch (err) {
       console.error("Order Save Error:", err);
       alert("Gagal menyimpan pesanan. Silakan coba lagi.");
