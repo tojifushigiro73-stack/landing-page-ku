@@ -464,3 +464,9 @@ nav.scrolled {
 .user-nav-btn:active {
     transform: translateY(0);
 }
+
+/* Hide OneSignal Bell when Subscribed */
+body.os-subscribed .onesignal-bell-container,
+body.os-subscribed #onesignal-bell-container {
+    display: none !important;
+}

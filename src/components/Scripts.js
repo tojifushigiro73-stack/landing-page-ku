@@ -33,8 +33,28 @@ const Scripts = () => {
                     await OneSignal.init({
                         appId: "5915e37b-4344-4f12-b442-067ced458d88",
                         allowLocalhostAsSecureOrigin: true,
-                        notifyButton: { enable: false },
+                        notifyButton: { 
+                            enable: true,
+                            displayPredicate: () => {
+                                return OneSignal.Notifications.permission !== 'granted';
+                            }
+                        },
                     });
+
+                    // Hide bell immediately after permission is granted
+                    const updateBellVisibility = (permission) => {
+                        const isSubscribed = (permission || OneSignal.Notifications.permission) === 'granted';
+                        if (isSubscribed) {
+                            document.body.classList.add('os-subscribed');
+                            const bell = document.querySelector('.onesignal-bell-container');
+                            if (bell) bell.style.display = 'none';
+                        } else {
+                            document.body.classList.remove('os-subscribed');
+                        }
+                    };
+
+                    OneSignal.Notifications.addEventListener('permissionChange', updateBellVisibility);
+                    updateBellVisibility();
                 });
             }
 
