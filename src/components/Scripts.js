@@ -23,25 +23,27 @@ const Scripts = () => {
         // 2. ONE SIGNAL
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         const isProd = window.location.hostname.includes('lamishabake') || window.location.hostname.includes('vercel.app') || isLocal;
+        
         if (isProd) {
-            window.OneSignal = window.OneSignal || [];
+            window.OneSignalDeferred = window.OneSignalDeferred || [];
+            
+            // Push init task immediately (it will wait for the script to load)
+            if (window.OneSignalDeferred.length === 0) {
+                window.OneSignalDeferred.push(async function(OneSignal) {
+                    await OneSignal.init({
+                        appId: "5915e37b-4344-4f12-b442-067ced458d88",
+                        allowLocalhostAsSecureOrigin: true,
+                        notifyButton: { enable: false },
+                    });
+                });
+            }
+
             if (!document.getElementById('onesignal-sdk')) {
                 const script = document.createElement('script');
                 script.id = 'onesignal-sdk';
                 script.src = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
-                script.async = true;
                 script.defer = true;
                 document.head.appendChild(script);
-
-                script.onload = () => {
-                    window.OneSignalDeferred = window.OneSignalDeferred || [];
-                    window.OneSignalDeferred.push(async function(OneSignal) {
-                        await OneSignal.init({
-                            appId: "5915e37b-4344-4f12-b442-067ced458d88",
-                            notifyButton: { enable: false },
-                        });
-                    });
-                };
             }
         }
 
