@@ -32,7 +32,7 @@ export default function Map({ distance, setDistance, setLocation }) {
         
         const dist = parseFloat((L.latLng(shopLoc).distanceTo(e.latlng) / 1000).toFixed(2));
         setDistance(dist);
-        setLocation(e.latlng);
+        setLocation({ lat: e.latlng.lat, lng: e.latlng.lng });
       });
 
       const mapMove = (e) => {

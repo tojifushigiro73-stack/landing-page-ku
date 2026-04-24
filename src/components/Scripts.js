@@ -33,6 +33,9 @@ const Scripts = () => {
                     await OneSignal.init({
                         appId: "5915e37b-4344-4f12-b442-067ced458d88",
                         allowLocalhostAsSecureOrigin: true,
+                        serviceWorkerPath: "sw.js",
+                        serviceWorkerParam: { scope: "/" },
+                        serviceWorkerUpdaterPath: "sw.js",
                         notifyButton: { 
                             enable: true,
                             displayPredicate: () => {
@@ -74,7 +77,7 @@ const Scripts = () => {
             tawk.async = true;
             tawk.src = 'https://embed.tawk.to/69d3437ec81db11c3ab8d6ee/1jlgjv9qc';
             tawk.charset = 'UTF-8';
-            tawk.setAttribute('crossorigin', '*');
+            tawk.setAttribute('crossorigin', 'anonymous');
             document.head.appendChild(tawk);
         }
 
