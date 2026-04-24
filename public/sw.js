@@ -1,3 +1,4 @@
+// Service Worker Version: 2.1 (OneSignal Integrated)
 // 1. OneSignal Integration
 importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
 

@@ -437,9 +437,6 @@ nav.scrolled {
 /* Leaflet Map Fix */
 #map-container { z-index: 1; }
 
-/* Tawk.to override */
-.tawk-min-container, .tawk-launcher { display: none !important; }
-
 .loc-input:focus {
     outline: none;
     border-color: var(--primary) !important;

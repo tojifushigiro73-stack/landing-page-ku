@@ -3,22 +3,8 @@ import { useEffect } from "react";
 
 const Scripts = () => {
     useEffect(() => {
-        // 1. PWA SERVICE WORKER REGISTRATION
-        if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-            const registerSW = () => {
-                navigator.serviceWorker.register('/sw.js').then(function(registration) {
-                    console.log('PWA SW registered with scope: ', registration.scope);
-                }).catch(function(err) {
-                    console.log('PWA SW registration failed: ', err);
-                });
-            };
+        // 1. PWA SERVICE WORKER (Handled by OneSignal below to avoid conflicts)
 
-            if (document.readyState === 'complete') {
-                registerSW();
-            } else {
-                window.addEventListener('load', registerSW);
-            }
-        }
 
         // 2. ONE SIGNAL
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -33,9 +19,9 @@ const Scripts = () => {
                     await OneSignal.init({
                         appId: "5915e37b-4344-4f12-b442-067ced458d88",
                         allowLocalhostAsSecureOrigin: true,
-                        serviceWorkerPath: "sw.js",
+                        serviceWorkerPath: "sw.js?v=2.1",
                         serviceWorkerParam: { scope: "/" },
-                        serviceWorkerUpdaterPath: "sw.js",
+                        serviceWorkerUpdaterPath: "sw.js?v=2.1",
                         notifyButton: { 
                             enable: true,
                             displayPredicate: () => {
@@ -70,18 +56,8 @@ const Scripts = () => {
             }
         }
 
-        // 3. TAWK.TO (Munculkan Widget)
-        if (!document.getElementById('tawk-script')) {
-            const tawk = document.createElement('script');
-            tawk.id = 'tawk-script';
-            tawk.async = true;
-            tawk.src = 'https://embed.tawk.to/69d3437ec81db11c3ab8d6ee/1jlgjv9qc';
-            tawk.charset = 'UTF-8';
-            tawk.setAttribute('crossorigin', 'anonymous');
-            document.head.appendChild(tawk);
-        }
-
     }, []);
+
 
     return null;
 };

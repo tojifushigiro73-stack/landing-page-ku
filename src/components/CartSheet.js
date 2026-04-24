@@ -148,7 +148,7 @@ function CartView() {
         discount,
         total,
         distance,
-        location: location || null,
+        location: location ? { lat: Number(location.lat), lng: Number(location.lng) } : null,
         status: "MENUNGGU PEMBAYARAN",
         createdAt: serverTimestamp(),
         pointsGained: potentialPoints,
