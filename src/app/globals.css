@@ -8,7 +8,7 @@
     --text-dark: #2d1b22;
     --text-muted: #6e5d63;
     --shadow: 0 10px 30px rgba(176, 39, 98, 0.08);
-    --transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.4s ease, background 0.4s ease, box-shadow 0.4s ease;
+    --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -19,8 +19,6 @@ body {
     color: var(--text-dark);
     line-height: 1.5;
     overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
 .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; width: 100%; }
@@ -36,14 +34,12 @@ nav {
     z-index: 1000;
     padding: 20px 0;
     transition: var(--transition);
-    transform: translate3d(0,0,0);
-    -webkit-backface-visibility: hidden;
 }
 
 nav.scrolled {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(20px) saturate(200%);
+    -webkit-backdrop-filter: blur(20px) saturate(200%);
     padding: 8px 0;
     box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.05);
     border-bottom: 1px solid rgba(255, 255, 255, 0.4);
@@ -81,7 +77,6 @@ nav.scrolled {
     cursor: pointer;
     box-shadow: 0 6px 15px rgba(176, 39, 98, 0.15);
     transition: var(--transition);
-    transform: translate3d(0,0,0);
 }
 
 .cart-badge {
@@ -100,7 +95,6 @@ nav.scrolled {
     padding-top: 80px;
     color: white;
     overflow: hidden;
-    transform: translate3d(0,0,0);
 }
 
 .hero::before {
@@ -112,20 +106,16 @@ nav.scrolled {
     height: 100%;
     background: linear-gradient(to bottom, rgba(45, 27, 34, 0.45) 0%, rgba(176, 39, 98, 0.2) 60%, var(--bg-hero) 100%), url('/background (1).webp') no-repeat center/cover;
     z-index: -1;
-    /* Reduced scale to 1.05 and added translate3d for better iOS performance */
-    animation: heroZoom 25s infinite alternate ease-in-out;
-    transform: translate3d(0,0,0);
-    will-change: transform;
+    animation: heroZoom 20s infinite alternate;
 }
 
 @keyframes heroZoom {
-    0% { transform: scale(1) translate3d(0,0,0); }
-    100% { transform: scale(1.05) translate3d(0,0,0); }
+    0% { transform: scale(1); }
+    100% { transform: scale(1.1); }
 }
 
 .hero-content {
     max-width: 800px;
-    transform: translate3d(0,0,0);
 }
 
 @media (max-width: 768px) {
@@ -152,7 +142,7 @@ nav.scrolled {
     line-height: 1.1;
     margin-bottom: 20px;
     text-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    /* Removed redundant CSS animation, handled by Framer Motion in component */
+    animation: fadeInDown 1s ease-out;
 }
 
 .hero p {
@@ -161,17 +151,25 @@ nav.scrolled {
     max-width: 650px;
     margin-bottom: 40px;
     text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    animation: fadeInUp 1s ease-out 0.3s both;
     backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
     background: rgba(0,0,0,0.1);
     padding: 15px 12px;
     border-radius: 12px;
-    transform: translate3d(0,0,0);
-    /* Removed redundant CSS animation */
 }
 
 @media (min-width: 768px) {
-    .hero p { font-size: 1.3rem; padding: 10px 0; background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+    .hero p { font-size: 1.3rem; padding: 10px 0; background: transparent; backdrop-filter: none; }
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .cta-btn {
@@ -183,6 +181,7 @@ nav.scrolled {
     text-decoration: none; font-weight: 700;
     box-shadow: 0 10px 30px rgba(176, 39, 98, 0.25);
     transition: var(--transition);
+    animation: fadeInUp 1s ease-out 0.6s both;
     text-transform: uppercase;
     letter-spacing: 1.2px;
     font-size: 0.85rem;
@@ -190,13 +189,10 @@ nav.scrolled {
     cursor: pointer;
     border: none;
     gap: 10px;
-    transform: translate3d(0,0,0);
-    -webkit-backface-visibility: hidden;
-    /* Removed redundant CSS animation */
 }
 
 .cta-btn:hover { 
-    transform: translate3d(0,-5px,0) scale(1.02); 
+    transform: translateY(-5px) scale(1.02); 
     box-shadow: 0 15px 40px rgba(176, 39, 98, 0.35);
 }
 
@@ -219,18 +215,17 @@ nav.scrolled {
 /* --- Sticky Tabs --- */
 .tabs-sticky {
     position: sticky; 
-    top: 54px; 
+    top: 54px; /* Perfectly aligned with compact navbar */
     z-index: 999;
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(20px) saturate(200%);
+    -webkit-backdrop-filter: blur(20px) saturate(200%);
     padding: 10px 0; 
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     transition: var(--transition);
-    transform: translate3d(0,0,0);
 }
 
-.tabs-scroll { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 4px 2px; -webkit-overflow-scrolling: touch; }
+.tabs-scroll { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 4px 2px; }
 .tabs-scroll::-webkit-scrollbar { display: none; }
 
 .tab {
@@ -244,14 +239,13 @@ nav.scrolled {
     white-space: nowrap;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 0.8rem;
-    -webkit-backface-visibility: hidden;
 }
 
 .tab.active {
     background: var(--primary); 
     color: white;
     box-shadow: 0 4px 12px rgba(176, 39, 98, 0.15);
-    transform: scale(1.02) translate3d(0,0,0);
+    transform: scale(1.02);
 }
 
 /* --- Catalog Grid --- */
@@ -277,7 +271,6 @@ nav.scrolled {
     display: grid; 
     grid-template-columns: repeat(2, 1fr); 
     gap: 15px; 
-    transform: translate3d(0,0,0);
 }
 
 @media (min-width: 768px) { 
@@ -299,14 +292,12 @@ nav.scrolled {
     box-shadow: 0 4px 20px rgba(0,0,0,0.03);
     display: flex;
     flex-direction: column;
-    transform: translate3d(0,0,0);
-    -webkit-backface-visibility: hidden;
 }
-.card:hover { transform: translate3d(0,-8px,0); box-shadow: 0 15px 35px rgba(176, 39, 98, 0.1); }
+.card:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(176, 39, 98, 0.1); }
 
 
-.img-wrap { position: relative; aspect-ratio: 1/1; background: #fdfdfd; overflow: hidden; transform: translate3d(0,0,0); }
-.card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; transform: translate3d(0,0,0); -webkit-backface-visibility: hidden; }
+.img-wrap { position: relative; aspect-ratio: 1/1; background: #fdfdfd; overflow: hidden; }
+.card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
 
 .card-badge {
     position: absolute; top: 12px; left: 12px;
@@ -315,8 +306,11 @@ nav.scrolled {
     font-weight: 800; text-transform: uppercase;
     box-shadow: 0 4px 12px rgba(212, 160, 23, 0.4);
     z-index: 10;
-    transform: translate3d(0,0,0);
 }
+
+
+
+
 
 .card-body { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
 .card-name { font-size: 0.85rem; margin-bottom: 2px; font-weight: 700; color: var(--text-dark); line-height: 1.2; }
@@ -333,25 +327,19 @@ nav.scrolled {
 /* --- Bottom Sheet --- */
 .overlay {
     position: fixed; inset: 0; background: rgba(45, 27, 34, 0.4);
-    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-    z-index: 2000; transition: opacity 0.3s;
+    backdrop-filter: blur(8px); z-index: 2000; transition: opacity 0.3s;
     opacity: 0; pointer-events: none;
-    transform: translate3d(0,0,0);
 }
 .overlay.active { opacity: 1; pointer-events: auto; }
 
 .sheet {
     position: fixed; bottom: 0; width: 100%; background: white;
     border-radius: 32px 32px 0 0; z-index: 2001;
-    transform: translate3d(0, 100%, 0); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     padding: 24px; max-height: 85vh; overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
 }
-.sheet.active { transform: translate3d(0,0,0); }
+.sheet.active { transform: translateY(0); }
 .handle { width: 40px; height: 4px; background: #e0e0e0; border-radius: 10px; margin: 0 auto 24px; }
-
-/* ... (rest of methods unchanged) ... */
-
 
 .peek-close-btn {
     position: absolute; 
@@ -562,27 +550,23 @@ nav.scrolled {
     overflow: hidden;
     box-shadow: 0 20px 40px -10px rgba(138, 29, 77, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    max-width: 550px; 
-    margin: 0 auto;
-    transform: translate3d(0,0,0);
-    -webkit-backface-visibility: hidden;
+    max-width: 550px; /* Constrain width for elegance */
+    margin: 0 auto;   /* Center it */
 }
 
-/* Premium Mesh Effect - Optimized for iOS */
+/* Premium Mesh Effect */
 .loyalty-card::before {
     content: '';
     position: absolute;
     top: -50%; left: -50%; width: 200%; height: 200%;
     background: radial-gradient(circle at center, rgba(255,255,255,0.08) 0%, transparent 60%);
-    animation: meshRotate 30s linear infinite; /* Slower rotation is less taxing */
+    animation: meshRotate 20s linear infinite;
     pointer-events: none;
-    transform: translate3d(0,0,0);
-    will-change: transform;
 }
 
 @keyframes meshRotate {
-    from { transform: translate3d(0,0,0) rotate(0deg); }
-    to { transform: translate3d(0,0,0) rotate(360deg); }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .loyalty-pattern {
@@ -591,7 +575,7 @@ nav.scrolled {
     right: -5px; 
     font-size: 7rem;
     opacity: 0.05; 
-    transform: rotate(-10deg) translate3d(0,0,0); 
+    transform: rotate(-10deg); 
     pointer-events: none;
     z-index: 1;
 }
@@ -603,7 +587,6 @@ nav.scrolled {
     margin-bottom: 20px; 
     position: relative;
     z-index: 2;
-    transform: translate3d(0,0,0);
 }
 
 .loyalty-label { 
@@ -648,7 +631,6 @@ nav.scrolled {
 .loyalty-icon-wrap { 
     background: rgba(255,255,255,0.12); 
     backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     width: 44px; 
     height: 44px; 
     border-radius: 14px; 
@@ -657,7 +639,6 @@ nav.scrolled {
     justify-content: center; 
     font-size: 1.2rem; 
     border: 1px solid rgba(255,255,255,0.1);
-    transform: translate3d(0,0,0);
 }
 
 .loyalty-progress-container { 
@@ -668,7 +649,6 @@ nav.scrolled {
     overflow: hidden; 
     position: relative;
     z-index: 2;
-    transform: translate3d(0,0,0);
 }
 
 .loyalty-progress-bar { 
@@ -677,7 +657,6 @@ nav.scrolled {
     border-radius: 50px; 
     transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 0 10px rgba(255,255,255,0.3);
-    transform: translate3d(0,0,0);
 }
 
 .loyalty-footer { 
@@ -710,7 +689,6 @@ nav.scrolled {
     transition: var(--transition);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    transform: translate3d(0,0,0);
 }
 
 .pro-member-badge { 
@@ -751,21 +729,21 @@ nav.scrolled {
 
 /* --- Animations --- */
 @keyframes slideInRight {
-    from { opacity: 0; transform: translate3d(20px, 0, 0); }
-    to { opacity: 1; transform: translate3d(0, 0, 0); }
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
 }
 @media (max-width: 350px) {
     .login-text { display: none; }
 }
 
 .user-nav-btn:hover {
-    transform: translate3d(0, -2px, 0);
+    transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(176,39,98,0.15) !important;
     border-color: var(--primary) !important;
 }
 
 .user-nav-btn:active {
-    transform: translate3d(0, 0, 0);
+    transform: translateY(0);
 }
 
 /* --- Offline Banner --- */
@@ -988,7 +966,7 @@ body.os-subscribed #onesignal-bell-container {
     }
 
     @keyframes floatIn {
-        from { opacity: 0; transform: translate3d(0, 40px, 0); }
-        to { opacity: 1; transform: translate3d(0, 0, 0); }
+        from { opacity: 0; transform: translateY(40px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 }
