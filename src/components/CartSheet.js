@@ -83,30 +83,68 @@ export default function CartSheet() {
 function ProductPeek({ p, close }) {
   const { addToCart } = useApp();
   return (
-    <div className="peek-grid">
-      <div className="peek-img-wrap">
-        <img src={p.i} className="peek-img" alt={p.n} />
+    <div className="peek-grid gpu">
+      <motion.div 
+        className="peek-img-wrap"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4 }}
+      >
+        <motion.img 
+          src={p.i} 
+          className="peek-img" 
+          alt={p.n} 
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.5 }}
+        />
         <div className="peek-badge">{p.b}</div>
-      </div>
+      </motion.div>
       <div className="peek-info">
-        <h2 className="peek-title">{p.n}</h2>
-        <p className="peek-desc">{p.d}</p>
+        <motion.h2 
+          className="peek-title"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+        >{p.n}</motion.h2>
+        <motion.p 
+          className="peek-desc"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+        >{p.d}</motion.p>
 
-        <p className="peek-variation-label">Pilih Varian / Berat:</p>
+        <motion.p 
+          className="peek-variation-label"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+        >Pilih Varian / Berat:</motion.p>
 
-        <div className="peek-options">
+        <motion.div 
+          className="peek-options"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.4 }}
+        >
           {p.opts.map((o, idx) => (
-            <button
+            <motion.button
               key={idx}
               className="opt-btn"
               onClick={(e) => { addToCart(p, o, e); close(); }}
+              whileTap={{ scale: 0.97 }}
             >
               <span className="opt-label">{o.l}</span>
               <span className="opt-price">Rp {o.p.toLocaleString('id-ID')}</span>
-            </button>
+            </motion.button>
           ))}
-        </div>
-        <button onClick={close} className="peek-back-btn">KEMBALI KE MENU</button>
+        </motion.div>
+        <motion.button 
+          onClick={close} 
+          className="peek-back-btn"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.5 }}
+        >KEMBALI KE MENU</motion.button>
       </div>
     </div>
   );
