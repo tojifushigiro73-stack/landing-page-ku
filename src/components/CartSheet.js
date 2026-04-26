@@ -94,6 +94,8 @@ function ProductPeek({ p, close }) {
           src={p.i} 
           className="peek-img" 
           alt={p.n} 
+          loading="lazy"
+          decoding="async"
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.5 }}
         />

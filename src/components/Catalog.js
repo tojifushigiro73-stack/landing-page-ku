@@ -85,6 +85,8 @@ function ProductCard({ p }) {
           src={p.i} 
           className="card-img" 
           alt={p.n}
+          loading="lazy"
+          decoding="async"
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.4 }}
           onError={(e) => e.target.src = `https://placehold.co/400?text=${p.n}`} 

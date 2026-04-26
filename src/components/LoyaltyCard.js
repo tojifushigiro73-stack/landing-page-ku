@@ -1,5 +1,6 @@
 "use client";
 import { useApp } from "@/context/AppContext";
+import { motion } from "framer-motion";
 
 export default function LoyaltyCard() {
   const { loyaltyPoints, currentUser } = useApp();
@@ -11,13 +12,19 @@ export default function LoyaltyCard() {
   return (
     <section className="loyalty-section">
       <div className="container">
-        <div className="loyalty-card">
+        <motion.div 
+          className="loyalty-card"
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="loyalty-header">
             <div>
               <div className="loyalty-label" style={{ fontSize: "0.65rem", opacity: 0.8, fontWeight: "700", textTransform: "uppercase" }}>
                 {currentUser ? 'Poin Pilihan Member' : 'Poin Sementara (Guest)'}
               </div>
-              <div className="loyalty-balance">
+              <div className="loyalty-balance" style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
                 {loyaltyPoints} <span className="points-text" style={{ fontSize: "1rem", fontWeight: "400", opacity: 0.8 }}>Poin</span>
               </div>
               {!currentUser && loyaltyPoints > 0 && (
@@ -32,7 +39,12 @@ export default function LoyaltyCard() {
           </div>
 
           <div className="loyalty-progress-container">
-            <div className="loyalty-progress-bar" style={{ width: `${progress}%` }}></div>
+            <motion.div 
+              className="loyalty-progress-bar" 
+              initial={{ width: 0 }}
+              whileInView={{ width: `${progress}%` }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            ></motion.div>
           </div>
 
           <div className="loyalty-footer">
@@ -44,15 +56,16 @@ export default function LoyaltyCard() {
               )}
             </div>
             {!currentUser ? (
-              <button 
+              <motion.button 
                 style={{ background: "white", color: "var(--primary)", border: "none", padding: "8px 15px", borderRadius: "10px", fontWeight: "800", fontSize: "0.7rem", cursor: "pointer" }}
                 onClick={() => window.dispatchEvent(new CustomEvent('open-auth'))}
-              >AMANKAN POIN</button>
+                whileTap={{ scale: 0.94 }}
+              >AMANKAN POIN</motion.button>
             ) : (
               <div style={{ fontSize: "0.65rem", background: "linear-gradient(135deg, #ffd700 0%, #ff8c00 100%)", color: "#4a3b00", padding: "5px 12px", borderRadius: "50px", fontWeight: "800" }}>PRO MEMBER</div>
             )}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
