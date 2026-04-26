@@ -12,6 +12,8 @@ export default function AdminPage() {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
+    const [orderSearch, setOrderSearch] = useState("");
+    const [orderFilter, setOrderFilter] = useState("ALL");
     const [updating, setUpdating] = useState(null);
 
     useEffect(() => {
@@ -53,9 +55,9 @@ export default function AdminPage() {
             const userRef = doc(db, "users", userId);
             await updateDoc(userRef, { points: parseInt(newPoints) });
             setUsers(users.map(u => u.id === userId ? { ...u, points: parseInt(newPoints) } : u));
-            alert("Poin berhasil diperbarui!");
+            window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: "Poin berhasil diperbarui!", type: 'success' } }));
         } catch (err) {
-            alert("Gagal memperbarui poin.");
+            window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: "Gagal memperbarui poin.", type: 'error' } }));
         }
         setUpdating(null);
     };
@@ -72,12 +74,12 @@ export default function AdminPage() {
                 await updateDoc(userRef, { 
                     points: increment(order.pointsGained || 0) 
                 });
-                alert(`Pesanan selesai! ${order.pointsGained} poin telah ditambahkan ke user.`);
+                window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Pesanan selesai! ${order.pointsGained} poin telah ditambahkan.`, type: 'success' } }));
             } else {
-                alert(`Status pesanan diperbarui ke: ${newStatus}`);
+                window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Status diperbarui ke: ${newStatus}`, type: 'info' } }));
             }
         } catch (err) {
-            alert("Gagal memperbarui status.");
+            window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: "Gagal memperbarui status.", type: 'error' } }));
         }
         setUpdating(null);
     };
@@ -155,59 +157,130 @@ export default function AdminPage() {
                         )}
                     </>
                 ) : (
-                    <div style={{ display: "grid", gap: "20px" }}>
-                        {loading ? <p>Memuat pesanan...</p> : orders.map(o => (
-                            <div key={o.id} style={{ background: "white", padding: "24px", borderRadius: "20px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", border: "1px solid #f0f0f0" }}>
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "15px", borderBottom: "1px solid #eee", paddingBottom: "15px" }}>
-                                    <div>
-                                        <div style={{ fontSize: "0.7rem", color: "#999", textTransform: "uppercase", fontWeight: "700" }}>Order ID: {o.id.slice(-8)}</div>
-                                        <div style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--text-dark)" }}>{o.userName}</div>
-                                        <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>{o.userEmail}</div>
-                                    </div>
-                                    <div style={{ 
-                                        padding: "6px 12px", borderRadius: "50px", fontSize: "0.75rem", fontWeight: "800",
-                                        background: o.status === "SELESAI" ? "#e6fff0" : (o.status === "BATAL" ? "#fff0f0" : "#fff9e6"),
-                                        color: o.status === "SELESAI" ? "#27ae60" : (o.status === "BATAL" ? "#e74c3c" : "#f39c12")
-                                    }}>
-                                        {o.status}
-                                    </div>
-                                </div>
-                                
-                                <div style={{ marginBottom: "15px" }}>
-                                    {o.items.map((it, idx) => (
-                                        <div key={idx} style={{ fontSize: "0.9rem", color: "#444", marginBottom: "5px" }}>
-                                            • {it.n} ({it.l}) - Rp {it.p.toLocaleString()}
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <div style={{ background: "#fdf2f6", padding: "12px", borderRadius: "12px", marginBottom: "20px" }}>
-                                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem" }}>
-                                        <span>Total Belanja:</span>
-                                        <span style={{ fontWeight: "700" }}>Rp {o.total.toLocaleString()}</span>
-                                    </div>
-                                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", color: "var(--primary)" }}>
-                                        <span>Potensi Poin:</span>
-                                        <span style={{ fontWeight: "700" }}>+{o.pointsGained} Poin</span>
-                                    </div>
-                                </div>
-
-                                {o.status === "MENUNGGU PEMBAYARAN" && (
-                                    <div style={{ display: "flex", gap: "10px" }}>
-                                        <button 
-                                            onClick={() => updateOrderStatus(o, "SELESAI")}
-                                            style={{ flex: 1, background: "#27ae60", color: "white", border: "none", padding: "12px", borderRadius: "12px", fontWeight: "700", cursor: "pointer" }}
-                                        >PESANAN SELESAI (KLAIM POIN)</button>
-                                        <button 
-                                            onClick={() => updateOrderStatus(o, "BATAL")}
-                                            style={{ background: "#fff", border: "1px solid #e74c3c", color: "#e74c3c", padding: "12px", borderRadius: "12px", fontWeight: "700", cursor: "pointer" }}
-                                        >BATAL</button>
-                                    </div>
-                                )}
+                    <>
+                        <div style={{ marginBottom: "25px" }}>
+                            <input
+                                type="text"
+                                placeholder="Cari Pesanan (ID/Nama/Email)..."
+                                value={orderSearch}
+                                onChange={(e) => setOrderSearch(e.target.value)}
+                                style={{ width: "100%", padding: "12px 20px", borderRadius: "12px", border: "1.5px solid #eee", fontSize: "1rem", marginBottom: "15px" }}
+                            />
+                            <div className="tabs-scroll" style={{ padding: "0 2px" }}>
+                                {["ALL", "MENUNGGU PEMBAYARAN", "SELESAI", "BATAL"].map((f) => (
+                                    <button 
+                                        key={f}
+                                        onClick={() => setOrderFilter(f)}
+                                        className={`tab ${orderFilter === f ? "active" : ""}`}
+                                        style={{ fontSize: "0.7rem", padding: "8px 15px" }}
+                                    >
+                                        {f === "ALL" ? "SEMUA" : f.replace("PEMBAYARAN", "").trim()}
+                                    </button>
+                                ))}
                             </div>
-                        ))}
-                        {!loading && orders.length === 0 && <p style={{ textAlign: "center", color: "#999" }}>Belum ada pesanan masuk.</p>}
-                    </div>
+                        </div>
+
+                        <div style={{ display: "grid", gap: "20px" }}>
+                            {loading ? <p>Memuat pesanan...</p> : orders
+                                .filter(o => {
+                                    const matchStatus = orderFilter === "ALL" || o.status === orderFilter;
+                                    const term = orderSearch.toLowerCase();
+                                    const matchSearch = o.userName?.toLowerCase().includes(term) || 
+                                                       o.userEmail?.toLowerCase().includes(term) || 
+                                                       o.id?.toLowerCase().includes(term);
+                                    return matchStatus && matchSearch;
+                                })
+                                .map(o => (
+                                    <div key={o.id} style={{ background: "white", padding: "24px", borderRadius: "20px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", border: "1px solid #f0f0f0" }}>
+                                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "15px", borderBottom: "1px solid #eee", paddingBottom: "15px" }}>
+                                            <div>
+                                                <div style={{ fontSize: "0.7rem", color: "#999", textTransform: "uppercase", fontWeight: "700" }}>Order ID: {o.id.slice(-8)}</div>
+                                                <div style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--text-dark)" }}>{o.userName}</div>
+                                                <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>{o.userEmail}</div>
+                                                {o.createdAt && (
+                                                    <div style={{ fontSize: "0.75rem", color: "#666", marginTop: "5px" }}>
+                                                        <i className="fa-regular fa-clock"></i> {new Date(o.createdAt.seconds * 1000).toLocaleString('id-ID')}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div style={{ 
+                                                padding: "6px 12px", borderRadius: "50px", fontSize: "0.75rem", fontWeight: "800",
+                                                background: o.status === "SELESAI" ? "#e6fff0" : (o.status === "BATAL" ? "#fff0f0" : "#fff9e6"),
+                                                color: o.status === "SELESAI" ? "#27ae60" : (o.status === "BATAL" ? "#e74c3c" : "#f39c12")
+                                            }}>
+                                                {o.status}
+                                            </div>
+                                        </div>
+                                        
+                                        <div style={{ marginBottom: "15px" }}>
+                                            {o.items.map((it, idx) => (
+                                                <div key={idx} style={{ fontSize: "0.9rem", color: "#444", marginBottom: "5px" }}>
+                                                    • {it.n} ({it.l}) - Rp {it.p.toLocaleString()}
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "20px" }}>
+                                            <div style={{ background: "#fdf2f6", padding: "12px", borderRadius: "12px" }}>
+                                                <div style={{ fontSize: "0.7rem", color: "var(--primary)", fontWeight: "700", textTransform: "uppercase", marginBottom: "5px" }}>Keuangan</div>
+                                                <div style={{ fontSize: "0.85rem", display: "flex", justifyContent: "space-between" }}>
+                                                    <span>Total:</span>
+                                                    <span style={{ fontWeight: "700" }}>Rp {o.total.toLocaleString()}</span>
+                                                </div>
+                                                <div style={{ fontSize: "0.85rem", display: "flex", justifyContent: "space-between", color: "var(--primary)" }}>
+                                                    <span>Poin:</span>
+                                                    <span style={{ fontWeight: "700" }}>+{o.pointsGained}</span>
+                                                </div>
+                                            </div>
+                                            <div style={{ background: "#f0f7ff", padding: "12px", borderRadius: "12px" }}>
+                                                <div style={{ fontSize: "0.7rem", color: "#007bff", fontWeight: "700", textTransform: "uppercase", marginBottom: "5px" }}>Logistik</div>
+                                                <div style={{ fontSize: "0.85rem", display: "flex", justifyContent: "space-between" }}>
+                                                    <span>Jarak:</span>
+                                                    <span style={{ fontWeight: "700" }}>{o.distance}km</span>
+                                                </div>
+                                                {o.location && (
+                                                    <a 
+                                                        href={`https://www.google.com/maps?q=${o.location.lat},${o.location.lng}`} 
+                                                        target="_blank" 
+                                                        style={{ fontSize: "0.75rem", color: "#007bff", textDecoration: "none", fontWeight: "700", display: "block", marginTop: "2px" }}
+                                                    >
+                                                        <i className="fa-solid fa-location-dot"></i> LIHAT PETA
+                                                    </a>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        <div style={{ display: "flex", gap: "10px" }}>
+                                            {o.status === "MENUNGGU PEMBAYARAN" && (
+                                                <>
+                                                    <button 
+                                                        onClick={() => updateOrderStatus(o, "SELESAI")}
+                                                        style={{ flex: 1, background: "#27ae60", color: "white", border: "none", padding: "12px", borderRadius: "12px", fontWeight: "700", cursor: "pointer" }}
+                                                    >PESANAN SELESAI (KLAIM POIN)</button>
+                                                    <button 
+                                                        onClick={() => updateOrderStatus(o, "BATAL")}
+                                                        style={{ background: "#fff", border: "1px solid #e74c3c", color: "#e74c3c", padding: "12px", borderRadius: "12px", fontWeight: "700", cursor: "pointer" }}
+                                                    >BATAL</button>
+                                                </>
+                                            )}
+                                            <button 
+                                                onClick={() => {
+                                                    let msg = `*RINGKASAN PESANAN LA MISHA*\n--------------------------\nPelanggan: ${o.userName}\nJarak: ${o.distance}km\nTotal: Rp ${o.total.toLocaleString()}\n--------------------------\n`;
+                                                    o.items.forEach(it => msg += `• ${it.n} (${it.l})\n`);
+                                                    navigator.clipboard.writeText(msg);
+                                                    window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: "Ringkasan pesanan disalin!", type: 'success' } }));
+                                                }}
+                                                style={{ background: "#f5f5f5", border: "none", padding: "12px", borderRadius: "12px", color: "#666", cursor: "pointer" }}
+                                                title="Salin Ringkasan"
+                                            >
+                                                <i className="fa-solid fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            {!loading && orders.length === 0 && <p style={{ textAlign: "center", color: "#999" }}>Belum ada pesanan masuk.</p>}
+                        </div>
+                    </>
                 )}
             </main>
         </>

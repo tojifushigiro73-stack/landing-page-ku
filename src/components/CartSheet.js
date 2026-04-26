@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useApp } from "@/context/AppContext";
 import { db } from "@/lib/firebase";
 import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function CartSheet() {
   const { cart, removeFromCart, loyaltyPoints, isRedeemingPoints, setIsRedeemingPoints, customerName, setCustomerName, distance, setDistance, isCartOpen, setIsCartOpen, peekedProduct, closePeek } = useApp();
@@ -20,79 +21,93 @@ export default function CartSheet() {
     };
   }, []);
 
-  if (!isCartOpen) return null;
-
   return (
-    <>
-      <div className={`overlay ${isCartOpen ? 'active' : ''}`} onClick={() => setIsCartOpen(false)}></div>
-      <div className={`sheet ${isCartOpen ? 'active' : ''}`}>
-        <div className="handle"></div>
-
-        {peekedProduct && (
-          <button
-            onClick={() => { closePeek(); setIsCartOpen(false); }}
-            style={{
-              position: "absolute", top: "20px", left: "20px", background: "#f5f5f5",
-              border: "none", width: "40px", height: "40px", borderRadius: "50%",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              cursor: "pointer", color: "#333", zIndex: 10
-            }}
+    <AnimatePresence>
+      {isCartOpen && (
+        <>
+          <motion.div 
+            className="overlay active" 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsCartOpen(false)}
+          />
+          <motion.div 
+            className="sheet active"
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
           >
-            <i className="fa-solid fa-arrow-left"></i>
-          </button>
-        )}
+            <div className="handle"></div>
 
-        <div id="sheet-body">
-          {peekedProduct ? (
-            <ProductPeek p={peekedProduct} close={() => { closePeek(); setIsCartOpen(false); }} />
-          ) : (
-            <CartView />
-          )}
-        </div>
-      </div>
-    </>
+            {peekedProduct && (
+              <button
+                onClick={() => { closePeek(); setIsCartOpen(false); }}
+                className="peek-close-btn"
+              >
+                <i className="fa-solid fa-arrow-left"></i>
+              </button>
+            )}
+
+            <div id="sheet-body">
+              <AnimatePresence mode="wait">
+                {peekedProduct ? (
+                  <motion.div
+                    key="peek"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                  >
+                    <ProductPeek p={peekedProduct} close={() => { closePeek(); setIsCartOpen(false); }} />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="cart"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                  >
+                    <CartView />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 }
 
 function ProductPeek({ p, close }) {
   const { addToCart } = useApp();
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "24px" }}>
-      <div style={{ position: "relative", borderRadius: "24px", overflow: "hidden", boxShadow: "0 15px 35px rgba(0,0,0,0.1)" }}>
-        <img src={p.i} style={{ width: "100%", height: "auto", display: "block" }} alt={p.n} />
-        <div style={{ position: "absolute", top: "15px", left: "15px", background: "var(--accent)", color: "white", padding: "5px 12px", borderRadius: "50px", fontSize: "0.7rem", fontWeight: "700", textTransform: "uppercase" }}>{p.b}</div>
+    <div className="peek-grid">
+      <div className="peek-img-wrap">
+        <img src={p.i} className="peek-img" alt={p.n} />
+        <div className="peek-badge">{p.b}</div>
       </div>
-      <div>
-        <h2 style={{ fontFamily: "var(--font-playfair)", fontSize: "2rem", color: "var(--primary)", marginBottom: "8px" }}>{p.n}</h2>
-        <p style={{ color: "var(--text-muted)", marginBottom: "24px", fontSize: "1rem", lineHeight: "1.5" }}>{p.d}</p>
+      <div className="peek-info">
+        <h2 className="peek-title">{p.n}</h2>
+        <p className="peek-desc">{p.d}</p>
 
-        <p style={{ fontWeight: "800", marginBottom: "15px", color: "#2d1b22", fontSize: "0.9rem", textTransform: "uppercase", letterSpacing: "0.5px" }}>Pilih Varian / Berat:</p>
+        <p className="peek-variation-label">Pilih Varian / Berat:</p>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        <div className="peek-options">
           {p.opts.map((o, idx) => (
             <button
               key={idx}
               className="opt-btn"
               onClick={(e) => { addToCart(p, o, e); close(); }}
-              style={{
-                width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center",
-                padding: "16px 20px", background: "white", border: "1.5px solid #eee",
-                borderRadius: "16px", cursor: "pointer", transition: "all 0.3s ease",
-                textAlign: "left"
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--primary)"; e.currentTarget.style.background = "#fff9fb"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#eee"; e.currentTarget.style.background = "white"; }}
             >
-              <span style={{ fontWeight: "600", color: "#444" }}>{o.l}</span>
-              <span style={{ fontWeight: "800", color: "var(--primary)", fontSize: "1.05rem" }}>Rp {o.p.toLocaleString('id-ID')}</span>
+              <span className="opt-label">{o.l}</span>
+              <span className="opt-price">Rp {o.p.toLocaleString('id-ID')}</span>
             </button>
           ))}
         </div>
+        <button onClick={close} className="peek-back-btn">KEMBALI KE MENU</button>
       </div>
-      <button
-        onClick={close}
-        style={{ width: "100%", background: "#f5f5f5", color: "#666", border: "none", padding: "14px", borderRadius: "16px", fontWeight: "700", cursor: "pointer", marginTop: "10px" }}
-      >KEMBALI KE MENU</button>
     </div>
   );
 }
@@ -127,8 +142,14 @@ function CartView() {
   const total = subtotal + ongkir - discount;
 
   const handleWA = async () => {
-    if (!cart.length) return alert('Keranjang belanja masih kosong!');
-    if (!location) return alert('Silakan pilih lokasi pengiriman pada peta terlebih dahulu!');
+    if (!cart.length) {
+      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: 'Keranjang belanja masih kosong!', type: 'error' } }));
+      return;
+    }
+    if (!location) {
+      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: 'Silakan pilih lokasi pengiriman pada peta terlebih dahulu!', type: 'info' } }));
+      return;
+    }
     
     setLoading(true);
     try {
@@ -181,7 +202,7 @@ function CartView() {
       window.dispatchEvent(new CustomEvent('close-modals'));
     } catch (err) {
       console.error("Order Save Error:", err);
-      alert("Gagal menyimpan pesanan. Silakan coba lagi.");
+      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: "Gagal menyimpan pesanan. Silakan coba lagi.", type: 'error' } }));
     } finally {
       setLoading(false);
     }
@@ -298,11 +319,17 @@ function CartView() {
         <p style={{ fontWeight: 700, color: "var(--primary)", marginBottom: "10px" }}>💳 Pembayaran Transfer</p>
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px", fontSize: "0.85rem" }}>
           <span>BRI: 009801076603506<br /><small style={{ color: "var(--text-muted)" }}>a/n Rendy Sena Giwandita</small></span>
-          <span className="copy-btn" style={{ color: "var(--primary)", fontWeight: "800", cursor: "pointer" }} onClick={() => { navigator.clipboard.writeText("009801076603506"); alert("Salin!"); }}>SALIN</span>
+          <span className="copy-btn" style={{ color: "var(--primary)", fontWeight: "800", cursor: "pointer" }} onClick={() => { 
+            navigator.clipboard.writeText("009801076603506"); 
+            window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: "Nomor BRI disalin!", type: 'success' } }));
+          }}>SALIN</span>
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem" }}>
           <span>DANA/GOPAY: 082348315200<br /><small style={{ color: "var(--text-muted)" }}>a/n Ferina Pratiwi</small></span>
-          <span className="copy-btn" style={{ color: "var(--primary)", fontWeight: "800", cursor: "pointer" }} onClick={() => { navigator.clipboard.writeText("082348315200"); alert("Salin!"); }}>SALIN</span>
+          <span className="copy-btn" style={{ color: "var(--primary)", fontWeight: "800", cursor: "pointer" }} onClick={() => { 
+            navigator.clipboard.writeText("082348315200"); 
+            window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: "Nomor DANA/GOPAY disalin!", type: 'success' } }));
+          }}>SALIN</span>
         </div>
       </div>
 

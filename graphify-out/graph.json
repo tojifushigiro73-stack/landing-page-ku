@@ -90,7 +90,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_vanilla_backup_script_js",
-      "community": 0,
+      "community": 2,
       "norm_label": "script.js"
     },
     {
@@ -99,7 +99,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L11",
       "id": "script_initfirebase",
-      "community": 0,
+      "community": 2,
       "norm_label": "initfirebase()"
     },
     {
@@ -108,7 +108,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L77",
       "id": "script_go",
-      "community": 0,
+      "community": 7,
       "norm_label": "go()"
     },
     {
@@ -117,7 +117,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L92",
       "id": "script_updateactivetab",
-      "community": 0,
+      "community": 7,
       "norm_label": "updateactivetab()"
     },
     {
@@ -126,7 +126,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L131",
       "id": "script_render",
-      "community": 0,
+      "community": 2,
       "norm_label": "render()"
     },
     {
@@ -135,7 +135,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L155",
       "id": "script_add",
-      "community": 2,
+      "community": 4,
       "norm_label": "add()"
     },
     {
@@ -180,7 +180,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L262",
       "id": "script_initmap",
-      "community": 1,
+      "community": 3,
       "norm_label": "initmap()"
     },
     {
@@ -207,7 +207,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L326",
       "id": "script_usecurrentloc",
-      "community": 0,
+      "community": 2,
       "norm_label": "usecurrentloc()"
     },
     {
@@ -216,7 +216,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L336",
       "id": "script_peek",
-      "community": 2,
+      "community": 3,
       "norm_label": "peek()"
     },
     {
@@ -234,7 +234,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L453",
       "id": "script_show",
-      "community": 2,
+      "community": 3,
       "norm_label": "show()"
     },
     {
@@ -270,7 +270,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L505",
       "id": "script_copy",
-      "community": 0,
+      "community": 2,
       "norm_label": "copy()"
     },
     {
@@ -279,7 +279,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L511",
       "id": "script_openauth",
-      "community": 2,
+      "community": 4,
       "norm_label": "openauth()"
     },
     {
@@ -288,7 +288,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L516",
       "id": "script_closeauth",
-      "community": 0,
+      "community": 5,
       "norm_label": "closeauth()"
     },
     {
@@ -297,7 +297,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L524",
       "id": "script_openterms",
-      "community": 2,
+      "community": 4,
       "norm_label": "openterms()"
     },
     {
@@ -315,7 +315,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L537",
       "id": "script_startlogin",
-      "community": 0,
+      "community": 2,
       "norm_label": "startlogin()"
     },
     {
@@ -324,7 +324,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L551",
       "id": "script_handleauthstatechanged",
-      "community": 0,
+      "community": 5,
       "norm_label": "handleauthstatechanged()"
     },
     {
@@ -333,7 +333,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L578",
       "id": "script_mergepoints",
-      "community": 0,
+      "community": 5,
       "norm_label": "mergepoints()"
     },
     {
@@ -342,7 +342,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L602",
       "id": "script_syncpoints",
-      "community": 0,
+      "community": 5,
       "norm_label": "syncpoints()"
     },
     {
@@ -360,7 +360,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L657",
       "id": "script_logout",
-      "community": 2,
+      "community": 4,
       "norm_label": "logout()"
     },
     {
@@ -396,7 +396,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L725",
       "id": "script_fly",
-      "community": 2,
+      "community": 4,
       "norm_label": "fly()"
     },
     {
@@ -405,7 +405,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L752",
       "id": "script_injectaskwa",
-      "community": 0,
+      "community": 2,
       "norm_label": "injectaskwa()"
     },
     {
@@ -414,7 +414,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L758",
       "id": "script_injectcsicon",
-      "community": 0,
+      "community": 2,
       "norm_label": "injectcsicon()"
     },
     {
@@ -423,7 +423,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L782",
       "id": "script_cleanenvironment",
-      "community": 0,
+      "community": 2,
       "norm_label": "cleanenvironment()"
     },
     {
@@ -432,7 +432,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L808",
       "id": "script_showinstallpopup",
-      "community": 0,
+      "community": 2,
       "norm_label": "showinstallpopup()"
     },
     {
@@ -441,7 +441,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L835",
       "id": "script_installpwa",
-      "community": 0,
+      "community": 6,
       "norm_label": "installpwa()"
     },
     {
@@ -450,7 +450,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L846",
       "id": "script_dismisspwa",
-      "community": 0,
+      "community": 6,
       "norm_label": "dismisspwa()"
     },
     {
@@ -459,7 +459,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L931",
       "id": "script_initserviceworker",
-      "community": 0,
+      "community": 2,
       "norm_label": "initserviceworker()"
     },
     {
@@ -477,7 +477,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L946",
       "id": "script_initonesignalbridges",
-      "community": 0,
+      "community": 2,
       "norm_label": "initonesignalbridges()"
     },
     {
@@ -486,7 +486,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/admin.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_vanilla_backup_admin_js",
-      "community": 5,
+      "community": 8,
       "norm_label": "admin.js"
     },
     {
@@ -495,7 +495,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/admin.js",
       "source_location": "L45",
       "id": "admin_fetchmembers",
-      "community": 5,
+      "community": 8,
       "norm_label": "fetchmembers()"
     },
     {
@@ -522,7 +522,7 @@
       "source_file": "/Users/ferinapratiwi/page/src/context/AppContext.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_src_context_appcontext_js",
-      "community": 10,
+      "community": 0,
       "norm_label": "appcontext.js"
     },
     {
@@ -531,7 +531,7 @@
       "source_file": "/Users/ferinapratiwi/page/src/context/AppContext.js",
       "source_location": "L9",
       "id": "appcontext_appprovider",
-      "community": 10,
+      "community": 0,
       "norm_label": "appprovider()"
     },
     {
@@ -540,7 +540,7 @@
       "source_file": "/Users/ferinapratiwi/page/src/context/AppContext.js",
       "source_location": "L135",
       "id": "appcontext_useapp",
-      "community": 4,
+      "community": 0,
       "norm_label": "useapp()"
     },
     {
@@ -549,16 +549,16 @@
       "source_file": "/Users/ferinapratiwi/page/src/app/layout.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_src_app_layout_js",
-      "community": 6,
+      "community": 9,
       "norm_label": "layout.js"
     },
     {
       "label": "RootLayout()",
       "file_type": "code",
       "source_file": "/Users/ferinapratiwi/page/src/app/layout.js",
-      "source_location": "L28",
+      "source_location": "L44",
       "id": "layout_rootlayout",
-      "community": 6,
+      "community": 9,
       "norm_label": "rootlayout()"
     },
     {
@@ -567,16 +567,16 @@
       "source_file": "/Users/ferinapratiwi/page/src/app/page.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_src_app_page_js",
-      "community": 7,
+      "community": 0,
       "norm_label": "page.js"
     },
     {
       "label": "Home()",
       "file_type": "code",
       "source_file": "/Users/ferinapratiwi/page/src/app/page.js",
-      "source_location": "L11",
+      "source_location": "L12",
       "id": "page_home",
-      "community": 7,
+      "community": 0,
       "norm_label": "home()"
     },
     {
@@ -585,7 +585,7 @@
       "source_file": "/Users/ferinapratiwi/page/src/app/admin/page.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_src_app_admin_page_js",
-      "community": 12,
+      "community": 3,
       "norm_label": "page.js"
     },
     {
@@ -594,7 +594,7 @@
       "source_file": "/Users/ferinapratiwi/page/src/app/admin/page.js",
       "source_location": "L8",
       "id": "page_adminpage",
-      "community": 12,
+      "community": 3,
       "norm_label": "adminpage()"
     },
     {
@@ -603,34 +603,34 @@
       "source_file": "/Users/ferinapratiwi/page/src/components/CartSheet.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_src_components_cartsheet_js",
-      "community": 3,
+      "community": 0,
       "norm_label": "cartsheet.js"
     },
     {
       "label": "CartSheet()",
       "file_type": "code",
       "source_file": "/Users/ferinapratiwi/page/src/components/CartSheet.js",
-      "source_location": "L7",
+      "source_location": "L8",
       "id": "cartsheet_cartsheet",
-      "community": 3,
+      "community": 0,
       "norm_label": "cartsheet()"
     },
     {
       "label": "ProductPeek()",
       "file_type": "code",
       "source_file": "/Users/ferinapratiwi/page/src/components/CartSheet.js",
-      "source_location": "L57",
+      "source_location": "L83",
       "id": "cartsheet_productpeek",
-      "community": 3,
+      "community": 0,
       "norm_label": "productpeek()"
     },
     {
       "label": "CartView()",
       "file_type": "code",
       "source_file": "/Users/ferinapratiwi/page/src/components/CartSheet.js",
-      "source_location": "L103",
+      "source_location": "L118",
       "id": "cartsheet_cartview",
-      "community": 3,
+      "community": 0,
       "norm_label": "cartview()"
     },
     {
@@ -639,7 +639,7 @@
       "source_file": "/Users/ferinapratiwi/page/src/components/Navbar.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_src_components_navbar_js",
-      "community": 9,
+      "community": 0,
       "norm_label": "navbar.js"
     },
     {
@@ -648,7 +648,7 @@
       "source_file": "/Users/ferinapratiwi/page/src/components/Navbar.js",
       "source_location": "L5",
       "id": "navbar_navbar",
-      "community": 9,
+      "community": 0,
       "norm_label": "navbar()"
     },
     {
@@ -657,25 +657,25 @@
       "source_file": "/Users/ferinapratiwi/page/src/components/Catalog.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_src_components_catalog_js",
-      "community": 4,
+      "community": 0,
       "norm_label": "catalog.js"
     },
     {
       "label": "Catalog()",
       "file_type": "code",
       "source_file": "/Users/ferinapratiwi/page/src/components/Catalog.js",
-      "source_location": "L6",
+      "source_location": "L7",
       "id": "catalog_catalog",
-      "community": 4,
+      "community": 0,
       "norm_label": "catalog()"
     },
     {
       "label": "ProductCard()",
       "file_type": "code",
       "source_file": "/Users/ferinapratiwi/page/src/components/Catalog.js",
-      "source_location": "L66",
+      "source_location": "L98",
       "id": "catalog_productcard",
-      "community": 4,
+      "community": 0,
       "norm_label": "productcard()"
     },
     {
@@ -684,16 +684,16 @@
       "source_file": "/Users/ferinapratiwi/page/src/components/LoyaltyCard.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_src_components_loyaltycard_js",
-      "community": 11,
+      "community": 0,
       "norm_label": "loyaltycard.js"
     },
     {
       "label": "LoyaltyCard()",
       "file_type": "code",
       "source_file": "/Users/ferinapratiwi/page/src/components/LoyaltyCard.js",
-      "source_location": "L4",
+      "source_location": "L5",
       "id": "loyaltycard_loyaltycard",
-      "community": 11,
+      "community": 0,
       "norm_label": "loyaltycard()"
     },
     {
@@ -702,16 +702,16 @@
       "source_file": "/Users/ferinapratiwi/page/src/components/AuthModal.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_src_components_authmodal_js",
-      "community": 8,
+      "community": 0,
       "norm_label": "authmodal.js"
     },
     {
       "label": "AuthModal()",
       "file_type": "code",
       "source_file": "/Users/ferinapratiwi/page/src/components/AuthModal.js",
-      "source_location": "L8",
+      "source_location": "L9",
       "id": "authmodal_authmodal",
-      "community": 8,
+      "community": 0,
       "norm_label": "authmodal()"
     },
     {
@@ -720,7 +720,7 @@
       "source_file": "/Users/ferinapratiwi/page/src/components/Scripts.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_src_components_scripts_js",
-      "community": 13,
+      "community": 10,
       "norm_label": "scripts.js"
     },
     {
@@ -729,7 +729,7 @@
       "source_file": "/Users/ferinapratiwi/page/src/components/Scripts.js",
       "source_location": "L4",
       "id": "scripts_scripts",
-      "community": 13,
+      "community": 10,
       "norm_label": "scripts()"
     },
     {
@@ -738,17 +738,35 @@
       "source_file": "/Users/ferinapratiwi/page/src/components/Hero.js",
       "source_location": "L1",
       "id": "users_ferinapratiwi_page_src_components_hero_js",
-      "community": 4,
+      "community": 0,
       "norm_label": "hero.js"
     },
     {
       "label": "Hero()",
       "file_type": "code",
       "source_file": "/Users/ferinapratiwi/page/src/components/Hero.js",
-      "source_location": "L3",
+      "source_location": "L5",
       "id": "hero_hero",
-      "community": 4,
+      "community": 0,
       "norm_label": "hero()"
+    },
+    {
+      "label": "PWAInstallPopup.js",
+      "file_type": "code",
+      "source_file": "/Users/ferinapratiwi/page/src/components/PWAInstallPopup.js",
+      "source_location": "L1",
+      "id": "users_ferinapratiwi_page_src_components_pwainstallpopup_js",
+      "community": 11,
+      "norm_label": "pwainstallpopup.js"
+    },
+    {
+      "label": "PWAInstallPopup()",
+      "file_type": "code",
+      "source_file": "/Users/ferinapratiwi/page/src/components/PWAInstallPopup.js",
+      "source_location": "L5",
+      "id": "pwainstallpopup_pwainstallpopup",
+      "community": 11,
+      "norm_label": "pwainstallpopup()"
     },
     {
       "label": "Map.js",
@@ -767,6 +785,42 @@
       "id": "map_map",
       "community": 3,
       "norm_label": "map()"
+    },
+    {
+      "label": "Toast.js",
+      "file_type": "code",
+      "source_file": "/Users/ferinapratiwi/page/src/components/Toast.js",
+      "source_location": "L1",
+      "id": "users_ferinapratiwi_page_src_components_toast_js",
+      "community": 12,
+      "norm_label": "toast.js"
+    },
+    {
+      "label": "Toast()",
+      "file_type": "code",
+      "source_file": "/Users/ferinapratiwi/page/src/components/Toast.js",
+      "source_location": "L5",
+      "id": "toast_toast",
+      "community": 12,
+      "norm_label": "toast()"
+    },
+    {
+      "label": "OfflineBanner.js",
+      "file_type": "code",
+      "source_file": "/Users/ferinapratiwi/page/src/components/OfflineBanner.js",
+      "source_location": "L1",
+      "id": "users_ferinapratiwi_page_src_components_offlinebanner_js",
+      "community": 13,
+      "norm_label": "offlinebanner.js"
+    },
+    {
+      "label": "OfflineBanner()",
+      "file_type": "code",
+      "source_file": "/Users/ferinapratiwi/page/src/components/OfflineBanner.js",
+      "source_location": "L5",
+      "id": "offlinebanner_offlinebanner",
+      "community": 13,
+      "norm_label": "offlinebanner()"
     },
     {
       "label": "firebase.js",
@@ -2016,7 +2070,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "/Users/ferinapratiwi/page/src/app/layout.js",
-      "source_location": "L28",
+      "source_location": "L44",
       "weight": 1.0,
       "_src": "users_ferinapratiwi_page_src_app_layout_js",
       "_tgt": "layout_rootlayout",
@@ -2028,7 +2082,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "/Users/ferinapratiwi/page/src/app/page.js",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0,
       "_src": "users_ferinapratiwi_page_src_app_page_js",
       "_tgt": "page_home",
@@ -2064,7 +2118,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "/Users/ferinapratiwi/page/src/components/CartSheet.js",
-      "source_location": "L7",
+      "source_location": "L8",
       "weight": 1.0,
       "_src": "users_ferinapratiwi_page_src_components_cartsheet_js",
       "_tgt": "cartsheet_cartsheet",
@@ -2076,7 +2130,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "/Users/ferinapratiwi/page/src/components/CartSheet.js",
-      "source_location": "L57",
+      "source_location": "L83",
       "weight": 1.0,
       "_src": "users_ferinapratiwi_page_src_components_cartsheet_js",
       "_tgt": "cartsheet_productpeek",
@@ -2088,7 +2142,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "/Users/ferinapratiwi/page/src/components/CartSheet.js",
-      "source_location": "L103",
+      "source_location": "L118",
       "weight": 1.0,
       "_src": "users_ferinapratiwi_page_src_components_cartsheet_js",
       "_tgt": "cartsheet_cartview",
@@ -2136,7 +2190,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "/Users/ferinapratiwi/page/src/components/Catalog.js",
-      "source_location": "L6",
+      "source_location": "L7",
       "weight": 1.0,
       "_src": "users_ferinapratiwi_page_src_components_catalog_js",
       "_tgt": "catalog_catalog",
@@ -2148,7 +2202,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "/Users/ferinapratiwi/page/src/components/Catalog.js",
-      "source_location": "L66",
+      "source_location": "L98",
       "weight": 1.0,
       "_src": "users_ferinapratiwi_page_src_components_catalog_js",
       "_tgt": "catalog_productcard",
@@ -2172,7 +2226,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "/Users/ferinapratiwi/page/src/components/LoyaltyCard.js",
-      "source_location": "L4",
+      "source_location": "L5",
       "weight": 1.0,
       "_src": "users_ferinapratiwi_page_src_components_loyaltycard_js",
       "_tgt": "loyaltycard_loyaltycard",
@@ -2184,7 +2238,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "/Users/ferinapratiwi/page/src/components/AuthModal.js",
-      "source_location": "L8",
+      "source_location": "L9",
       "weight": 1.0,
       "_src": "users_ferinapratiwi_page_src_components_authmodal_js",
       "_tgt": "authmodal_authmodal",
@@ -2208,12 +2262,24 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "/Users/ferinapratiwi/page/src/components/Hero.js",
-      "source_location": "L3",
+      "source_location": "L5",
       "weight": 1.0,
       "_src": "users_ferinapratiwi_page_src_components_hero_js",
       "_tgt": "hero_hero",
       "source": "users_ferinapratiwi_page_src_components_hero_js",
       "target": "hero_hero",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/ferinapratiwi/page/src/components/PWAInstallPopup.js",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_src": "users_ferinapratiwi_page_src_components_pwainstallpopup_js",
+      "_tgt": "pwainstallpopup_pwainstallpopup",
+      "source": "users_ferinapratiwi_page_src_components_pwainstallpopup_js",
+      "target": "pwainstallpopup_pwainstallpopup",
       "confidence_score": 1.0
     },
     {
@@ -2226,6 +2292,30 @@
       "_tgt": "map_map",
       "source": "users_ferinapratiwi_page_src_components_map_js",
       "target": "map_map",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/ferinapratiwi/page/src/components/Toast.js",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_src": "users_ferinapratiwi_page_src_components_toast_js",
+      "_tgt": "toast_toast",
+      "source": "users_ferinapratiwi_page_src_components_toast_js",
+      "target": "toast_toast",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/ferinapratiwi/page/src/components/OfflineBanner.js",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_src": "users_ferinapratiwi_page_src_components_offlinebanner_js",
+      "_tgt": "offlinebanner_offlinebanner",
+      "source": "users_ferinapratiwi_page_src_components_offlinebanner_js",
+      "target": "offlinebanner_offlinebanner",
       "confidence_score": 1.0
     }
   ],

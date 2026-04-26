@@ -2,6 +2,9 @@ import { Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/context/AppContext";
 import Scripts from "@/components/Scripts";
+import OfflineBanner from "@/components/OfflineBanner";
+import PWAInstallPopup from "@/components/PWAInstallPopup";
+import Toast from "@/components/Toast";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -19,10 +22,23 @@ export const metadata = {
   title: "La Misha Bakehouse | Kukis & Cake Terbaik di Kota Metro",
   description: "Kukis dan kue premium yang dipanggang segar setiap hari di Kota Metro. Rasakan kelezatan dalam setiap gigitan.",
   manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    title: "LaMisha",
+    statusBarStyle: "default",
+  },
   icons: {
     icon: "/apple-touch-icon.png",
     apple: "/apple-touch-icon.png",
   }
+};
+
+export const viewport = {
+  themeColor: "#b02762",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({ children }) {
@@ -31,10 +47,14 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+        <meta name="mobile-web-app-capable" content="yes" />
       </head>
       <body>
         <AppProvider>
           <Scripts />
+          <OfflineBanner />
+          <PWAInstallPopup />
+          <Toast />
           {children}
         </AppProvider>
       </body>
