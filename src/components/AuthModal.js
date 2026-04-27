@@ -7,49 +7,40 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useApp } from "@/context/AppContext";
 
 export default function AuthModal() {
-  const { logout } = useApp();
-  const [active, setActive] = useState(false);
+  const { logout, authModalMode, setAuthModalMode } = useApp();
   const [view, setView] = useState("login"); // login, terms, logout
 
+  // Sinkronisasi view lokal dengan state global
   useEffect(() => {
-    const openAuth = () => { setView("login"); setActive(true); };
-    const openLogout = () => { setView("logout"); setActive(true); };
-    const close = () => setActive(false);
-
-    window.addEventListener('open-auth', openAuth);
-    window.addEventListener('open-logout', openLogout);
-    window.addEventListener('close-modals', close);
-
-    return () => {
-      window.removeEventListener('open-auth', openAuth);
-      window.removeEventListener('open-logout', openLogout);
-      window.removeEventListener('close-modals', close);
-    };
-  }, []);
+    if (authModalMode) {
+      setView(authModalMode);
+    }
+  }, [authModalMode]);
 
   const handleLogin = async () => {
     if (!auth || !provider) return;
     try {
       await signInWithPopup(auth, provider);
-      setActive(false);
+      setAuthModalMode(null);
     } catch (err) {
       if (err.code === 'auth/popup-closed-by-user') {
         return;
       }
       console.error("Login Error:", err);
-      alert("Gagal login. Silakan coba lagi atau pastikan pop-up diperbolehkan di browser Anda.");
+      alert("Gagal login. Silakan coba lagi.");
     }
   };
 
   return (
     <AnimatePresence>
-      {active && (
+      {authModalMode && (
         <motion.div 
           className="auth-overlay active" 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={(e) => e.target === e.currentTarget && setActive(false)}
+          style={{ zIndex: 10000 }} // Pastikan di atas Navbar
+          onClick={(e) => e.target === e.currentTarget && setAuthModalMode(null)}
         >
           <AnimatePresence mode="wait">
             {view === "login" && (
@@ -60,7 +51,7 @@ export default function AuthModal() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
               >
-                <button className="auth-close" onClick={() => setActive(false)}>
+                <button className="auth-close" onClick={() => setAuthModalMode(null)}>
                   <i className="fa-solid fa-xmark"></i>
                 </button>
                 
@@ -121,7 +112,7 @@ export default function AuthModal() {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                   <button 
                     className="opt-btn"
-                    onClick={() => setActive(false)} 
+                    onClick={() => setAuthModalMode(null)} 
                     style={{
                       padding: "14px", borderRadius: "16px", border: "1.5px solid #eee",
                       background: "white", color: "#666", fontWeight: "700", cursor: "pointer",
@@ -129,14 +120,12 @@ export default function AuthModal() {
                     }}
                   >BATAL</button>
                   <button 
-                    onClick={() => { logout(); setActive(false); }} 
+                    onClick={() => { logout(); setAuthModalMode(null); }} 
                     style={{
                       padding: "14px", borderRadius: "16px", border: "none",
                       background: "var(--primary)", color: "white", fontWeight: "700", cursor: "pointer",
                       boxShadow: "0 8px 20px rgba(176,39,98,0.2)", transition: "0.3s"
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-2px)"}
-                    onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
                   >KELUAR</button>
                 </div>
               </motion.div>

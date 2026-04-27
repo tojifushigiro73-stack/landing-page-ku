@@ -27,8 +27,19 @@ export default function Home() {
   const subtotal = cart.reduce((s, i) => s + i.p, 0);
   const potentialPoints = Math.floor(subtotal / 10000);
 
+  // Varian animasi untuk elemen native-feel
+  const pageVariants = {
+    initial: { opacity: 0, y: 10 },
+    animate: { opacity: 1, y: 0 },
+  };
+
   return (
-    <>
+    <motion.div 
+      initial="initial" 
+      animate="animate" 
+      variants={pageVariants}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+    >
       <Navbar />
       <Hero />
       <div className="container" style={{ marginTop: "30px" }}>
@@ -40,10 +51,16 @@ export default function Home() {
         {cart.length > 0 && (
           <motion.div 
             className="floating-checkout"
-            initial={{ y: 50, opacity: 0 }}
+            initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 50, opacity: 0 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            exit={{ y: 100, opacity: 0 }}
+            transition={{ 
+              type: "spring", 
+              damping: 30, 
+              stiffness: 200, // Mengurangi stiffness agar lebih smooth di iOS
+              mass: 0.8
+            }}
+            style={{ willChange: "transform, opacity" }}
           >
             <div style={{ flex: 1 }}>
               {potentialPoints > 0 && (
@@ -77,6 +94,6 @@ export default function Home() {
 
       <CartSheet />
       <AuthModal />
-    </>
+    </motion.div>
   );
 }

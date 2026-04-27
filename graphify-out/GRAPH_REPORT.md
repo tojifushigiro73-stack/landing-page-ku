@@ -1,7 +1,7 @@
 # Graph Report - /Users/ferinapratiwi/page  (2026-04-27)
 
 ## Corpus Check
-- 30 files · ~274,328 words
+- 30 files · ~274,369 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -90,11 +90,11 @@ Nodes (4): closeAuth(), handleAuthStateChanged(), mergePoints(), syncPoints()
 
 ### Community 6 - "Community 6"
 Cohesion: 1.0
-Nodes (2): go(), updateActiveTab()
+Nodes (2): dismissPWA(), installPWA()
 
 ### Community 7 - "Community 7"
 Cohesion: 1.0
-Nodes (2): dismissPWA(), installPWA()
+Nodes (2): go(), updateActiveTab()
 
 ### Community 8 - "Community 8"
 Cohesion: 1.0
@@ -173,9 +173,9 @@ Cohesion: 1.0
 Nodes (0): 
 
 ## Knowledge Gaps
-- **Thin community `Community 6`** (2 nodes): `go()`, `updateActiveTab()`
+- **Thin community `Community 6`** (2 nodes): `dismissPWA()`, `installPWA()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 7`** (2 nodes): `dismissPWA()`, `installPWA()`
+- **Thin community `Community 7`** (2 nodes): `go()`, `updateActiveTab()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Community 8`** (2 nodes): `fetchMembers()`, `admin.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.

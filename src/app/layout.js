@@ -5,6 +5,7 @@ import Scripts from "@/components/Scripts";
 import OfflineBanner from "@/components/OfflineBanner";
 import PWAInstallPopup from "@/components/PWAInstallPopup";
 import Toast from "@/components/Toast";
+import AuthModal from "@/components/AuthModal";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -55,6 +56,7 @@ export default function RootLayout({ children }) {
           <OfflineBanner />
           <PWAInstallPopup />
           <Toast />
+          <AuthModal />
           {children}
         </AppProvider>
       </body>

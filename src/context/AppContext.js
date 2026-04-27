@@ -17,10 +17,11 @@ export function AppProvider({ children }) {
 
     const [peekedProduct, setPeekedProduct] = useState(null);
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const [authModalMode, setAuthModalMode] = useState(null); // null, 'login', 'logout'
 
     const openPeek = (product) => {
         setPeekedProduct(product);
-        setIsCartOpen(true);
+        setIsCartOpen(true); // Penting: Buka sheet agar pop up muncul
     };
 
     const closePeek = () => {
@@ -125,6 +126,7 @@ export function AppProvider({ children }) {
             isAdmin, ADMIN_EMAILS,
             peekedProduct, openPeek, closePeek,
             isCartOpen, setIsCartOpen,
+            authModalMode, setAuthModalMode,
             openWhatsApp
         }}>
             {children}

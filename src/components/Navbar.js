@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useApp } from "@/context/AppContext";
 
 export default function Navbar() {
-  const { cart, currentUser, isAdmin } = useApp();
+  const { cart, currentUser, isAdmin, setAuthModalMode } = useApp();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -19,14 +19,14 @@ export default function Navbar() {
         <div className="nav-actions" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           {!currentUser ? (
             <div id="login-section">
-              <button className="user-nav-btn" onClick={() => window.dispatchEvent(new CustomEvent('open-auth'))}>
+              <button className="user-nav-btn" onClick={() => setAuthModalMode('login')}>
                 <i className="fa-solid fa-user-circle"></i> <span className="login-text">Login</span>
               </button>
             </div>
           ) : (
             <div id="user-profile" style={{ display: "flex", alignItems: "center", gap: "6px", animation: "slideInRight 0.5s ease-out" }}>
               <div className="user-nav-btn" 
-                onClick={() => window.dispatchEvent(new CustomEvent('open-logout'))}
+                onClick={() => setAuthModalMode('logout')}
                 style={{
                   display: "flex", alignItems: "center", gap: "6px", 
                   background: "white", padding: "4px 8px 4px 4px",
