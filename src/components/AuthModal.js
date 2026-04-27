@@ -39,7 +39,7 @@ export default function AuthModal() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          style={{ zIndex: 10000 }} // Pastikan di atas Navbar
+          style={{ zIndex: 20000 }} // Pastikan di atas Cart Sheet (10001)
           onClick={(e) => e.target === e.currentTarget && setAuthModalMode(null)}
         >
           <AnimatePresence mode="wait">

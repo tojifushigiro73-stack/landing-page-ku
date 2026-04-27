@@ -8,7 +8,7 @@ export default function Toast() {
   useEffect(() => {
     const handleShowToast = (e) => {
       setToast({ message: e.detail.message, type: e.detail.type || 'success' });
-      
+
       // Auto hide after 3 seconds
       setTimeout(() => {
         setToast(null);
@@ -30,13 +30,12 @@ export default function Toast() {
             position: "fixed",
             top: "30px",
             left: "50%",
-            zIndex: 10000,
+            zIndex: 30000,
             pointerEvents: "none"
           }}
         >
           <div style={{
-            background: "rgba(45, 27, 34, 0.85)",
-            backdropFilter: "blur(15px)",
+            background: "rgba(45, 27, 34, 0.95)",
             color: "white",
             padding: "12px 24px",
             borderRadius: "50px",
@@ -47,7 +46,8 @@ export default function Toast() {
             display: "flex",
             alignItems: "center",
             gap: "10px",
-            whiteSpace: "nowrap"
+            whiteSpace: "nowrap",
+            backdropFilter: "blur(10px)"
           }}>
             {toast.type === 'success' && <i className="fa-solid fa-circle-check" style={{ color: "#2ecc71" }}></i>}
             {toast.type === 'info' && <i className="fa-solid fa-circle-info" style={{ color: "#3498db" }}></i>}
@@ -59,3 +59,4 @@ export default function Toast() {
     </AnimatePresence>
   );
 }
+
