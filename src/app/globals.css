@@ -266,9 +266,18 @@ nav.scrolled {
 .sheet {
     position: fixed; bottom: 0; width: 100%; background: white;
     border-radius: 32px 32px 0 0; z-index: 10001;
-    padding: 24px; padding-bottom: calc(24px + env(safe-area-inset-bottom));
-    max-height: 90vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    padding: 24px 0 0 0; 
+    max-height: 90vh; display: flex; flex-direction: column;
     box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+    will-change: transform;
+    -webkit-transform: translateZ(0);
+}
+
+#sheet-body {
+    padding: 0 24px 24px 24px;
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
+    flex: 1;
 }
 
 .handle { width: 40px; height: 5px; background: #e0e0e0; border-radius: 10px; margin: 0 auto 20px; }
