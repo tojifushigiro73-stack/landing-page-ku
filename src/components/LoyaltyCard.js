@@ -3,7 +3,7 @@ import { useApp } from "@/context/AppContext";
 import { motion } from "framer-motion";
 
 export default function LoyaltyCard() {
-  const { loyaltyPoints, currentUser } = useApp();
+  const { loyaltyPoints, currentUser, setAuthModalMode } = useApp();
 
   if (!loyaltyPoints && !currentUser) return null;
 
@@ -57,12 +57,13 @@ export default function LoyaltyCard() {
             </div>
             {!currentUser ? (
               <motion.button 
-                style={{ background: "white", color: "var(--primary)", border: "none", padding: "8px 15px", borderRadius: "10px", fontWeight: "800", fontSize: "0.7rem", cursor: "pointer" }}
-                onClick={() => window.dispatchEvent(new CustomEvent('open-auth'))}
+                className="loyalty-btn-mini"
+                onClick={() => setAuthModalMode('login')}
                 whileTap={{ scale: 0.94 }}
+                style={{ background: "white", color: "var(--primary)", border: "none", padding: "8px 15px", borderRadius: "10px", fontWeight: "800", fontSize: "0.7rem", cursor: "pointer" }}
               >AMANKAN POIN</motion.button>
             ) : (
-              <div style={{ fontSize: "0.65rem", background: "linear-gradient(135deg, #ffd700 0%, #ff8c00 100%)", color: "#4a3b00", padding: "5px 12px", borderRadius: "50px", fontWeight: "800" }}>PRO MEMBER</div>
+              <div className="pro-member-badge" style={{ fontSize: "0.65rem", background: "linear-gradient(135deg, #ffd700 0%, #ff8c00 100%)", color: "#4a3b00", padding: "5px 12px", borderRadius: "50px", fontWeight: "800" }}>PRO MEMBER</div>
             )}
           </div>
         </motion.div>

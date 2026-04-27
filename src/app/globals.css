@@ -308,15 +308,44 @@ nav.scrolled {
 }
 
 .auth-modal {
-    background: white; width: 92%; max-width: 420px; padding: 45px 30px; border-radius: 32px;
+    background: white; width: 92%; max-width: 420px; padding: 40px 25px; border-radius: 32px;
     position: relative; text-align: center; box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.3);
+    max-height: 90vh; display: flex; flex-direction: column; overflow: hidden;
+}
+
+.terms-modal {
+    text-align: left;
+    padding-top: 50px;
+}
+
+.terms-content {
+    overflow-y: auto;
+    flex: 1;
+    margin-top: 10px;
+    padding-right: 5px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.terms-content h3 {
+    font-size: 0.9rem;
+    color: var(--primary);
+    margin: 15px 0 5px;
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+.terms-content p {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 10px;
 }
 
 .auth-close {
     position: absolute; top: 15px; right: 15px; background: #fdf2f6;
     border: none; width: 36px; height: 36px; border-radius: 50%;
     color: var(--primary); cursor: pointer; display: flex;
-    align-items: center; justify-content: center;
+    align-items: center; justify-content: center; z-index: 10;
 }
 
 .auth-title { font-family: var(--font-playfair); font-size: 1.8rem; color: var(--primary); font-weight: 800; }
@@ -336,8 +365,37 @@ nav.scrolled {
 }
 
 .peek-grid { display: grid; grid-template-columns: 1fr; gap: 24px; padding-top: 10px; }
-.peek-img-wrap { position: relative; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-.peek-img { width: 100%; height: auto; max-height: 400px; object-fit: cover; }
+
+.peek-img-wrap { 
+    position: relative; 
+    border-radius: 24px; 
+    overflow: hidden; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+    aspect-ratio: 1/1; /* Pastikan wadah gambar proporsional */
+    background: #fdfdfd;
+}
+
+.peek-img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; /* Gambar memenuhi wadah tanpa distorsi */
+    display: block;
+}
+
+.peek-badge {
+    position: absolute; 
+    top: 15px; 
+    left: 15px; 
+    background: var(--accent); 
+    color: white; 
+    padding: 6px 14px; 
+    border-radius: 50px; 
+    font-size: 0.7rem; 
+    font-weight: 800; 
+    text-transform: uppercase;
+    z-index: 2;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
 .peek-title { font-family: var(--font-playfair); font-size: 1.8rem; color: var(--primary); margin-top: 10px; }
 .peek-desc { color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; }
 
@@ -361,6 +419,31 @@ nav.scrolled {
 .loyalty-balance { font-family: var(--font-playfair); font-size: 2.2rem; font-weight: 700; }
 .loyalty-progress-container { background: rgba(0,0,0,0.15); height: 8px; border-radius: 20px; margin: 15px 0; overflow: hidden; }
 .loyalty-progress-bar { background: white; height: 100%; }
+
+.loyalty-btn-mini {
+    background: #ffffff;
+    color: var(--primary);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px; /* Pill-shaped */
+    font-weight: 800;
+    font-size: 0.75rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.loyalty-btn-mini:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    filter: brightness(1.05);
+}
+
+.loyalty-btn-mini:active {
+    transform: scale(0.92) translateY(0);
+}
 
 /* --- USER NAV BTN --- */
 .user-nav-btn {

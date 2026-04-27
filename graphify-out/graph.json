@@ -108,7 +108,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L77",
       "id": "script_go",
-      "community": 7,
+      "community": 6,
       "norm_label": "go()"
     },
     {
@@ -117,7 +117,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L92",
       "id": "script_updateactivetab",
-      "community": 7,
+      "community": 6,
       "norm_label": "updateactivetab()"
     },
     {
@@ -441,7 +441,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L835",
       "id": "script_installpwa",
-      "community": 6,
+      "community": 7,
       "norm_label": "installpwa()"
     },
     {
@@ -450,7 +450,7 @@
       "source_file": "/Users/ferinapratiwi/page/vanilla-backup/script.js",
       "source_location": "L846",
       "id": "script_dismisspwa",
-      "community": 6,
+      "community": 7,
       "norm_label": "dismisspwa()"
     },
     {
