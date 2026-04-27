@@ -156,7 +156,7 @@ import dynamic from 'next/dynamic';
 const Map = dynamic(() => import('./Map'), { ssr: false });
 
 function CartView() {
-  const { cart, setCart, removeFromCart, loyaltyPoints, isRedeemingPoints, setIsRedeemingPoints, customerName, setCustomerName, distance, setDistance, setLocation, currentUser, location } = useApp();
+  const { cart, setCart, removeFromCart, loyaltyPoints, isRedeemingPoints, setIsRedeemingPoints, customerName, setCustomerName, distance, setDistance, setLocation, currentUser, location, setAuthModalMode } = useApp();
   const [addressQuery, setAddressQuery] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -308,7 +308,7 @@ function CartView() {
             </div>
           </div>
           <button 
-            onClick={() => window.dispatchEvent(new CustomEvent('open-auth'))}
+            onClick={() => setAuthModalMode('login')}
             style={{ 
               width: "100%", background: "#e67e22", color: "white", border: "none", 
               padding: "10px", borderRadius: "12px", fontWeight: 700, cursor: "pointer", 
