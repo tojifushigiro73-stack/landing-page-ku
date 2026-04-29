@@ -8,6 +8,7 @@ import Catalog from "@/components/Catalog";
 import CartSheet from "@/components/CartSheet";
 import AuthModal from "@/components/AuthModal";
 import { motion, AnimatePresence } from "framer-motion";
+import { calcPotentialPoints } from "@/lib/orderUtils";
 
 export default function Home() {
   const { cart, currentUser } = useApp();
@@ -25,7 +26,7 @@ export default function Home() {
   );
 
   const subtotal = cart.reduce((s, i) => s + i.p, 0);
-  const potentialPoints = Math.floor(subtotal / 10000);
+  const potentialPoints = calcPotentialPoints(subtotal);
 
   // Varian animasi untuk elemen native-feel
   const pageVariants = {
@@ -57,7 +58,7 @@ export default function Home() {
             transition={{ 
               type: "spring", 
               damping: 30, 
-              stiffness: 200, // Mengurangi stiffness agar lebih smooth di iOS
+              stiffness: 200, 
               mass: 0.8
             }}
             style={{ willChange: "transform, opacity" }}

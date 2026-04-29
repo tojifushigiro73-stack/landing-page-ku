@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useApp } from "@/context/AppContext";
 import { db } from "@/lib/firebase";
-import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { collection, doc, serverTimestamp, writeBatch, increment } from "firebase/firestore";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function CartSheet() {
@@ -155,31 +155,20 @@ function ProductPeek({ p, close }) {
 import dynamic from 'next/dynamic';
 const Map = dynamic(() => import('./Map'), { ssr: false });
 
+import { calcOngkir, calculateRedeem, calcPotentialPoints } from "@/lib/orderUtils";
+
 function CartView() {
   const { cart, setCart, removeFromCart, loyaltyPoints, isRedeemingPoints, setIsRedeemingPoints, customerName, setCustomerName, distance, setDistance, setLocation, currentUser, location, setAuthModalMode } = useApp();
   const [addressQuery, setAddressQuery] = useState("");
   const [loading, setLoading] = useState(false);
 
   const subtotal = cart.reduce((s, i) => s + i.p, 0);
-  const discount = (isRedeemingPoints && loyaltyPoints >= 10) ? Math.floor(loyaltyPoints / 10) * 5000 : 0;
-  const potentialPoints = Math.floor(subtotal / 10000);
+  const { discount, pointsUsed } = calculateRedeem(isRedeemingPoints, loyaltyPoints);
+  const potentialPoints = calcPotentialPoints(subtotal);
   const isTooFar = distance > 10;
+  const ongkir = calcOngkir(distance, cart.length);
 
-  // Logic: < 5km (Free), 5-7km (5rb), > 7km (ceil * 2rb), 3+ items within 7km (Free)
-  let ongkir = 0;
-  if (distance > 0 && distance <= 10) {
-    if (cart.length >= 3 && distance <= 7) {
-      ongkir = 0;
-    } else if (distance <= 5) {
-      ongkir = 0;
-    } else if (distance <= 7) {
-      ongkir = 5000;
-    } else {
-      ongkir = Math.ceil(distance) * 2000;
-    }
-  }
-
-  const total = subtotal + ongkir - discount;
+  const total = subtotal + (ongkir === -1 ? 0 : ongkir) - discount;
 
   const handleWA = async () => {
     if (!cart.length) {
@@ -193,13 +182,12 @@ function CartView() {
     
     setLoading(true);
     try {
-      // 1. Siapkan Reference & ID secara instan (Client-side)
-      // Hubungan Graph: [[Firestore Save]] <---> [[Business Strategies]] & [[Cek Mutasi Otomatis]]
+      const batch = writeBatch(db);
       const orderRef = doc(collection(db, "orders"));
       const orderId = orderRef.id;
 
       const orderData = {
-        orderId: orderId, // Simpan ID di dalam dokumen juga untuk referensi
+        orderId: orderId,
         userId: currentUser ? currentUser.uid : "GUEST",
         userName: customerName || (currentUser ? currentUser.name : "Pelanggan"),
         userEmail: currentUser ? currentUser.email : "Guest",
@@ -213,15 +201,40 @@ function CartView() {
         status: "MENUNGGU PEMBAYARAN",
         createdAt: serverTimestamp(),
         pointsGained: potentialPoints,
-        pointsUsed: (isRedeemingPoints && loyaltyPoints >= 10) ? Math.floor(loyaltyPoints / 10) * 10 : 0
+        pointsUsed: pointsUsed
       };
 
-      // 2. Siapkan Pesan WA (Bisa langsung dilakukan karena ID sudah ada)
+      // 1. Simpan Order
+      batch.set(orderRef, orderData);
+
+      // 2. Jika Redeem, Kurangi Poin & Catat Transaksi
+      if (pointsUsed > 0 && currentUser) {
+        const userRef = doc(db, "users", currentUser.uid);
+        batch.update(userRef, {
+            points: increment(-pointsUsed)
+        });
+
+        const txRef = doc(collection(db, "point_transactions"));
+        batch.set(txRef, {
+            userId: currentUser.uid,
+            orderId: orderId,
+            type: "REDEEM",
+            amount: pointsUsed,
+            description: `Tukar poin untuk diskon pesanan #${orderId.slice(-5).toUpperCase()}`,
+            createdAt: serverTimestamp()
+        });
+      }
+
+      // 3. Commit Batch
+      await batch.commit();
+      console.log("Order & Points Sync success with ID: ", orderId);
+
+      // 4. Siapkan Pesan WA
       let msg = `Halo La Misha! Saya *${customerName || 'Pelanggan'}* ingin pesan (ID: ${orderId.slice(-5)}):\n\n`;
       cart.forEach(i => msg += `• ${i.n} (${i.l}) - Rp ${i.p.toLocaleString('id-ID')}\n`);
       msg += `\nSubtotal: Rp ${subtotal.toLocaleString('id-ID')}\n`;
       msg += `Ongkir: ${isTooFar ? '*Tanya via WA*' : (ongkir === 0 ? 'GRATIS' : 'Rp ' + ongkir.toLocaleString('id-ID'))}\n`;
-      if (discount > 0) msg += `Diskon Poin: -Rp ${discount.toLocaleString('id-ID')} (Gunakan ${Math.floor(loyaltyPoints / 10) * 10} Poin)\n`;
+      if (discount > 0) msg += `Diskon Poin: -Rp ${discount.toLocaleString('id-ID')} (Gunakan ${pointsUsed} Poin)\n`;
       msg += `Estimasi Poin Masuk: +${potentialPoints} Poin\n`;
       msg += `*Grand Total: Rp ${total.toLocaleString('id-ID')}*\n\n`;
       msg += `ID Pelanggan: ${currentUser ? currentUser.email : 'Guest/Bukan Member'}\n\n`;
@@ -229,12 +242,7 @@ function CartView() {
       
       const waUrl = `https://wa.me/6285836695103?text=${encodeURIComponent(msg)}`;
 
-      // 3. Simpan ke Firestore (Kita await agar data pasti masuk sebelum user pindah halaman)
-      // Namun proses ini sekarang lebih cepat karena ID tidak perlu di-generate oleh server lagi.
-      await setDoc(orderRef, orderData);
-      console.log("Order saved with ID: ", orderId);
-
-      // 4. Buka WA & Reset
+      // Buka WA & Reset
       window.location.href = waUrl;
       
       setCart([]);

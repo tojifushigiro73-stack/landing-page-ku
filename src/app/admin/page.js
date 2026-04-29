@@ -2,8 +2,11 @@
 import { useState, useEffect } from "react";
 import { useApp } from "@/context/AppContext";
 import { db } from "@/lib/firebase";
-import { collection, query, onSnapshot, doc, updateDoc, where, orderBy, increment } from "firebase/firestore";
+import { collection, query, onSnapshot, doc, updateDoc, where, orderBy, increment, writeBatch, serverTimestamp } from "firebase/firestore";
 import Navbar from "@/components/Navbar";
+import dynamic from "next/dynamic";
+
+const Map = dynamic(() => import("@/components/Map"), { ssr: false });
 
 export default function AdminPage() {
     const { currentUser, isAdmin, ADMIN_EMAILS } = useApp();
@@ -15,6 +18,7 @@ export default function AdminPage() {
     const [orderSearch, setOrderSearch] = useState("");
     const [orderFilter, setOrderFilter] = useState("ALL");
     const [updating, setUpdating] = useState(null);
+    const [visibleMap, setVisibleMap] = useState(null);
 
     useEffect(() => {
         if (!isAdmin) {
@@ -31,7 +35,6 @@ export default function AdminPage() {
                 setUsers(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
                 setLoading(false);
             }, (err) => {
-                // Fallback jika index belum dibuat
                 const q2 = query(collection(db, "users"));
                 onSnapshot(q2, (snap) => {
                     setUsers(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
@@ -65,20 +68,36 @@ export default function AdminPage() {
     const updateOrderStatus = async (order, newStatus) => {
         setUpdating(order.id);
         try {
+            const batch = writeBatch(db);
             const orderRef = doc(db, "orders", order.id);
-            await updateDoc(orderRef, { status: newStatus });
+            batch.update(orderRef, { status: newStatus });
             
-            // Jika status jadi SELESAI, tambahkan poin ke user
             if (newStatus === "SELESAI" && order.userId !== "GUEST") {
                 const userRef = doc(db, "users", order.userId);
-                await updateDoc(userRef, { 
-                    points: increment(order.pointsGained || 0) 
+                const pointsToGain = order.pointsGained || 0;
+                
+                batch.update(userRef, { 
+                    points: increment(pointsToGain) 
                 });
-                window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Pesanan selesai! ${order.pointsGained} poin telah ditambahkan.`, type: 'success' } }));
+
+                const txRef = doc(collection(db, "point_transactions"));
+                batch.set(txRef, {
+                    userId: order.userId,
+                    orderId: order.id,
+                    type: "EARN",
+                    amount: pointsToGain,
+                    description: `Poin dari pesanan #${order.id.slice(-5).toUpperCase()}`,
+                    createdAt: serverTimestamp()
+                });
+
+                await batch.commit();
+                window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Pesanan selesai! ${pointsToGain} poin telah ditambahkan.`, type: 'success' } }));
             } else {
+                await batch.commit();
                 window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Status diperbarui ke: ${newStatus}`, type: 'info' } }));
             }
         } catch (err) {
+            console.error("Update Status Error:", err);
             window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: "Gagal memperbarui status.", type: 'error' } }));
         }
         setUpdating(null);
@@ -96,10 +115,23 @@ export default function AdminPage() {
         <>
             <Navbar />
             <main className="container" style={{ paddingTop: "120px", paddingBottom: "100px" }}>
-                <h1 style={{ fontFamily: "var(--font-playfair)", marginBottom: "10px", color: "var(--primary)" }}>Admin Dashboard</h1>
+                <div style={{ display: "flex", alignItems: "center", gap: "15px", marginBottom: "20px" }}>
+                    <a 
+                        href="/" 
+                        onMouseEnter={(e) => e.currentTarget.style.background = "#fae1eb"}
+                        onMouseLeave={(e) => e.currentTarget.style.background = "#fdf2f6"}
+                        style={{
+                            background: "#fdf2f6", border: "none", width: "38px", height: "38px",
+                            borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center",
+                            cursor: "pointer", color: "var(--primary)", transition: "all 0.3s ease", textDecoration: "none"
+                        }}
+                    >
+                        <i className="fa-solid fa-house"></i>
+                    </a>
+                    <h1 style={{ fontFamily: "var(--font-playfair)", margin: 0, color: "var(--primary)" }}>Admin Dashboard</h1>
+                </div>
                 <p style={{ color: "var(--text-muted)", marginBottom: "30px" }}>Selamat datang, {currentUser.name}</p>
 
-                {/* Tab Switcher */}
                 <div style={{ display: "flex", gap: "10px", marginBottom: "30px", background: "#f5f5f5", padding: "5px", borderRadius: "14px" }}>
                     <button 
                         onClick={() => setActiveTab("users")}
@@ -239,16 +271,38 @@ export default function AdminPage() {
                                                     <span style={{ fontWeight: "700" }}>{o.distance}km</span>
                                                 </div>
                                                 {o.location && (
-                                                    <a 
-                                                        href={`https://www.google.com/maps?q=${o.location.lat},${o.location.lng}`} 
-                                                        target="_blank" 
-                                                        style={{ fontSize: "0.75rem", color: "#007bff", textDecoration: "none", fontWeight: "700", display: "block", marginTop: "2px" }}
-                                                    >
-                                                        <i className="fa-solid fa-location-dot"></i> LIHAT PETA
-                                                    </a>
+                                                    <div style={{ display: "flex", gap: "8px", marginTop: "5px" }}>
+                                                        <a 
+                                                            href={`https://www.google.com/maps?q=${o.location.lat},${o.location.lng}`} 
+                                                            target="_blank" 
+                                                            style={{ fontSize: "0.75rem", color: "#007bff", textDecoration: "none", fontWeight: "700", display: "block" }}
+                                                        >
+                                                            <i className="fa-solid fa-external-link"></i> GOOGLE MAPS
+                                                        </a>
+                                                        <button 
+                                                            onClick={() => setVisibleMap(visibleMap === o.id ? null : o.id)}
+                                                            style={{ 
+                                                                background: "none", border: "none", color: "var(--primary)", 
+                                                                fontSize: "0.75rem", fontWeight: "800", cursor: "pointer", 
+                                                                padding: 0, textTransform: "uppercase" 
+                                                            }}
+                                                        >
+                                                            <i className="fa-solid fa-map-location-dot"></i> {visibleMap === o.id ? "TUTUP PETA" : "LIHAT DISINI"}
+                                                        </button>
+                                                    </div>
                                                 )}
                                             </div>
                                         </div>
+
+                                        {visibleMap === o.id && o.location && (
+                                            <div style={{ marginBottom: "20px", animation: "fadeIn 0.3s ease" }}>
+                                                <Map 
+                                                    readonly={true} 
+                                                    initialLocation={o.location} 
+                                                    mapId={`map-${o.id}`}
+                                                />
+                                            </div>
+                                        )}
 
                                         <div style={{ display: "flex", gap: "10px" }}>
                                             {o.status === "MENUNGGU PEMBAYARAN" && (

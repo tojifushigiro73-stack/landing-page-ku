@@ -25,6 +25,17 @@ export default function Navbar() {
             </div>
           ) : (
             <div id="user-profile" style={{ display: "flex", alignItems: "center", gap: "6px", animation: "slideInRight 0.5s ease-out" }}>
+              <a href="/orders" className="user-nav-btn" style={{
+                display: "flex", alignItems: "center", justifyContent: "center",
+                background: "white", width: "38px", height: "38px",
+                borderRadius: "50%", cursor: "pointer", textDecoration: "none",
+                boxShadow: "0 4px 12px rgba(176,39,98,0.12)",
+                border: "1.5px solid rgba(176,39,98,0.08)",
+                color: "var(--primary)"
+              }} title="Riwayat Pesanan">
+                <i className="fa-solid fa-clock-rotate-left"></i>
+              </a>
+
               <div className="user-nav-btn" 
                 onClick={() => setAuthModalMode('logout')}
                 style={{

@@ -1,6 +1,7 @@
 import { Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
-import { AppProvider } from "@/context/AppContext";
+import { AuthProvider } from "@/context/AuthContext";
+import { CartProvider } from "@/context/CartContext";
 import Scripts from "@/components/Scripts";
 import OfflineBanner from "@/components/OfflineBanner";
 import PWAInstallPopup from "@/components/PWAInstallPopup";
@@ -51,14 +52,16 @@ export default function RootLayout({ children }) {
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
       <body>
-        <AppProvider>
-          <Scripts />
-          <OfflineBanner />
-          <PWAInstallPopup />
-          <Toast />
-          <AuthModal />
-          {children}
-        </AppProvider>
+        <AuthProvider>
+          <CartProvider>
+            <Scripts />
+            <OfflineBanner />
+            <PWAInstallPopup />
+            <Toast />
+            <AuthModal />
+            {children}
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );
