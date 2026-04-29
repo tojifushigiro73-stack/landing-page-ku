@@ -9,7 +9,7 @@ import dynamic from "next/dynamic";
 const Map = dynamic(() => import("@/components/Map"), { ssr: false });
 
 export default function AdminPage() {
-    const { currentUser, isAdmin, ADMIN_EMAILS } = useApp();
+    const { currentUser, isAdmin, ADMIN_EMAILS, setAuthModalMode } = useApp();
     const [activeTab, setActiveTab] = useState("users"); // "users", "orders", or "products"
     const [users, setUsers] = useState([]);
     const [orders, setOrders] = useState([]);
@@ -212,7 +212,7 @@ export default function AdminPage() {
                     <h2 style={{ fontFamily: "var(--font-playfair)", color: "var(--primary)", marginBottom: "15px" }}>Akses Terbatas</h2>
                     <p style={{ color: "var(--text-muted)", marginBottom: "30px" }}>Silakan login terlebih dahulu untuk mengakses Dashboard Admin.</p>
                     <button 
-                        onClick={() => window.dispatchEvent(new Event("open-auth"))}
+                        onClick={() => setAuthModalMode('login')}
                         className="cta-btn" 
                         style={{ background: "var(--primary)", border: "none", color: "white" }}
                     >

@@ -8,6 +8,9 @@
     --text-dark: #2d1b22;
     --text-muted: #6e5d63;
     --shadow: 0 10px 30px rgba(176, 39, 98, 0.08);
+    --wellness: #2d6a4f;
+    --wellness-light: #f0f9f1;
+    --wellness-accent: #a7c957;
     --transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -155,23 +158,40 @@ nav.scrolled {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: var(--primary);
-    padding: 16px 36px; border-radius: 50px;
-    text-decoration: none; font-weight: 700;
-    box-shadow: 0 8px 20px rgba(176, 39, 98, 0.2);
-    transition: var(--transition);
+    padding: 16px 32px; 
+    border-radius: 20px;
+    text-decoration: none; 
+    font-weight: 800;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    font-size: 0.8rem;
     color: white;
     cursor: pointer;
     border: none;
-    gap: 10px;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 20%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(30deg);
+    transition: all 0.6s ease;
+}
+
+.cta-btn:hover::after {
+    left: 120%;
 }
 
 .wa-hero-btn {
     background: #25D366;
-    margin-left: 15px;
 }
 
 @media (max-width: 768px) {
@@ -477,3 +497,27 @@ nav.scrolled {
 /* Bank Box & Summary */
 .bank-box { background: #fdf2f6; padding: 16px; border-radius: 16px; border: 1px dashed var(--primary-light); }
 .summary-item { display: flex; justify-content: space-between; align-items: center; }
+
+/* Hide Leaflet Routing Container */
+.leaflet-routing-container { display: none !important; }
+
+/* PWA Install Popup */
+.pwa-install-popup {
+    position: fixed;
+    z-index: 10000;
+    width: 90%;
+    max-width: 400px;
+    background: white;
+    padding: 16px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    border: 1px solid rgba(176, 39, 98, 0.1);
+}
+.pwa-content { display: flex; align-items: center; gap: 15px; }
+.pwa-icon { width: 45px; height: 45px; border-radius: 12px; }
+.pwa-text { flex: 1; }
+.pwa-text strong { display: block; font-size: 0.95rem; color: var(--text-dark); margin-bottom: 2px; }
+.pwa-text p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; margin: 0; }
+.pwa-actions { display: flex; flex-direction: column; gap: 8px; }
+.pwa-btn-install { background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; }
+.pwa-btn-later { background: #f5f5f5; color: #666; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; }
