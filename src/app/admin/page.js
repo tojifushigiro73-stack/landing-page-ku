@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useApp } from "@/context/AppContext";
 import { db } from "@/lib/firebase";
 import { collection, query, onSnapshot, doc, updateDoc, where, orderBy, increment, writeBatch, serverTimestamp } from "firebase/firestore";
@@ -10,15 +10,79 @@ const Map = dynamic(() => import("@/components/Map"), { ssr: false });
 
 export default function AdminPage() {
     const { currentUser, isAdmin, ADMIN_EMAILS } = useApp();
-    const [activeTab, setActiveTab] = useState("users"); // "users" or "orders"
+    const [activeTab, setActiveTab] = useState("users"); // "users", "orders", or "products"
     const [users, setUsers] = useState([]);
     const [orders, setOrders] = useState([]);
+    const [productsDb, setProductsDb] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
     const [orderSearch, setOrderSearch] = useState("");
     const [orderFilter, setOrderFilter] = useState("ALL");
     const [updating, setUpdating] = useState(null);
     const [visibleMap, setVisibleMap] = useState(null);
+    const [trackingOrderId, setTrackingOrderId] = useState(null);
+    const watchIdRef = useRef(null);
+
+    useEffect(() => {
+        return () => {
+            if (watchIdRef.current) navigator.geolocation.clearWatch(watchIdRef.current);
+        };
+    }, []);
+
+    const toggleTracking = (orderId) => {
+        if (trackingOrderId === orderId) {
+            // Stop Tracking
+            if (watchIdRef.current) {
+                navigator.geolocation.clearWatch(watchIdRef.current);
+                watchIdRef.current = null;
+            }
+            setTrackingOrderId(null);
+            window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: "Pelacakan dihentikan.", type: 'info' } }));
+        } else {
+            // Start Tracking
+            if (!navigator.geolocation) {
+                alert("Browser tidak mendukung geolokasi.");
+                return;
+            }
+
+            setTrackingOrderId(orderId);
+            window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: "Memulai pelacakan kurir...", type: 'success' } }));
+
+            watchIdRef.current = navigator.geolocation.watchPosition(
+                async (pos) => {
+                    const { latitude, longitude } = pos.coords;
+                    try {
+                        const orderRef = doc(db, "orders", orderId);
+                        await updateDoc(orderRef, {
+                            courierLocation: {
+                                lat: latitude,
+                                lng: longitude,
+                                lastUpdated: serverTimestamp()
+                            }
+                        });
+                    } catch (err) {
+                        console.error("Tracking Update Error:", err);
+                    }
+                },
+                (err) => {
+                    console.warn("Geolocation Warning:", err.message, err.code);
+                    if (watchIdRef.current) {
+                        navigator.geolocation.clearWatch(watchIdRef.current);
+                        watchIdRef.current = null;
+                    }
+                    setTrackingOrderId(null);
+                    
+                    let errMsg = "Gagal mendapatkan lokasi.";
+                    if (err.code === 1) errMsg = "Akses lokasi ditolak.";
+                    else if (err.code === 2) errMsg = "Lokasi tidak tersedia.";
+                    else if (err.code === 3) errMsg = "Waktu pencarian lokasi habis.";
+
+                    window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: errMsg, type: 'error' } }));
+                },
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+            );
+        }
+    };
 
     useEffect(() => {
         if (!isAdmin) {
@@ -32,19 +96,25 @@ export default function AdminPage() {
         if (activeTab === "users") {
             const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
             unsubscribe = onSnapshot(q, (snap) => {
-                setUsers(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+                setUsers(snap.docs.map(doc => ({ ...doc.data(), id: doc.id })));
                 setLoading(false);
             }, (err) => {
                 const q2 = query(collection(db, "users"));
                 onSnapshot(q2, (snap) => {
-                    setUsers(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+                    setUsers(snap.docs.map(doc => ({ ...doc.data(), id: doc.id })));
                     setLoading(false);
                 });
             });
-        } else {
+        } else if (activeTab === "orders") {
             const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
             unsubscribe = onSnapshot(q, (snap) => {
-                setOrders(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+                setOrders(snap.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+                setLoading(false);
+            });
+        } else if (activeTab === "products") {
+            const q = query(collection(db, "products"), orderBy("n", "asc"));
+            unsubscribe = onSnapshot(q, (snap) => {
+                setProductsDb(snap.docs.map(doc => ({ ...doc.data(), id: doc.id })));
                 setLoading(false);
             });
         }
@@ -55,14 +125,45 @@ export default function AdminPage() {
     const updatePoints = async (userId, newPoints) => {
         setUpdating(userId);
         try {
-            const userRef = doc(db, "users", userId);
+            const userRef = doc(db, "users", String(userId));
             await updateDoc(userRef, { points: parseInt(newPoints) });
-            setUsers(users.map(u => u.id === userId ? { ...u, points: parseInt(newPoints) } : u));
             window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: "Poin berhasil diperbarui!", type: 'success' } }));
         } catch (err) {
             window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: "Gagal memperbarui poin.", type: 'error' } }));
         }
         setUpdating(null);
+    };
+
+    const updateStock = async (productId, newStock) => {
+        setUpdating(productId);
+        try {
+            const productRef = doc(db, "products", String(productId));
+            await updateDoc(productRef, { stock: parseInt(newStock) });
+            window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: "Stok berhasil diperbarui!", type: 'success' } }));
+        } catch (err) {
+            console.error("Update Stock Error:", err);
+            window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: "Gagal memperbarui stok.", type: 'error' } }));
+        }
+        setUpdating(null);
+    };
+
+    const syncFromLocal = async () => {
+        if (!confirm("Impor produk dari file lokal ke database? Ini akan mereset data di database.")) return;
+        setLoading(true);
+        try {
+            const { products } = await import("@/data/products");
+            const batch = writeBatch(db);
+            products.forEach(p => {
+                const productRef = doc(db, "products", p.id.toString());
+                batch.set(productRef, p);
+            });
+            await batch.commit();
+            window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: "Berhasil sinkronisasi dari lokal!", type: 'success' } }));
+        } catch (err) {
+            console.error("Sync Error:", err);
+            window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: "Gagal sinkronisasi.", type: 'error' } }));
+        }
+        setLoading(false);
     };
 
     const updateOrderStatus = async (order, newStatus) => {
@@ -103,10 +204,38 @@ export default function AdminPage() {
         setUpdating(null);
     };
 
-    if (!currentUser) return <div style={{ padding: "100px 20px", textAlign: "center" }}>Silakan login terlebih dahulu.</div>;
+    if (!currentUser) {
+        return (
+            <>
+                <Navbar />
+                <main className="container" style={{ paddingTop: "140px", paddingBottom: "100px", textAlign: "center", minHeight: "70vh" }}>
+                    <h2 style={{ fontFamily: "var(--font-playfair)", color: "var(--primary)", marginBottom: "15px" }}>Akses Terbatas</h2>
+                    <p style={{ color: "var(--text-muted)", marginBottom: "30px" }}>Silakan login terlebih dahulu untuk mengakses Dashboard Admin.</p>
+                    <button 
+                        onClick={() => window.dispatchEvent(new Event("open-auth"))}
+                        className="cta-btn" 
+                        style={{ background: "var(--primary)", border: "none", color: "white" }}
+                    >
+                        LOGIN SEKARANG
+                    </button>
+                </main>
+            </>
+        );
+    }
 
     if (!isAdmin) {
-        return <div style={{ padding: "100px 20px", textAlign: "center", color: "red" }}>Akses Ditolak. Halaman ini hanya untuk Admin.</div>;
+        return (
+            <>
+                <Navbar />
+                <main className="container" style={{ paddingTop: "140px", paddingBottom: "100px", textAlign: "center", minHeight: "70vh" }}>
+                    <div style={{ display: "inline-block", background: "#fdf2f6", padding: "20px 30px", borderRadius: "20px", border: "1.5px dashed var(--primary-light)" }}>
+                        <i className="fa-solid fa-lock" style={{ fontSize: "2rem", color: "var(--primary)", marginBottom: "15px" }}></i>
+                        <h2 style={{ fontFamily: "var(--font-playfair)", color: "var(--text-dark)", marginBottom: "10px" }}>Akses Ditolak</h2>
+                        <p style={{ color: "var(--text-muted)", fontSize: "0.95rem" }}>Halaman ini dikhususkan untuk Administrator La Misha.</p>
+                    </div>
+                </main>
+            </>
+        );
     }
 
     const filteredUsers = users.filter(u => u.email?.toLowerCase().includes(search.toLowerCase()) || u.name?.toLowerCase().includes(search.toLowerCase()));
@@ -132,15 +261,19 @@ export default function AdminPage() {
                 </div>
                 <p style={{ color: "var(--text-muted)", marginBottom: "30px" }}>Selamat datang, {currentUser.name}</p>
 
-                <div style={{ display: "flex", gap: "10px", marginBottom: "30px", background: "#f5f5f5", padding: "5px", borderRadius: "14px" }}>
+                <div style={{ display: "flex", gap: "10px", marginBottom: "30px", background: "#f5f5f5", padding: "5px", borderRadius: "14px", overflowX: "auto" }}>
                     <button 
                         onClick={() => setActiveTab("users")}
-                        style={{ flex: 1, padding: "12px", borderRadius: "10px", border: "none", background: activeTab === "users" ? "white" : "transparent", color: activeTab === "users" ? "var(--primary)" : "#666", fontWeight: "700", cursor: "pointer", boxShadow: activeTab === "users" ? "0 4px 10px rgba(0,0,0,0.05)" : "none" }}
+                        style={{ flex: 1, padding: "12px", borderRadius: "10px", border: "none", background: activeTab === "users" ? "white" : "transparent", color: activeTab === "users" ? "var(--primary)" : "#666", fontWeight: "700", cursor: "pointer", boxShadow: activeTab === "users" ? "0 4px 10px rgba(0,0,0,0.05)" : "none", whiteSpace: "nowrap" }}
                     >Data Member</button>
                     <button 
                         onClick={() => setActiveTab("orders")}
-                        style={{ flex: 1, padding: "12px", borderRadius: "10px", border: "none", background: activeTab === "orders" ? "white" : "transparent", color: activeTab === "orders" ? "var(--primary)" : "#666", fontWeight: "700", cursor: "pointer", boxShadow: activeTab === "orders" ? "0 4px 10px rgba(0,0,0,0.05)" : "none" }}
+                        style={{ flex: 1, padding: "12px", borderRadius: "10px", border: "none", background: activeTab === "orders" ? "white" : "transparent", color: activeTab === "orders" ? "var(--primary)" : "#666", fontWeight: "700", cursor: "pointer", boxShadow: activeTab === "orders" ? "0 4px 10px rgba(0,0,0,0.05)" : "none", whiteSpace: "nowrap" }}
                     >Pesanan Masuk</button>
+                    <button 
+                        onClick={() => setActiveTab("products")}
+                        style={{ flex: 1, padding: "12px", borderRadius: "10px", border: "none", background: activeTab === "products" ? "white" : "transparent", color: activeTab === "products" ? "var(--primary)" : "#666", fontWeight: "700", cursor: "pointer", boxShadow: activeTab === "products" ? "0 4px 10px rgba(0,0,0,0.05)" : "none", whiteSpace: "nowrap" }}
+                    >Data Produk</button>
                 </div>
 
                 {activeTab === "users" ? (
@@ -188,7 +321,7 @@ export default function AdminPage() {
                             </div>
                         )}
                     </>
-                ) : (
+                ) : activeTab === "orders" ? (
                     <>
                         <div style={{ marginBottom: "25px" }}>
                             <input
@@ -199,7 +332,7 @@ export default function AdminPage() {
                                 style={{ width: "100%", padding: "12px 20px", borderRadius: "12px", border: "1.5px solid #eee", fontSize: "1rem", marginBottom: "15px" }}
                             />
                             <div className="tabs-scroll" style={{ padding: "0 2px" }}>
-                                {["ALL", "MENUNGGU PEMBAYARAN", "SELESAI", "BATAL"].map((f) => (
+                                {["ALL", "MENUNGGU PEMBAYARAN", "DIKIRIM", "SELESAI", "BATAL"].map((f) => (
                                     <button 
                                         key={f}
                                         onClick={() => setOrderFilter(f)}
@@ -237,8 +370,8 @@ export default function AdminPage() {
                                             </div>
                                             <div style={{ 
                                                 padding: "6px 12px", borderRadius: "50px", fontSize: "0.75rem", fontWeight: "800",
-                                                background: o.status === "SELESAI" ? "#e6fff0" : (o.status === "BATAL" ? "#fff0f0" : "#fff9e6"),
-                                                color: o.status === "SELESAI" ? "#27ae60" : (o.status === "BATAL" ? "#e74c3c" : "#f39c12")
+                                                background: o.status === "SELESAI" ? "#e6fff0" : (o.status === "BATAL" ? "#fff0f0" : (o.status === "DIKIRIM" ? "#f0f7ff" : "#fff9e6")),
+                                                color: o.status === "SELESAI" ? "#27ae60" : (o.status === "BATAL" ? "#e74c3c" : (o.status === "DIKIRIM" ? "#007bff" : "#f39c12"))
                                             }}>
                                                 {o.status}
                                             </div>
@@ -308,13 +441,36 @@ export default function AdminPage() {
                                             {o.status === "MENUNGGU PEMBAYARAN" && (
                                                 <>
                                                     <button 
+                                                        onClick={() => updateOrderStatus(o, "DIKIRIM")}
+                                                        style={{ flex: 1, background: "#007bff", color: "white", border: "none", padding: "12px", borderRadius: "12px", fontWeight: "700", cursor: "pointer" }}
+                                                    >KIRIM PESANAN</button>
+                                                    <button 
                                                         onClick={() => updateOrderStatus(o, "SELESAI")}
-                                                        style={{ flex: 1, background: "#27ae60", color: "white", border: "none", padding: "12px", borderRadius: "12px", fontWeight: "700", cursor: "pointer" }}
-                                                    >PESANAN SELESAI (KLAIM POIN)</button>
+                                                        style={{ background: "#27ae60", color: "white", border: "none", padding: "12px", borderRadius: "12px", fontWeight: "700", cursor: "pointer" }}
+                                                        title="Selesai Tanpa Kirim"
+                                                    ><i className="fa-solid fa-check"></i></button>
                                                     <button 
                                                         onClick={() => updateOrderStatus(o, "BATAL")}
                                                         style={{ background: "#fff", border: "1px solid #e74c3c", color: "#e74c3c", padding: "12px", borderRadius: "12px", fontWeight: "700", cursor: "pointer" }}
                                                     >BATAL</button>
+                                                </>
+                                            )}
+                                            {o.status === "DIKIRIM" && (
+                                                <>
+                                                    <button 
+                                                        onClick={() => toggleTracking(o.id)}
+                                                        style={{ flex: 1, background: trackingOrderId === o.id ? "#e74c3c" : "#007bff", color: "white", border: "none", padding: "12px", borderRadius: "12px", fontWeight: "700", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
+                                                    >
+                                                        <i className={`fa-solid ${trackingOrderId === o.id ? 'fa-location-dot' : 'fa-motorcycle'}`}></i>
+                                                        {trackingOrderId === o.id ? "BERHENTI LACAK" : "MULAI LACAK KURIR"}
+                                                    </button>
+                                                    <button 
+                                                        onClick={() => {
+                                                            if(trackingOrderId === o.id) toggleTracking(o.id);
+                                                            updateOrderStatus(o, "SELESAI");
+                                                        }}
+                                                        style={{ background: "#27ae60", color: "white", border: "none", padding: "12px", borderRadius: "12px", fontWeight: "700", cursor: "pointer" }}
+                                                    >SELESAI</button>
                                                 </>
                                             )}
                                             <button 
@@ -334,6 +490,58 @@ export default function AdminPage() {
                                 ))}
                             {!loading && orders.length === 0 && <p style={{ textAlign: "center", color: "#999" }}>Belum ada pesanan masuk.</p>}
                         </div>
+                    </>
+                ) : (
+                    <>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                            <h2 style={{ fontSize: "1.2rem", color: "var(--text-dark)" }}>Manajemen Stok Produk</h2>
+                            <button 
+                                onClick={syncFromLocal}
+                                style={{ background: "#f0f2f5", border: "none", padding: "8px 15px", borderRadius: "10px", fontSize: "0.7rem", fontWeight: "700", cursor: "pointer", color: "#666" }}
+                            >
+                                <i className="fa-solid fa-rotate"></i> SYNC DARI LOKAL
+                            </button>
+                        </div>
+
+                        {loading ? (
+                            <p>Memuat data produk...</p>
+                        ) : (
+                            <div style={{ display: "grid", gap: "15px" }}>
+                                {productsDb.length === 0 && (
+                                    <div style={{ textAlign: "center", padding: "40px", background: "#f9f9f9", borderRadius: "20px" }}>
+                                        <p style={{ color: "#999", marginBottom: "15px" }}>Database produk masih kosong.</p>
+                                        <button onClick={syncFromLocal} style={{ background: "var(--primary)", color: "white", border: "none", padding: "12px 24px", borderRadius: "12px", fontWeight: "700" }}>KLIK UNTUK SYNC DATA</button>
+                                    </div>
+                                )}
+                                {productsDb.map(p => (
+                                    <div key={p.id} style={{ background: "white", padding: "18px", borderRadius: "18px", boxShadow: "0 4px 12px rgba(0,0,0,0.05)", display: "flex", gap: "15px", alignItems: "center" }}>
+                                        <img src={p.i} alt={p.n} style={{ width: "60px", height: "60px", borderRadius: "12px", objectFit: "cover" }} />
+                                        <div style={{ flex: 1 }}>
+                                            <div style={{ fontWeight: "800", color: "var(--text-dark)", fontSize: "0.95rem" }}>{p.n}</div>
+                                            <div style={{ fontSize: "0.75rem", color: p.brand === "Wellness" ? "var(--wellness)" : "var(--primary)", fontWeight: "700" }}>{p.brand}</div>
+                                        </div>
+                                        <div style={{ textAlign: "right", display: "flex", alignItems: "center", gap: "10px" }}>
+                                            <div>
+                                                <div style={{ fontSize: "0.65rem", fontWeight: "700", color: "#999", textTransform: "uppercase" }}>Sisa Stok</div>
+                                                <input
+                                                    type="number"
+                                                    defaultValue={p.stock || 0}
+                                                    id={`stock-${p.id}`}
+                                                    style={{ width: "65px", padding: "8px", borderRadius: "8px", border: "1px solid #ddd", fontWeight: "800", textAlign: "center", color: (p.stock || 0) <= 5 ? "red" : "inherit" }}
+                                                />
+                                            </div>
+                                            <button
+                                                onClick={() => updateStock(p.id, document.getElementById(`stock-${p.id}`).value)}
+                                                disabled={updating === p.id}
+                                                style={{ background: "var(--text-dark)", color: "white", border: "none", width: "40px", height: "40px", borderRadius: "10px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+                                            >
+                                                {updating === p.id ? "..." : <i className="fa-solid fa-check"></i>}
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </>
                 )}
             </main>
