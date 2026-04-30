@@ -50,7 +50,8 @@ export default function Catalog() {
               ))}
             </div>
             
-            {/* Theme Toggle Button */}
+            {/* Theme Toggle Button - HIDDEN TEMPORARILY UNTIL WELLNESS RELEASE */}
+            {/* 
             <motion.button
               onClick={() => setTheme(theme !== "wellness" ? "wellness" : "classic")}
               whileTap={{ scale: 0.9 }}
@@ -74,6 +75,7 @@ export default function Catalog() {
                 </>
               )}
             </motion.button>
+            */}
           </div>
         </div>
       </div>
