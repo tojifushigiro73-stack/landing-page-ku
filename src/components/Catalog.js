@@ -52,15 +52,15 @@ export default function Catalog() {
             
             {/* Theme Toggle Button */}
             <motion.button
-              onClick={() => setTheme(theme === "classic" ? "wellness" : "classic")}
+              onClick={() => setTheme(theme !== "wellness" ? "wellness" : "classic")}
               whileTap={{ scale: 0.9 }}
               className="theme-toggle-btn"
               style={{
-                background: theme === "classic" ? "linear-gradient(135deg, #43a047 0%, #81c784 100%)" : "linear-gradient(135deg, #d81b60 0%, #f06292 100%)",
-                boxShadow: theme === "classic" ? "0 4px 12px rgba(67,160,71,0.25)" : "0 4px 12px rgba(216,27,96,0.25)",
+                background: theme !== "wellness" ? "linear-gradient(135deg, #43a047 0%, #81c784 100%)" : "linear-gradient(135deg, #d81b60 0%, #f06292 100%)",
+                boxShadow: theme !== "wellness" ? "0 4px 12px rgba(67,160,71,0.25)" : "0 4px 12px rgba(216,27,96,0.25)",
               }}
             >
-              {theme === "classic" ? (
+              {theme !== "wellness" ? (
                 <>
                   <i className="fa-solid fa-leaf" style={{ fontSize: "0.9em" }}></i>
                   <span>BERALIH KE KUKIS SEHAT</span>
