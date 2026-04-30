@@ -521,3 +521,44 @@ nav.scrolled {
 .pwa-actions { display: flex; flex-direction: column; gap: 8px; }
 .pwa-btn-install { background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; }
 .pwa-btn-later { background: #f5f5f5; color: #666; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; }
+
+/* Offline Banner Aesthetics */
+.offline-banner {
+    position: fixed;
+    z-index: 10000;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 59, 48, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 100px;
+    box-shadow: 0 10px 30px rgba(255, 59, 48, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: max-content;
+    max-width: 90vw;
+}
+
+.offline-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.offline-content i {
+    font-size: 1.1rem;
+    animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; transform: scale(0.95); }
+    100% { opacity: 1; }
+}

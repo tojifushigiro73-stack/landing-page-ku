@@ -11,19 +11,31 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(clients.claim());
 });
 
-// 3. Fetch Handler (Robust with Fallback)
+const CACHE_NAME = 'lamisha-cache-v3';
+
 self.addEventListener('fetch', (event) => {
-  // Only handle GET requests for caching
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
-    fetch(event.request)
-      .catch(async () => {
+    (async () => {
+      try {
+        // Try network first
+        const networkResponse = await fetch(event.request);
+        
+        // Cache the response if it's a valid image or asset (including Firebase CORS images)
+        if (networkResponse && networkResponse.status === 200 && (networkResponse.type === 'basic' || networkResponse.type === 'cors')) {
+          const cache = await caches.open(CACHE_NAME);
+          cache.put(event.request, networkResponse.clone());
+        }
+        
+        return networkResponse;
+      } catch (error) {
+        // If network fails, try cache
         const cachedResponse = await caches.match(event.request);
         if (cachedResponse) {
           return cachedResponse;
         }
-        
+
         // If not in cache and network fails, return a basic offline response for documents
         if (event.request.mode === 'navigate') {
           return new Response('Anda sedang offline. Silakan cek koneksi internet Anda.', {
@@ -31,9 +43,9 @@ self.addEventListener('fetch', (event) => {
           });
         }
         
-        // For other assets, we must return something valid or just fail gracefully
-        // Note: Returning null or undefined here causes the "Failed to convert value to Response" error.
+        // Fallback for missing assets
         return new Response(null, { status: 404 });
-      })
+      }
+    })()
   );
 });
