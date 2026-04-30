@@ -5,11 +5,15 @@ import { db } from "@/lib/firebase";
 import { collection, query, where, orderBy, onSnapshot } from "firebase/firestore";
 import Navbar from "@/components/Navbar";
 import { motion, AnimatePresence } from "framer-motion";
+import dynamic from "next/dynamic";
+
+const Map = dynamic(() => import("@/components/Map"), { ssr: false });
 
 export default function OrdersPage() {
     const { currentUser, setAuthModalMode } = useAuth();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [visibleMap, setVisibleMap] = useState(null);
 
     useEffect(() => {
         if (!currentUser || !db) {
@@ -193,6 +197,41 @@ export default function OrdersPage() {
                                         >
                                             <i className="fa-brands fa-whatsapp"></i> KONFIRMASI PEMBAYARAN
                                         </button>
+                                    )}
+
+                                    {o.status === "DIKIRIM" && o.location && (
+                                        <div style={{ marginTop: "15px" }}>
+                                            <button 
+                                                onClick={() => setVisibleMap(visibleMap === o.id ? null : o.id)}
+                                                style={{ 
+                                                    width: "100%", background: visibleMap === o.id ? "#f5f5f5" : "#007bff", 
+                                                    color: visibleMap === o.id ? "#666" : "white", 
+                                                    border: "none", padding: "12px", borderRadius: "12px", fontWeight: "700", 
+                                                    cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px",
+                                                    transition: "all 0.3s ease"
+                                                }}
+                                            >
+                                                <i className="fa-solid fa-map-location-dot"></i> {visibleMap === o.id ? "SEMBUNYIKAN PETA" : "LACAK LOKASI KURIR"}
+                                            </button>
+
+                                            <AnimatePresence>
+                                                {visibleMap === o.id && (
+                                                    <motion.div 
+                                                        initial={{ opacity: 0, height: 0 }}
+                                                        animate={{ opacity: 1, height: "auto" }}
+                                                        exit={{ opacity: 0, height: 0 }}
+                                                        style={{ overflow: "hidden", marginTop: "10px" }}
+                                                    >
+                                                        <Map 
+                                                            readonly={true} 
+                                                            initialLocation={o.location} 
+                                                            courierLocation={o.courierLocation}
+                                                            mapId={`map-user-${o.id}`}
+                                                        />
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
                                     )}
                                 </motion.div>
                             ))}

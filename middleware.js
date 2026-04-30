@@ -4,17 +4,23 @@ export function middleware(request) {
     const url = request.nextUrl.clone();
     const hostname = request.headers.get("host") || "";
 
-    // 1. Deteksi jika user mengakses melalui adminku.lamishabake.shop
-    if (hostname === "adminku.lamishabake.shop" || hostname === "adminku.localhost:3000") {
-        // Jika mereka di root (/) subdomain admin, arahkan ke folder /admin
+    // 1. Deteksi subdomain Admin
+    if (hostname.startsWith("adminku.lamishabake.shop") || hostname.startsWith("adminku.localhost")) {
         if (url.pathname === "/") {
             return NextResponse.rewrite(new URL("/admin", request.url));
         }
     }
 
-    // 2. Cegah user biasa mengakses /admin lewat domain utama lamishabake.shop
-    if (hostname === "www.lamishabake.shop" || hostname === "lamishabake.shop" || hostname === "localhost:3000") {
-        if (url.pathname.startsWith("/admin")) {
+    // 2. Deteksi subdomain Kurir/Driver
+    if (hostname.startsWith("kurir.lamishabake.shop") || hostname.startsWith("kurir.localhost")) {
+        if (url.pathname === "/") {
+            return NextResponse.rewrite(new URL("/driver", request.url));
+        }
+    }
+
+    // 3. Cegah akses langsung /admin dan /driver lewat domain utama (HANYA UNTUK PRODUCTION)
+    if (hostname.startsWith("www.lamishabake.shop") || hostname === "lamishabake.shop") {
+        if (url.pathname.startsWith("/admin") || url.pathname.startsWith("/driver")) {
             return NextResponse.redirect(new URL("/", request.url));
         }
     }

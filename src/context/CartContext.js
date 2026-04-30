@@ -5,6 +5,7 @@ const CartContext = createContext();
 
 export function CartProvider({ children }) {
     const [cart, setCart] = useState([]);
+    const [theme, setTheme] = useState("classic"); // 'classic' or 'wellness'
     const [isRedeemingPoints, setIsRedeemingPoints] = useState(false);
     const [customerName, setCustomerName] = useState("");
     const [distance, setDistance] = useState(0);
@@ -29,7 +30,7 @@ export function CartProvider({ children }) {
     };
 
     const addToCart = (product, variant) => {
-        const newCart = [...cart, { n: product.n, l: variant.l, p: variant.p, i: product.i }];
+        const newCart = [...cart, { id: product.id, n: product.n, l: variant.l, p: variant.p, i: product.i }];
         setCart(newCart);
         localStorage.setItem('cart_v17', JSON.stringify(newCart));
     };
@@ -51,6 +52,7 @@ export function CartProvider({ children }) {
     return (
         <CartContext.Provider value={{
             cart, setCart, addToCart, removeFromCart,
+            theme, setTheme,
             isRedeemingPoints, setIsRedeemingPoints,
             customerName, setCustomerName,
             distance, setDistance,

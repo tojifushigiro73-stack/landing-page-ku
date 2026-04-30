@@ -3,7 +3,7 @@ import { useApp } from "@/context/AppContext";
 import { motion } from "framer-motion";
 
 export default function LoyaltyCard() {
-  const { loyaltyPoints, currentUser, setAuthModalMode } = useApp();
+  const { loyaltyPoints, currentUser, setAuthModalMode, setIsRedeemingPoints, setIsCartOpen } = useApp();
 
   if (!loyaltyPoints && !currentUser) return null;
 
@@ -78,9 +78,29 @@ export default function LoyaltyCard() {
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px", fontSize: "0.75rem", color: "#a1a1aa", fontWeight: "600" }}>
               <span>{loyaltyPoints % 10} / 10 Poin</span>
-              <span style={{ color: loyaltyPoints >= 10 ? "#FFD700" : "#a1a1aa" }}>
-                {loyaltyPoints >= 10 ? '🎁 Klaim Diskon' : 'Menuju Diskon'}
-              </span>
+              {loyaltyPoints >= 10 ? (
+                <motion.button 
+                  onClick={() => {
+                    setIsRedeemingPoints(true);
+                    setIsCartOpen(true);
+                    window.dispatchEvent(new CustomEvent('show-toast', { 
+                      detail: { message: '🎁 Diskon poin otomatis diterapkan!', type: 'success' } 
+                    }));
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  style={{ 
+                    background: "linear-gradient(135deg, #FFD700 0%, #ff8c00 100%)", 
+                    color: "white", border: "none", padding: "4px 12px", 
+                    borderRadius: "999px", fontWeight: "800", fontSize: "0.65rem", 
+                    cursor: "pointer", boxShadow: "0 4px 12px rgba(255,215,0,0.3)"
+                  }}
+                >
+                  KLAIM DISKON
+                </motion.button>
+              ) : (
+                <span style={{ color: "#a1a1aa" }}>Menuju Diskon</span>
+              )}
             </div>
           </div>
         </motion.div>

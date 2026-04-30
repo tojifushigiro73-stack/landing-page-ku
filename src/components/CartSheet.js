@@ -225,7 +225,17 @@ function CartView() {
         });
       }
 
-      // 3. Commit Batch
+      // 3. Kurangi Stok Produk
+      cart.forEach(item => {
+        if (item.id) {
+          const productRef = doc(db, "products", String(item.id));
+          batch.update(productRef, {
+            stock: increment(-1)
+          });
+        }
+      });
+
+      // 4. Commit Batch
       await batch.commit();
       console.log("Order & Points Sync success with ID: ", orderId);
 

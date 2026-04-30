@@ -20,69 +20,8 @@ export default function AdminPage() {
     const [orderFilter, setOrderFilter] = useState("ALL");
     const [updating, setUpdating] = useState(null);
     const [visibleMap, setVisibleMap] = useState(null);
-    const [trackingOrderId, setTrackingOrderId] = useState(null);
-    const watchIdRef = useRef(null);
 
-    useEffect(() => {
-        return () => {
-            if (watchIdRef.current) navigator.geolocation.clearWatch(watchIdRef.current);
-        };
-    }, []);
 
-    const toggleTracking = (orderId) => {
-        if (trackingOrderId === orderId) {
-            // Stop Tracking
-            if (watchIdRef.current) {
-                navigator.geolocation.clearWatch(watchIdRef.current);
-                watchIdRef.current = null;
-            }
-            setTrackingOrderId(null);
-            window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: "Pelacakan dihentikan.", type: 'info' } }));
-        } else {
-            // Start Tracking
-            if (!navigator.geolocation) {
-                alert("Browser tidak mendukung geolokasi.");
-                return;
-            }
-
-            setTrackingOrderId(orderId);
-            window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: "Memulai pelacakan kurir...", type: 'success' } }));
-
-            watchIdRef.current = navigator.geolocation.watchPosition(
-                async (pos) => {
-                    const { latitude, longitude } = pos.coords;
-                    try {
-                        const orderRef = doc(db, "orders", orderId);
-                        await updateDoc(orderRef, {
-                            courierLocation: {
-                                lat: latitude,
-                                lng: longitude,
-                                lastUpdated: serverTimestamp()
-                            }
-                        });
-                    } catch (err) {
-                        console.error("Tracking Update Error:", err);
-                    }
-                },
-                (err) => {
-                    console.warn("Geolocation Warning:", err.message, err.code);
-                    if (watchIdRef.current) {
-                        navigator.geolocation.clearWatch(watchIdRef.current);
-                        watchIdRef.current = null;
-                    }
-                    setTrackingOrderId(null);
-                    
-                    let errMsg = "Gagal mendapatkan lokasi.";
-                    if (err.code === 1) errMsg = "Akses lokasi ditolak.";
-                    else if (err.code === 2) errMsg = "Lokasi tidak tersedia.";
-                    else if (err.code === 3) errMsg = "Waktu pencarian lokasi habis.";
-
-                    window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: errMsg, type: 'error' } }));
-                },
-                { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-            );
-        }
-    };
 
     useEffect(() => {
         if (!isAdmin) {
@@ -171,7 +110,15 @@ export default function AdminPage() {
         try {
             const batch = writeBatch(db);
             const orderRef = doc(db, "orders", order.id);
-            batch.update(orderRef, { status: newStatus });
+            if (newStatus === "DIKIRIM") {
+                const shopLoc = { lat: -5.154633, lng: 105.300084 };
+                batch.update(orderRef, { 
+                    status: newStatus,
+                    courierLocation: shopLoc 
+                });
+            } else {
+                batch.update(orderRef, { status: newStatus });
+            }
             
             if (newStatus === "SELESAI" && order.userId !== "GUEST") {
                 const userRef = doc(db, "users", order.userId);
@@ -193,6 +140,37 @@ export default function AdminPage() {
 
                 await batch.commit();
                 window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Pesanan selesai! ${pointsToGain} poin telah ditambahkan.`, type: 'success' } }));
+            } else if (newStatus === "BATAL") {
+                // 1. Kembalikan Stok
+                order.items.forEach(item => {
+                    if (item.id) {
+                        const productRef = doc(db, "products", String(item.id));
+                        batch.update(productRef, {
+                            stock: increment(1)
+                        });
+                    }
+                });
+
+                // 2. Kembalikan Poin Jika Ada
+                if (order.userId !== "GUEST" && order.pointsUsed > 0) {
+                    const userRef = doc(db, "users", order.userId);
+                    batch.update(userRef, {
+                        points: increment(order.pointsUsed)
+                    });
+
+                    const txRef = doc(collection(db, "point_transactions"));
+                    batch.set(txRef, {
+                        userId: order.userId,
+                        orderId: order.id,
+                        type: "RETURN",
+                        amount: order.pointsUsed,
+                        description: `Pengembalian poin dari pesanan batal #${order.id.slice(-5).toUpperCase()}`,
+                        createdAt: serverTimestamp()
+                    });
+                }
+
+                await batch.commit();
+                window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Pesanan dibatalkan. Stok & Poin telah dikembalikan.`, type: 'warning' } }));
             } else {
                 await batch.commit();
                 window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Status diperbarui ke: ${newStatus}`, type: 'info' } }));
@@ -202,6 +180,18 @@ export default function AdminPage() {
             window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: "Gagal memperbarui status.", type: 'error' } }));
         }
         setUpdating(null);
+    };
+
+    const updateCourierLocation = async (orderId, loc) => {
+        try {
+            const orderRef = doc(db, "orders", orderId);
+            await updateDoc(orderRef, { 
+                courierLocation: { lat: loc.lat, lng: loc.lng } 
+            });
+            // Optional: toast if needed, but it might be too spammy for live updates
+        } catch (err) {
+            console.error("Update Courier Location Error:", err);
+        }
     };
 
     if (!currentUser) {
@@ -429,9 +419,14 @@ export default function AdminPage() {
 
                                         {visibleMap === o.id && o.location && (
                                             <div style={{ marginBottom: "20px", animation: "fadeIn 0.3s ease" }}>
+                                                <div style={{ fontSize: "0.75rem", background: "var(--primary)", color: "white", padding: "8px 12px", borderRadius: "10px 10px 0 0", fontWeight: "700" }}>
+                                                    <i className="fa-solid fa-circle-info"></i> {o.status === "DIKIRIM" ? "Klik pada peta untuk memperbarui posisi KURIR saat ini." : "Lokasi tujuan pengiriman pelanggan."}
+                                                </div>
                                                 <Map 
-                                                    readonly={true} 
+                                                    readonly={o.status !== "DIKIRIM"} 
                                                     initialLocation={o.location} 
+                                                    courierLocation={o.courierLocation}
+                                                    setCourierLocation={o.status === "DIKIRIM" ? (loc) => updateCourierLocation(o.id, loc) : null}
                                                     mapId={`map-${o.id}`}
                                                 />
                                             </div>
@@ -457,20 +452,15 @@ export default function AdminPage() {
                                             )}
                                             {o.status === "DIKIRIM" && (
                                                 <>
+                                                    <div style={{ flex: 1, background: "#f0f7ff", border: "1px dashed #007bff", color: "#007bff", padding: "12px", borderRadius: "12px", fontWeight: "700", textAlign: "center", fontSize: "0.85rem" }}>
+                                                        <i className="fa-solid fa-motorcycle"></i> Sedang Dalam Perjalanan
+                                                    </div>
                                                     <button 
-                                                        onClick={() => toggleTracking(o.id)}
-                                                        style={{ flex: 1, background: trackingOrderId === o.id ? "#e74c3c" : "#007bff", color: "white", border: "none", padding: "12px", borderRadius: "12px", fontWeight: "700", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
+                                                        onClick={() => updateOrderStatus(o, "SELESAI")}
+                                                        style={{ background: "#27ae60", color: "white", border: "none", padding: "12px 20px", borderRadius: "12px", fontWeight: "700", cursor: "pointer" }}
                                                     >
-                                                        <i className={`fa-solid ${trackingOrderId === o.id ? 'fa-location-dot' : 'fa-motorcycle'}`}></i>
-                                                        {trackingOrderId === o.id ? "BERHENTI LACAK" : "MULAI LACAK KURIR"}
+                                                        PESANAN SELESAI <i className="fa-solid fa-check-double" style={{ marginLeft: "5px" }}></i>
                                                     </button>
-                                                    <button 
-                                                        onClick={() => {
-                                                            if(trackingOrderId === o.id) toggleTracking(o.id);
-                                                            updateOrderStatus(o, "SELESAI");
-                                                        }}
-                                                        style={{ background: "#27ae60", color: "white", border: "none", padding: "12px", borderRadius: "12px", fontWeight: "700", cursor: "pointer" }}
-                                                    >SELESAI</button>
                                                 </>
                                             )}
                                             <button 
