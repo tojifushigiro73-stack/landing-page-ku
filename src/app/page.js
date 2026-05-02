@@ -7,6 +7,7 @@ import LoyaltyCard from "@/components/LoyaltyCard";
 import Catalog from "@/components/Catalog";
 import CartSheet from "@/components/CartSheet";
 import AuthModal from "@/components/AuthModal";
+import InstallAppFooter from "@/components/InstallAppFooter";
 import { motion, AnimatePresence } from "framer-motion";
 import { calcPotentialPoints } from "@/lib/orderUtils";
 
@@ -89,7 +90,9 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      <footer style={{ textAlign: "center", padding: "60px 20px", color: "var(--text-muted)", fontSize: "0.8rem", borderTop: "1px solid rgba(176,39,98,0.05)", marginTop: "50px", background: "white" }}>
+      <InstallAppFooter />
+
+      <footer style={{ textAlign: "center", padding: "60px 20px", color: "var(--text-muted)", fontSize: "0.8rem", borderTop: "1px solid rgba(176,39,98,0.05)", marginTop: "10px", background: "white" }}>
         <p>&copy; 2024 La Misha Bakehouse Metro. Dibuat dengan penuh rasa.</p>
       </footer>
 

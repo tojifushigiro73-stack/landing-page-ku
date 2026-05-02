@@ -2,7 +2,7 @@
 // 1. OneSignal Integration
 importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
 
-const CACHE_NAME = 'lamisha-cache-v5';
+const CACHE_NAME = 'lamisha-cache-v6';
 const PRE_CACHE_ASSETS = [
   '/',
   '/manifest.json',

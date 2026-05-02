@@ -20,9 +20,9 @@ const Scripts = () => {
                         await OneSignal.init({
                             appId: "5915e37b-4344-4f12-b442-067ced458d88",
                             allowLocalhostAsSecureOrigin: true,
-                            serviceWorkerPath: "sw.js?v=2.2",
+                            serviceWorkerPath: "sw.js?v=2.5",
                             serviceWorkerParam: { scope: "/" },
-                            serviceWorkerUpdaterPath: "sw.js?v=2.2",                            notifyButton: { 
+                            serviceWorkerUpdaterPath: "sw.js?v=2.5",                            notifyButton: { 
                                 enable: true,
                                 displayPredicate: () => {
                                     return OneSignal.Notifications.permission !== 'granted';
