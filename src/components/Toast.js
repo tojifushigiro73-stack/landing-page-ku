@@ -1,18 +1,23 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Toast() {
   const [toast, setToast] = useState(null); // { message: string, type: 'success' | 'info' }
+  const timeoutRef = useRef(null);
 
   useEffect(() => {
     const handleShowToast = (e) => {
       setToast({ message: e.detail.message, type: e.detail.type || 'success' });
 
-      // Auto hide after 3 seconds
-      setTimeout(() => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      const duration = e.detail.duration || 3000;
+      timeoutRef.current = setTimeout(() => {
         setToast(null);
-      }, 3000);
+      }, duration);
     };
 
     window.addEventListener("show-toast", handleShowToast);
@@ -31,32 +36,37 @@ export default function Toast() {
             top: "30px",
             left: "50%",
             zIndex: 30000,
-            pointerEvents: "none"
+            pointerEvents: "none",
+            width: "max-content",
+            maxWidth: "calc(100vw - 40px)"
           }}
         >
           <div style={{
             background: "rgba(45, 27, 34, 0.95)",
             color: "white",
-            padding: "12px 24px",
-            borderRadius: "50px",
-            fontSize: "0.9rem",
+            padding: "14px 24px",
+            borderRadius: "20px",
+            fontSize: "0.85rem",
             fontWeight: "600",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
             border: "1px solid rgba(255,255,255,0.1)",
             display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            whiteSpace: "nowrap",
-            backdropFilter: "blur(10px)"
+            alignItems: "flex-start",
+            gap: "12px",
+            backdropFilter: "blur(10px)",
+            lineHeight: "1.5",
+            textAlign: "left"
           }}>
-            {toast.type === 'success' && <i className="fa-solid fa-circle-check" style={{ color: "#2ecc71" }}></i>}
-            {toast.type === 'info' && <i className="fa-solid fa-circle-info" style={{ color: "#3498db" }}></i>}
-            {toast.type === 'error' && <i className="fa-solid fa-circle-xmark" style={{ color: "#e74c3c" }}></i>}
-            {toast.message}
+            <div style={{ marginTop: "2px" }}>
+                {toast.type === 'success' && <i className="fa-solid fa-circle-check" style={{ color: "#2ecc71", fontSize: "1.1rem" }}></i>}
+                {toast.type === 'info' && <i className="fa-solid fa-circle-info" style={{ color: "#3498db", fontSize: "1.1rem" }}></i>}
+                {toast.type === 'error' && <i className="fa-solid fa-circle-xmark" style={{ color: "#e74c3c", fontSize: "1.1rem" }}></i>}
+                {toast.type === 'warning' && <i className="fa-solid fa-triangle-exclamation" style={{ color: "#f39c12", fontSize: "1.1rem" }}></i>}
+            </div>
+            <div style={{ flex: 1 }}>{toast.message}</div>
           </div>
         </motion.div>
       )}
     </AnimatePresence>
   );
 }
-
