@@ -1,6 +1,6 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -19,7 +19,17 @@ if (typeof window !== "undefined") {
         // Gunakan getApps() untuk mencegah inisialisasi ganda yang bisa merusak state login
         app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
         auth = getAuth(app);
-        db = getFirestore(app);
+        
+        // Aktifkan Offline Persistence agar katalog tetap memuat meski tidak ada internet
+        try {
+            db = initializeFirestore(app, {
+                localCache: persistentLocalCache({tabManager: persistentMultipleTabManager()})
+            });
+        } catch (e) {
+            // Fallback jika Firestore terlanjur terinisialisasi
+            db = getFirestore(app);
+        }
+        
         provider = new GoogleAuthProvider();
     } catch (error) {
         console.error("Firebase Init Error:", error);
