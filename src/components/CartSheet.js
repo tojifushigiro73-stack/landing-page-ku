@@ -208,26 +208,8 @@ function CartView() {
       // 1. Simpan Order
       batch.set(orderRef, orderData);
 
-      // 2. Jika Redeem, Kurangi Poin & Catat Transaksi
-      if (pointsUsed > 0 && currentUser) {
-        const userRef = doc(db, "users", currentUser.uid);
-        batch.update(userRef, {
-            points: increment(-pointsUsed)
-        });
-
-        const txRef = doc(collection(db, "point_transactions"));
-        batch.set(txRef, {
-            userId: currentUser.uid,
-            orderId: orderId,
-            type: "REDEEM",
-            amount: pointsUsed,
-            description: `Tukar poin untuk diskon pesanan #${orderId.slice(-5).toUpperCase()}`,
-            createdAt: serverTimestamp()
-        });
-      }
-
-      // 3. (Dihapus) Pengurangan stok sekarang dilakukan oleh Admin saat konfirmasi pesanan
-      // untuk menghindari error permission-denied di sisi pelanggan (client).
+      // 2 & 3. (Dihapus) Pengurangan Poin dan Stok sekarang dilakukan oleh Admin saat konfirmasi
+      // pesanan untuk menghindari error permission-denied di sisi pelanggan.
 
       // 4. Try Commit Batch
       try {

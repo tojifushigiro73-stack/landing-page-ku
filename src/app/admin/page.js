@@ -120,8 +120,9 @@ export default function AdminPage() {
                 batch.update(orderRef, { status: newStatus });
             }
             
-            // 0. Kurangi Stok JIKA pesanan baru saja dikonfirmasi (dari MENUNGGU PEMBAYARAN)
+            // 0. Kurangi Stok & Potong Poin JIKA pesanan baru saja dikonfirmasi (dari MENUNGGU PEMBAYARAN)
             if (order.status === "MENUNGGU PEMBAYARAN" && (newStatus === "DIKIRIM" || newStatus === "SELESAI")) {
+                // Kurangi stok
                 order.items.forEach(item => {
                     if (item.id) {
                         const productRef = doc(db, "products", String(item.id));
@@ -130,6 +131,24 @@ export default function AdminPage() {
                         });
                     }
                 });
+
+                // Potong poin yang digunakan
+                if (order.userId !== "GUEST" && order.pointsUsed > 0) {
+                    const userRef = doc(db, "users", order.userId);
+                    batch.update(userRef, {
+                        points: increment(-order.pointsUsed)
+                    });
+
+                    const txRef = doc(collection(db, "point_transactions"));
+                    batch.set(txRef, {
+                        userId: order.userId,
+                        orderId: order.id,
+                        type: "REDEEM",
+                        amount: order.pointsUsed,
+                        description: `Tukar poin untuk pesanan #${order.id.slice(-5).toUpperCase()}`,
+                        createdAt: serverTimestamp()
+                    });
+                }
             }
 
             if (newStatus === "SELESAI" && order.userId !== "GUEST") {
