@@ -58,6 +58,7 @@ export default function CartSheet() {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
+                    style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                   >
                     <ProductPeek p={peekedProduct} close={() => { closePeek(); setIsCartOpen(false); }} />
                   </motion.div>
@@ -291,7 +292,7 @@ function CartView() {
   };
 
   return (
-    <>
+    <div className="cart-view-container">
       <div style={{ display: "flex", alignItems: "center", gap: "15px", marginBottom: "20px" }}>
         <button
           onClick={() => window.dispatchEvent(new CustomEvent('close-modals'))}
@@ -452,6 +453,6 @@ function CartView() {
           {!currentUser && <span style={{ color: "var(--primary)", fontWeight: "600" }}>💡 Tips: Masuk ke akunmu yuk, biar poin dari pesanan ini otomatis tersimpan buatmu!</span>}
         </p>
       </div>
-    </>
+    </div>
   );
 }

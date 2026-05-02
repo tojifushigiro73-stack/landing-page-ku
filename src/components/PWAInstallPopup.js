@@ -42,9 +42,9 @@ export default function PWAInstallPopup() {
       {isVisible && (
         <motion.div
           className="pwa-install-popup active"
-          initial={{ bottom: -150, x: "-50%" }}
-          animate={{ bottom: 24, x: "-50%" }}
-          exit={{ bottom: -150, x: "-50%" }}
+          initial={{ opacity: 0, y: 100, x: "-50%" }}
+          animate={{ opacity: 1, y: 0, x: "-50%", bottom: "calc(20px + env(safe-area-inset-bottom))" }}
+          exit={{ opacity: 0, y: 100, x: "-50%" }}
           transition={{ type: "spring", damping: 25, stiffness: 200 }}
         >
           <div className="pwa-content">
