@@ -226,15 +226,8 @@ function CartView() {
         });
       }
 
-      // 3. Kurangi Stok Produk
-      cart.forEach(item => {
-        if (item.id) {
-          const productRef = doc(db, "products", String(item.id));
-          batch.update(productRef, {
-            stock: increment(-1)
-          });
-        }
-      });
+      // 3. (Dihapus) Pengurangan stok sekarang dilakukan oleh Admin saat konfirmasi pesanan
+      // untuk menghindari error permission-denied di sisi pelanggan (client).
 
       // 4. Try Commit Batch
       try {

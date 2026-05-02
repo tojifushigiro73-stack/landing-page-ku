@@ -120,6 +120,18 @@ export default function AdminPage() {
                 batch.update(orderRef, { status: newStatus });
             }
             
+            // 0. Kurangi Stok JIKA pesanan baru saja dikonfirmasi (dari MENUNGGU PEMBAYARAN)
+            if (order.status === "MENUNGGU PEMBAYARAN" && (newStatus === "DIKIRIM" || newStatus === "SELESAI")) {
+                order.items.forEach(item => {
+                    if (item.id) {
+                        const productRef = doc(db, "products", String(item.id));
+                        batch.update(productRef, {
+                            stock: increment(-1)
+                        });
+                    }
+                });
+            }
+
             if (newStatus === "SELESAI" && order.userId !== "GUEST") {
                 const userRef = doc(db, "users", order.userId);
                 const pointsToGain = order.pointsGained || 0;
