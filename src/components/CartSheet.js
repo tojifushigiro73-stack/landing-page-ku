@@ -236,11 +236,22 @@ function CartView() {
         }
       });
 
-      // 4. Commit Batch
-      await batch.commit();
-      console.log("Order & Points Sync success with ID: ", orderId);
+      // 4. Try Commit Batch
+      try {
+        await batch.commit();
+      } catch (permissionErr) {
+        console.warn("Batch commit failed, attempting fallback (Orders Only):", permissionErr);
+        
+        // Fallback: Jika batch gagal (kemungkinan izin produk/poin), coba simpan ORDER saja
+        // agar transaksi pelanggan tetap bisa berlanjut ke WA
+        const fallbackBatch = writeBatch(db);
+        fallbackBatch.set(orderRef, orderData);
+        await fallbackBatch.commit();
+      }
 
-      // 4. Siapkan Pesan WA
+      console.log("Order saved successfully with ID: ", orderId);
+
+      // 5. Siapkan Pesan WA
       let msg = `Halo La Misha! Saya *${customerName || 'Pelanggan'}* ingin pesan (ID: ${orderId.slice(-5)}):\n\n`;
       cart.forEach(i => msg += `• ${i.n} (${i.l}) - Rp ${i.p.toLocaleString('id-ID')}\n`);
       msg += `\nSubtotal: Rp ${subtotal.toLocaleString('id-ID')}\n`;
@@ -261,7 +272,10 @@ function CartView() {
       window.dispatchEvent(new CustomEvent('close-modals'));
     } catch (err) {
       console.error("Order Save Error:", err);
-      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: "Gagal menyimpan pesanan. Silakan coba lagi.", type: 'error' } }));
+      const errorMsg = err.code === 'permission-denied' 
+        ? "Izin ditolak. Silakan login ulang atau hubungi admin." 
+        : "Gagal menyimpan pesanan. Silakan coba lagi.";
+      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: errorMsg, type: 'error' } }));
     } finally {
       setLoading(false);
     }
