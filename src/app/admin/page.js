@@ -120,6 +120,8 @@ export default function AdminPage() {
                 batch.update(orderRef, { status: newStatus });
             }
             
+            let pointsDelta = 0;
+
             // 0. Kurangi Stok & Potong Poin JIKA pesanan baru saja dikonfirmasi (dari MENUNGGU PEMBAYARAN)
             if (order.status === "MENUNGGU PEMBAYARAN" && (newStatus === "DIKIRIM" || newStatus === "SELESAI")) {
                 // Kurangi stok
@@ -133,18 +135,15 @@ export default function AdminPage() {
                 });
 
                 // Potong poin yang digunakan
-                if (order.userId !== "GUEST" && order.pointsUsed > 0) {
-                    const userRef = doc(db, "users", order.userId);
-                    batch.update(userRef, {
-                        points: increment(-order.pointsUsed)
-                    });
+                if (order.userId !== "GUEST" && Number(order.pointsUsed) > 0) {
+                    pointsDelta -= Number(order.pointsUsed);
 
                     const txRef = doc(collection(db, "point_transactions"));
                     batch.set(txRef, {
                         userId: order.userId,
                         orderId: order.id,
                         type: "REDEEM",
-                        amount: order.pointsUsed,
+                        amount: Number(order.pointsUsed),
                         description: `Tukar poin untuk pesanan #${order.id.slice(-5).toUpperCase()}`,
                         createdAt: serverTimestamp()
                     });
@@ -152,25 +151,33 @@ export default function AdminPage() {
             }
 
             if (newStatus === "SELESAI" && order.userId !== "GUEST") {
-                const userRef = doc(db, "users", order.userId);
-                const pointsToGain = order.pointsGained || 0;
+                const pointsToGain = Number(order.pointsGained) || 0;
+                pointsDelta += pointsToGain;
                 
+                if (pointsToGain > 0) {
+                    const txRef = doc(collection(db, "point_transactions"));
+                    batch.set(txRef, {
+                        userId: order.userId,
+                        orderId: order.id,
+                        type: "EARN",
+                        amount: pointsToGain,
+                        description: `Poin dari pesanan #${order.id.slice(-5).toUpperCase()}`,
+                        createdAt: serverTimestamp()
+                    });
+                }
+            }
+
+            // Terapkan semua perubahan poin (Potongan & Penambahan) dalam 1 aksi update
+            if (pointsDelta !== 0 && order.userId !== "GUEST") {
+                const userRef = doc(db, "users", order.userId);
                 batch.update(userRef, { 
-                    points: increment(pointsToGain) 
+                    points: increment(pointsDelta) 
                 });
+            }
 
-                const txRef = doc(collection(db, "point_transactions"));
-                batch.set(txRef, {
-                    userId: order.userId,
-                    orderId: order.id,
-                    type: "EARN",
-                    amount: pointsToGain,
-                    description: `Poin dari pesanan #${order.id.slice(-5).toUpperCase()}`,
-                    createdAt: serverTimestamp()
-                });
-
+            if (newStatus === "SELESAI") {
                 await batch.commit();
-                window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Pesanan selesai! ${pointsToGain} poin telah ditambahkan.`, type: 'success' } }));
+                window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Pesanan selesai! Poin telah disesuaikan.`, type: 'success' } }));
             } else if (newStatus === "BATAL") {
                 // 1. Kembalikan Stok
                 order.items.forEach(item => {
