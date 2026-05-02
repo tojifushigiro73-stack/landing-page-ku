@@ -130,7 +130,7 @@ export default function AdminPage() {
                     if (item.id) {
                         const productRef = doc(db, "products", String(item.id));
                         batch.update(productRef, {
-                            stock: increment(-1)
+                            stock: increment(-item.qty)
                         });
                     }
                 });
@@ -189,7 +189,7 @@ export default function AdminPage() {
                     if (item.id) {
                         const productRef = doc(db, "products", String(item.id));
                         batch.update(productRef, {
-                            stock: increment(1)
+                            stock: increment(item.qty)
                         });
                     }
                 });
