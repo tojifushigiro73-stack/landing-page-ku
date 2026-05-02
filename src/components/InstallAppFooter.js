@@ -11,10 +11,16 @@ export default function InstallAppFooter() {
       setIsStandalone(true);
     }
 
+    // Tangkap jika event sudah fire sebelum komponen React selesai loading
+    if (typeof window !== 'undefined' && window.pwaDeferredPrompt) {
+      setDeferredPrompt(window.pwaDeferredPrompt);
+    }
+
     // Listen for the prompt
     const handler = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
+      window.pwaDeferredPrompt = e;
     };
 
     window.addEventListener("beforeinstallprompt", handler);
