@@ -11,13 +11,13 @@ import AuthModal from "@/components/AuthModal";
 const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
-  display: 'swap',
+  display: "swap",
 });
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
-  display: 'swap',
+  display: "swap",
 });
 
 export const metadata = {
@@ -54,7 +54,7 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{
             __html: `
               window.pwaDeferredPrompt = null;
-              window.addEventListener('beforeinstallprompt', (e) => {
+              window.addEventListener("beforeinstallprompt", (e) => {
                 e.preventDefault();
                 window.pwaDeferredPrompt = e;
               });

@@ -1,18 +1,12 @@
-// Service Worker Version: 3.2 (Full Offline Fix)
-// 1. OneSignal Integration — dibungkus try-catch agar tidak crash saat offline
-try {
-  importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
-} catch (e) {
-  console.warn('[SW] OneSignal SDK not available offline, skipping.');
-}
-
-const CACHE_NAME = 'lamisha-cache-v10';
+// Service Worker Version: 3.3 (iOS Safari Optimization)
+const CACHE_NAME = 'lamisha-cache-v11';
 
 // PENTING: Gunakan nama file PERSIS seperti di folder /public
 const PRE_CACHE_ASSETS = [
   '/',
   '/manifest.json',
   '/apple-touch-icon.png',
+  '/favicon.ico',
   '/nastar.webp',
   '/broww.webp',
   '/softcake.webp',
@@ -27,6 +21,13 @@ const PRE_CACHE_ASSETS = [
   '/background (1).webp',
 ];
 
+// 1. OneSignal Integration — dibungkus try-catch agar tidak crash saat offline
+try {
+  importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
+} catch (e) {
+  console.warn('[SW] OneSignal SDK not available offline, skipping.');
+}
+
 // 2. Service Worker Lifecycle - Install
 self.addEventListener('install', (event) => {
   self.skipWaiting(); 
@@ -34,9 +35,14 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME).then((cache) => {
       console.log('[SW] Pre-caching critical assets');
       return Promise.allSettled(
-        PRE_CACHE_ASSETS.map(url => cache.add(url).catch(err => {
-          console.warn('[SW] Failed to cache:', url, err);
-        }))
+        PRE_CACHE_ASSETS.map(url => 
+          fetch(new Request(url, { cache: 'reload' }))
+            .then(response => {
+              if (response.ok) return cache.put(url, response);
+              throw new Error(`Failed to fetch ${url}`);
+            })
+            .catch(err => console.warn('[SW] Failed to pre-cache:', url, err))
+        )
       );
     })
   );
@@ -46,7 +52,6 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     Promise.all([
-      // Hapus cache lama
       caches.keys().then((cacheNames) =>
         Promise.all(
           cacheNames.map((cacheName) => {
@@ -57,7 +62,6 @@ self.addEventListener('activate', (event) => {
           })
         )
       ),
-      // Ambil kendali atas semua tab yang terbuka segera
       clients.claim()
     ])
   );
@@ -65,6 +69,7 @@ self.addEventListener('activate', (event) => {
 
 // 4. Fetch Handler
 self.addEventListener('fetch', (event) => {
+  // Hanya tangani request GET
   if (event.request.method !== 'GET') return;
 
   const url = new URL(event.request.url);
@@ -72,12 +77,30 @@ self.addEventListener('fetch', (event) => {
   // Lewati request ke Firebase, OneSignal, atau API eksternal yang tidak perlu di-cache
   if (url.hostname.includes('firebaseio.com') || 
       url.hostname.includes('googleapis.com') || 
-      url.hostname.includes('onesignal.com') ||
-      url.pathname.startsWith('/_next/webpack')) {
+      url.hostname.includes('onesignal.com')) {
     return;
   }
 
-  // Strategi: Cache First untuk gambar & aset statis
+  // Khusus untuk Next.js static assets (_next/static)
+  // Gunakan Stale-While-Revalidate agar cepat tapi tetap terupdate
+  if (url.pathname.startsWith('/_next/static/')) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then((cache) => {
+        return cache.match(event.request).then((cachedResponse) => {
+          const fetchPromise = fetch(event.request).then((networkResponse) => {
+            if (networkResponse && networkResponse.status === 200) {
+              cache.put(event.request, networkResponse.clone());
+            }
+            return networkResponse;
+          });
+          return cachedResponse || fetchPromise;
+        });
+      })
+    );
+    return;
+  }
+
+  // Strategi: Cache First untuk gambar & aset statis lainnya
   if (event.request.destination === 'image' || 
       url.pathname.match(/\.(webp|png|jpg|jpeg|svg|gif|ico|woff2?|ttf|otf)$/)) {
     event.respondWith(
@@ -91,6 +114,7 @@ self.addEventListener('fetch', (event) => {
           }
           return networkResponse;
         }).catch(() => {
+          // Fallback jika gambar gagal diload saat offline
           if (url.pathname.match(/\.(webp|png|jpg|jpeg)$/)) {
              return caches.match('/apple-touch-icon.png');
           }
@@ -100,22 +124,27 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Strategi: Network First untuk halaman, JS, & CSS
+  // Strategi: Network First untuk halaman HTML (navigation) & JS/CSS utama
+  // Ini krusial untuk iOS Safari agar tidak terjebak di versi lama tapi tetap bisa offline
   event.respondWith(
     fetch(event.request)
       .then((networkResponse) => {
+        // Hanya simpan response sukses
         if (networkResponse && networkResponse.status === 200) {
           const cacheCopy = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, cacheCopy));
         }
         return networkResponse;
       })
-      .catch(async () => {
+      .catch(async (err) => {
+        console.log('[SW] Fetch failed, trying cache:', url.pathname);
         const cachedResponse = await caches.match(event.request);
         if (cachedResponse) return cachedResponse;
         
+        // Fallback untuk navigasi halaman jika offline total
         if (event.request.mode === 'navigate') {
-          return caches.match('/');
+          const mainPage = await caches.match('/');
+          if (mainPage) return mainPage;
         }
         
         return new Response('Offline', { 
